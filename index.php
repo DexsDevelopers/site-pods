@@ -528,37 +528,37 @@ $marcas = [
 
                     <!-- Product Image -->
                     <div class="relative h-48 overflow-hidden bg-gradient-to-br from-purple-900 to-black">
-                        <img src="<?php echo $produto['imagem']; ?>" alt="<?php echo $produto['nome']; ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <img src="<?php echo htmlspecialchars($produto['imagem'] ?? 'https://via.placeholder.com/400x300?text=' . urlencode($produto['nome'])); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=Produto'">
                         <div class="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
-                            <?php echo $produto['tag']; ?>
+                            <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
                         </div>
                     </div>
 
                     <!-- Content -->
                     <div class="p-6">
                         <div class="flex items-center mb-3">
-                            <i class="fas fa-<?php echo $produto['icone']; ?> text-purple-400 mr-2 text-xl"></i>
-                            <h3 class="text-xl font-bold text-slate-100"><?php echo $produto['nome']; ?></h3>
+                            <i class="fas fa-cloud text-purple-400 mr-2 text-xl"></i>
+                            <h3 class="text-xl font-bold text-slate-100"><?php echo htmlspecialchars($produto['nome']); ?></h3>
                         </div>
-                        <p class="text-slate-400 text-sm mb-4"><?php echo $produto['descricao']; ?></p>
+                        <p class="text-slate-400 text-sm mb-4"><?php echo htmlspecialchars(substr($produto['descricao'] ?? '', 0, 100)); ?>...</p>
                         
-                        <!-- Rating -->
+                        <!-- Rating (simulado) -->
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex gap-1">
                                 <?php for($j = 0; $j < 5; $j++): ?>
-                                    <i class="fas fa-star <?php echo $j < $produto['avaliacao'] ? 'text-yellow-400' : 'text-slate-600'; ?>"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
                                 <?php endfor; ?>
                             </div>
-                            <span class="text-yellow-400 font-bold"><?php echo $produto['avaliacao']; ?></span>
+                            <span class="text-yellow-400 font-bold">5.0</span>
                         </div>
 
                         <!-- Price -->
                         <div class="mb-4">
-                            <span class="text-2xl font-black gradient-text"><?php echo $produto['preco']; ?></span>
-                            <span class="text-slate-500 line-through ml-2">R$ <?php echo intval(str_replace(['R$', ',90', '.'], '', $produto['preco']) * 1.43); ?>,90</span>
+                            <span class="text-2xl font-black gradient-text">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></span>
+                            <span class="text-slate-500 line-through ml-2">R$ <?php echo number_format($produto['preco'] * 1.43, 2, ',', '.'); ?></span>
                         </div>
 
-                        <button class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10">
+                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $produto['preco']; ?>)" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10">
                             <i class="fas fa-cart-plus mr-2"></i>
                             Adicionar ao Carrinho
                         </button>
