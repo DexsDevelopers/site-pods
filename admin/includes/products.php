@@ -1,10 +1,68 @@
 <div class="space-y-6">
     <?php
+    include '../../includes/db.php';
+    $db = Database::getInstance();
+    
     $action = $_GET['action'] ?? null;
     $product_id = $_GET['id'] ?? null;
-
+    
+    // Processar formulário
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $nome = $_POST['nome'] ?? null;
+        $descricao = $_POST['descricao'] ?? null;
+        $preco = $_POST['preco'] ?? null;
+        $estoque = $_POST['estoque'] ?? null;
+        $categoria_id = $_POST['categoria'] ?? null;
+        $imagem = $_POST['imagem'] ?? null;
+        
+        if ($action === 'add') {
+            $stmt = $db->getConnection()->prepare(
+                "INSERT INTO products (nome, descricao, preco, estoque, categoria_id, imagem) 
+                 VALUES (?, ?, ?, ?, ?, ?)"
+            );
+            $result = $stmt->execute([$nome, $descricao, $preco, $estoque, $categoria_id, $imagem]);
+            
+            if ($result) {
+                echo '<div class="bg-green-600/20 border border-green-600 text-green-400 px-4 py-3 rounded mb-6">✅ Produto adicionado com sucesso!</div>';
+                header('Refresh: 2; url=?page=products');
+            } else {
+                echo '<div class="bg-red-600/20 border border-red-600 text-red-400 px-4 py-3 rounded mb-6">❌ Erro ao adicionar produto</div>';
+            }
+        } elseif ($action === 'edit' && $product_id) {
+            $stmt = $db->getConnection()->prepare(
+                "UPDATE products SET nome=?, descricao=?, preco=?, estoque=?, categoria_id=?, imagem=? 
+                 WHERE id=?"
+            );
+            $result = $stmt->execute([$nome, $descricao, $preco, $estoque, $categoria_id, $imagem, $product_id]);
+            
+            if ($result) {
+                echo '<div class="bg-green-600/20 border border-green-600 text-green-400 px-4 py-3 rounded mb-6">✅ Produto atualizado com sucesso!</div>';
+                header('Refresh: 2; url=?page=products');
+            }
+        }
+    }
+    
+    // Processar deleção
+    if ($action === 'delete' && $product_id) {
+        $stmt = $db->getConnection()->prepare("DELETE FROM products WHERE id = ?");
+        if ($stmt->execute([$product_id])) {
+            echo '<div class="bg-green-600/20 border border-green-600 text-green-400 px-4 py-3 rounded mb-6">✅ Produto deletado com sucesso!</div>';
+            header('Refresh: 1; url=?page=products');
+        }
+    }
+    
     if ($action === 'add' || $action === 'edit') {
-        // Formulário de Produto
+        $product = null;
+        if ($action === 'edit' && $product_id) {
+            $stmt = $db->getConnection()->prepare("SELECT * FROM products WHERE id = ?");
+            $stmt->execute([$product_id]);
+            $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        
+        // Buscar categorias
+        $stmt = $db->getConnection()->prepare("SELECT id, nome FROM categories ORDER BY nome");
+        $stmt->execute();
+        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         ?>
         <div class="glass border border-purple-600/30 rounded-lg p-8">
             <h3 class="text-2xl font-black mb-6">
@@ -15,15 +73,17 @@
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-slate-300 mb-2">Nome do Produto</label>
-                        <input type="text" name="nome" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Vapor Premium X-01">
+                        <input type="text" name="nome" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Vapor Premium X-01" value="<?php echo $product['nome'] ?? ''; ?>">
                     </div>
                     <div>
                         <label class="block text-slate-300 mb-2">Categoria</label>
                         <select name="categoria" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <option>Vaporizadores</option>
-                            <option>Acessórios</option>
-                            <option>Líquidos</option>
-                            <option>Baterias</option>
+                            <option value="">Selecione uma categoria</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?php echo $cat['id']; ?>" <?php echo ($product['categoria_id'] ?? 0) == $cat['id'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($cat['nome']); ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -31,22 +91,22 @@
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-slate-300 mb-2">Preço (R$)</label>
-                        <input type="number" name="preco" step="0.01" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="299.90">
+                        <input type="number" name="preco" step="0.01" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="299.90" value="<?php echo $product['preco'] ?? ''; ?>">
                     </div>
                     <div>
                         <label class="block text-slate-300 mb-2">Estoque</label>
-                        <input type="number" name="estoque" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="50">
+                        <input type="number" name="estoque" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="50" value="<?php echo $product['estoque'] ?? ''; ?>">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-slate-300 mb-2">Descrição</label>
-                    <textarea name="descricao" rows="4" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Descrição detalhada do produto..."></textarea>
+                    <textarea name="descricao" rows="4" required class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Descrição detalhada do produto..."><?php echo $product['descricao'] ?? ''; ?></textarea>
                 </div>
 
                 <div>
                     <label class="block text-slate-300 mb-2">URL da Imagem</label>
-                    <input type="url" name="imagem" class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="https://...">
+                    <input type="url" name="imagem" class="w-full px-4 py-2 bg-slate-800 border border-purple-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="https://..." value="<?php echo $product['imagem'] ?? ''; ?>">
                 </div>
 
                 <div class="flex gap-4">
@@ -62,6 +122,15 @@
         <?php
     } else {
         // Lista de Produtos
+        $stmt = $db->getConnection()->prepare(
+            "SELECT p.*, c.nome as categoria_nome 
+             FROM products p 
+             LEFT JOIN categories c ON p.categoria_id = c.id 
+             ORDER BY p.criado_em DESC 
+             LIMIT 100"
+        );
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         ?>
         <div class="space-y-6">
             <div class="flex justify-between items-center">
@@ -83,26 +152,18 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php foreach ($products as $prod): ?>
                         <tr class="border-b border-slate-700 hover:bg-white/5 transition">
-                            <td class="px-6 py-4 font-bold">Vapor Premium X-01</td>
-                            <td class="px-6 py-4">Vaporizadores</td>
-                            <td class="px-6 py-4">R$ 299,90</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs font-bold">50</span></td>
+                            <td class="px-6 py-4 font-bold"><?php echo htmlspecialchars($prod['nome']); ?></td>
+                            <td class="px-6 py-4"><?php echo htmlspecialchars($prod['categoria_nome'] ?? 'Sem categoria'); ?></td>
+                            <td class="px-6 py-4">R$ <?php echo number_format($prod['preco'], 2, ',', '.'); ?></td>
+                            <td class="px-6 py-4"><span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs font-bold"><?php echo $prod['estoque']; ?></span></td>
                             <td class="px-6 py-4 space-x-2">
-                                <a href="?page=products&action=edit&id=1" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs hover:bg-blue-600/40 transition">✏️ Editar</a>
-                                <a href="?page=products&action=delete&id=1" class="px-3 py-1 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 transition" onclick="return confirm('Tem certeza?')">🗑️ Deletar</a>
+                                <a href="?page=products&action=edit&id=<?php echo $prod['id']; ?>" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs hover:bg-blue-600/40 transition">✏️ Editar</a>
+                                <a href="?page=products&action=delete&id=<?php echo $prod['id']; ?>" class="px-3 py-1 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 transition" onclick="return confirm('Tem certeza?')">🗑️ Deletar</a>
                             </td>
                         </tr>
-                        <tr class="border-b border-slate-700 hover:bg-white/5 transition">
-                            <td class="px-6 py-4 font-bold">Aero Compact 2024</td>
-                            <td class="px-6 py-4">Vaporizadores</td>
-                            <td class="px-6 py-4">R$ 199,90</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs font-bold">35</span></td>
-                            <td class="px-6 py-4 space-x-2">
-                                <a href="?page=products&action=edit&id=2" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs hover:bg-blue-600/40 transition">✏️ Editar</a>
-                                <a href="?page=products&action=delete&id=2" class="px-3 py-1 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 transition" onclick="return confirm('Tem certeza?')">🗑️ Deletar</a>
-                            </td>
-                        </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>

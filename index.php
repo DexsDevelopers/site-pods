@@ -1,78 +1,28 @@
 <?php
-// Inclui configurações
-require_once 'includes/config.php';
-require_once 'includes/db.php';
+session_start();
+include 'includes/config.php';
+include 'includes/db.php';
 
-// Simulação de dados de produtos (em um projeto real, viria do BD)
-$produtos = [
-    [
-        'id' => 1,
-        'nome' => 'Vapor Premium X-01',
-        'descricao' => 'Design elegante com tecnologia de ponta',
-        'preco' => 'R$ 299,90',
-        'icone' => 'zap',
-        'imagem' => 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=400&h=300&fit=crop',
-        'tag' => 'Bestseller',
-        'avaliacao' => 4.8
-    ],
-    [
-        'id' => 2,
-        'nome' => 'Aero Compact 2024',
-        'descricao' => 'Portátil e de alta performance',
-        'preco' => 'R$ 199,90',
-        'icone' => 'box',
-        'imagem' => 'https://images.unsplash.com/photo-1600856062241-98e5dba7214d?w=400&h=300&fit=crop',
-        'tag' => 'Novo',
-        'avaliacao' => 4.9
-    ],
-    [
-        'id' => 3,
-        'nome' => 'Pro Max Series',
-        'descricao' => 'Profissional com vapor intenso',
-        'preco' => 'R$ 449,90',
-        'icone' => 'flame',
-        'imagem' => 'https://images.unsplash.com/photo-1617638924702-92d37d439220?w=400&h=300&fit=crop',
-        'tag' => 'Premium',
-        'avaliacao' => 5
-    ],
-    [
-        'id' => 4,
-        'nome' => 'Caso Ultra Slim',
-        'descricao' => 'Proteção elegante e minimalista',
-        'preco' => 'R$ 89,90',
-        'icone' => 'shield',
-        'imagem' => 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=300&fit=crop',
-        'tag' => 'Acessório',
-        'avaliacao' => 4.7
-    ],
-    [
-        'id' => 5,
-        'nome' => 'Kit Limpeza Premium',
-        'descricao' => 'Manutenção profissional completa',
-        'preco' => 'R$ 49,90',
-        'icone' => 'tool',
-        'imagem' => 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop',
-        'tag' => 'Essencial',
-        'avaliacao' => 4.6
-    ],
-    [
-        'id' => 6,
-        'nome' => 'Bateria 21700 5000mAh',
-        'descricao' => 'Alta capacidade e performance',
-        'preco' => 'R$ 79,90',
-        'icone' => 'battery',
-        'imagem' => 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&h=300&fit=crop',
-        'tag' => 'Power',
-        'avaliacao' => 4.8
-    ]
-];
-
-$categorias = [
-    ['nome' => 'Vaporizadores', 'icon' => 'zap', 'count' => 15],
-    ['nome' => 'Acessórios', 'icon' => 'box', 'count' => 32],
-    ['nome' => 'Líquidos', 'icon' => 'droplets', 'count' => 48],
-    ['nome' => 'Baterias', 'icon' => 'battery', 'count' => 12],
-];
+try {
+    $db = Database::getInstance();
+    
+    // Buscar categorias
+    $stmt = $db->getConnection()->prepare("SELECT * FROM categories ORDER BY nome LIMIT 6");
+    $stmt->execute();
+    $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Buscar produtos em destaque (últimos 8)
+    $stmt = $db->getConnection()->prepare(
+        "SELECT p.*, c.nome as categoria_nome FROM products p 
+         LEFT JOIN categories c ON p.categoria_id = c.id 
+         ORDER BY p.criado_em DESC LIMIT 8"
+    );
+    $stmt->execute();
+    $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $categorias = [];
+    $produtos = [];
+}
 
 $sabores = [
     ['nome' => 'Frutas Tropicais', 'emoji' => '🥭', 'produtos' => 24],
