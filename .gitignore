@@ -1,0 +1,24 @@
+# OS/Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Cursor/agent
+.cursor/
+
+# Dependencies/Build
+node_modules/
+dist/
+
+# Env/Secrets
+.env
+.env.*
+logs/*.log
+uploads/*
+!uploads/.htaccess
+logs/*
+!logs/.htaccess
+
+# Git
+.git-credentials
