@@ -1,146 +1,137 @@
-<div class="space-y-6">
-    <?php
-    error_reporting(E_ALL);
-    ini_set('display_errors', 0);
-    
-    try {
-        include '../../includes/config.php';
-        include '../../includes/db.php';
-        include '../../includes/helpers.php';
-        
-        $conn = Database::getConnection();
-        
-        $action = $_GET['action'] ?? null;
-        $customer_id = $_GET['id'] ?? null;
-        
-        if ($action === 'detail' && $customer_id) {
-            $stmt = $conn->prepare(
-                "SELECT u.*, COUNT(o.id) as total_pedidos, COALESCE(SUM(o.total), 0) as total_gasto 
-                 FROM users u 
-                 LEFT JOIN orders o ON u.id = o.user_id 
-                 WHERE u.id = ? AND u.role = 'customer' 
-                 GROUP BY u.id"
-            );
+<?php
+$action = $_GET['action'] ?? null;
+$customer_id = $_GET['id'] ?? null;
+$customers = [];
+$customer = null;
+$customer_orders = [];
+$conn = null;
+
+try {
+    @include '../../includes/config.php';
+    @include '../../includes/db.php';
+    $conn = Database::getConnection();
+} catch (Exception $e) {
+    echo '<div style="color: #f87171; background: rgba(220,38,38,0.2); padding: 16px; border-radius: 8px;">❌ Erro</div>';
+}
+
+if ($conn) {
+    if ($action === 'detail' && $customer_id) {
+        try {
+            $stmt = $conn->prepare("SELECT u.*, COUNT(o.id) as total_pedidos, COALESCE(SUM(o.total), 0) as total_gasto FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.id = ? AND u.role = 'customer' GROUP BY u.id");
             $stmt->execute([$customer_id]);
             $customer = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($customer) {
-                $stmt = $conn->prepare(
-                    "SELECT id, total, status, criado_em FROM orders 
-                     WHERE user_id = ? ORDER BY criado_em DESC LIMIT 20"
-                );
+                $stmt = $conn->prepare("SELECT id, total, status, criado_em FROM orders WHERE user_id = ? ORDER BY criado_em DESC LIMIT 20");
                 $stmt->execute([$customer_id]);
-                $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                ?>
-                <div class="glass border border-purple-600/30 rounded-lg p-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-2xl font-black"><?php echo htmlspecialchars($customer['nome']); ?></h3>
-                        <a href="?page=customers" class="px-4 py-2 bg-slate-700 rounded">← Voltar</a>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-4 gap-4 mb-6">
-                        <div class="border border-purple-600/30 rounded p-4">
-                            <p class="text-slate-400">Email</p>
-                            <p class="font-bold"><?php echo htmlspecialchars($customer['email']); ?></p>
-                        </div>
-                        <div class="border border-purple-600/30 rounded p-4">
-                            <p class="text-slate-400">Telefone</p>
-                            <p class="font-bold"><?php echo htmlspecialchars($customer['telefone'] ?? '-'); ?></p>
-                        </div>
-                        <div class="border border-purple-600/30 rounded p-4">
-                            <p class="text-slate-400">Total de Pedidos</p>
-                            <p class="text-2xl font-black"><?php echo $customer['total_pedidos']; ?></p>
-                        </div>
-                        <div class="border border-purple-600/30 rounded p-4">
-                            <p class="text-slate-400">Total Gasto</p>
-                            <p class="text-2xl font-black">R$ <?php echo number_format($customer['total_gasto'], 2, ',', '.'); ?></p>
-                        </div>
-                    </div>
-                    
-                    <h4 class="font-bold text-purple-400 mb-3">Pedidos Recentes</h4>
-                    <table class="w-full text-sm">
-                        <thead class="border-b border-slate-700">
-                            <tr>
-                                <th class="text-left py-2">Pedido</th>
-                                <th class="text-left py-2">Total</th>
-                                <th class="text-left py-2">Status</th>
-                                <th class="text-left py-2">Data</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($pedidos as $ped): ?>
-                            <tr class="border-b border-slate-700">
-                                <td>#<?php echo str_pad($ped['id'], 3, '0', STR_PAD_LEFT); ?></td>
-                                <td>R$ <?php echo number_format($ped['total'], 2, ',', '.'); ?></td>
-                                <td>
-                                    <span class="px-2 py-1 rounded text-xs font-bold <?php 
-                                        echo match($ped['status']) {
-                                            'entregue' => 'bg-green-600/20 text-green-400',
-                                            'enviado' => 'bg-blue-600/20 text-blue-400',
-                                            'cancelado' => 'bg-red-600/20 text-red-400',
-                                            default => 'bg-orange-600/20 text-orange-400'
-                                        };
-                                    ?>">
-                                        <?php echo ucfirst($ped['status']); ?>
-                                    </span>
-                                </td>
-                                <td><?php echo date('d/m/Y', strtotime($ped['criado_em'])); ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <?php
+                $customer_orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
-        } else {
-            $stmt = $conn->prepare(
-                "SELECT u.*, COUNT(o.id) as total_pedidos, COALESCE(SUM(o.total), 0) as total_gasto 
-                 FROM users u 
-                 LEFT JOIN orders o ON u.id = o.user_id 
-                 WHERE u.role = 'customer' 
-                 GROUP BY u.id 
-                 ORDER BY u.criado_em DESC 
-                 LIMIT 100"
-            );
+        } catch (Exception $e) {}
+    }
+
+    if (!$action) {
+        try {
+            $stmt = $conn->prepare("SELECT u.*, COUNT(o.id) as total_pedidos, COALESCE(SUM(o.total), 0) as total_gasto FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.role = 'customer' GROUP BY u.id ORDER BY u.id DESC LIMIT 50");
             $stmt->execute();
             $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            ?>
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-black">👥 Clientes</h3>
-            </div>
-            
-            <div class="glass border border-purple-600/30 rounded-lg overflow-hidden">
-                <table class="w-full text-sm">
-                    <thead class="bg-slate-800/50 border-b border-slate-700">
-                        <tr>
-                            <th class="text-left px-6 py-3">Nome</th>
-                            <th class="text-left px-6 py-3">Email</th>
-                            <th class="text-left px-6 py-3">Telefone</th>
-                            <th class="text-left px-6 py-3">Pedidos</th>
-                            <th class="text-left px-6 py-3">Total Gasto</th>
-                            <th class="text-left px-6 py-3">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700">
-                        <?php foreach ($customers as $cust): ?>
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="px-6 py-3 font-bold"><?php echo htmlspecialchars($cust['nome']); ?></td>
-                            <td class="px-6 py-3"><?php echo htmlspecialchars($cust['email']); ?></td>
-                            <td class="px-6 py-3"><?php echo htmlspecialchars($cust['telefone'] ?? '-'); ?></td>
-                            <td class="px-6 py-3"><?php echo $cust['total_pedidos']; ?></td>
-                            <td class="px-6 py-3">R$ <?php echo number_format($cust['total_gasto'], 2, ',', '.'); ?></td>
-                            <td class="px-6 py-3">
-                                <a href="?page=customers&action=detail&id=<?php echo $cust['id']; ?>" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs hover:bg-blue-600/40 transition">👁️ Ver</a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            <?php
-        }
-    } catch (Exception $e) {
-        echo '<div class="bg-red-600/20 border border-red-600 text-red-400 px-4 py-3 rounded mb-6">Erro: ' . htmlspecialchars($e->getMessage()) . '</div>';
+        } catch (Exception $e) {}
     }
-    ?>
+}
+?>
+
+<?php if ($action === 'detail' && $customer): ?>
+
+<div style="background: rgba(0,0,0,0.1); border: 1px solid rgba(147,51,234,0.3); border-radius: 8px; padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h3 style="font-size: 20px; font-weight: 900; margin: 0;"><?php echo htmlspecialchars($customer['nome']); ?></h3>
+        <a href="?page=customers" style="padding: 8px 16px; background: #475569; color: white; text-decoration: none; border-radius: 6px; font-size: 14px;">← Voltar</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;">
+            <p style="color: #9333ea; font-size: 12px; margin: 0;">Email</p>
+            <p style="font-weight: bold; margin: 0; word-break: break-all;"><?php echo htmlspecialchars($customer['email']); ?></p>
+        </div>
+        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;">
+            <p style="color: #9333ea; font-size: 12px; margin: 0;">Telefone</p>
+            <p style="font-weight: bold; margin: 0;"><?php echo htmlspecialchars($customer['telefone'] ?? '-'); ?></p>
+        </div>
+        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;">
+            <p style="color: #9333ea; font-size: 12px; margin: 0;">Pedidos</p>
+            <p style="font-weight: bold; font-size: 24px; margin: 0;"><?php echo $customer['total_pedidos']; ?></p>
+        </div>
+        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;">
+            <p style="color: #9333ea; font-size: 12px; margin: 0;">Total Gasto</p>
+            <p style="font-weight: bold; margin: 0;">R$ <?php echo number_format($customer['total_gasto'], 2, ',', '.'); ?></p>
+        </div>
+    </div>
+
+    <h4 style="color: #9333ea; font-weight: bold; margin: 0 0 12px 0;">Pedidos Recentes</h4>
+    <div style="background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead style="background: rgba(0,0,0,0.3);">
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Pedido</th>
+                    <th style="padding: 12px; text-align: left;">Total</th>
+                    <th style="padding: 12px; text-align: left;">Status</th>
+                    <th style="padding: 12px; text-align: left;">Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($customer_orders as $o): ?>
+                <tr style="border-top: 1px solid rgba(147,51,234,0.15);">
+                    <td style="padding: 12px;">#<?php echo $o['id']; ?></td>
+                    <td style="padding: 12px;">R$ <?php echo number_format($o['total'], 2, ',', '.'); ?></td>
+                    <td style="padding: 12px;"><span style="padding: 2px 6px; background: <?php echo $o['status'] === 'entregue' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'; ?>; color: <?php echo $o['status'] === 'entregue' ? '#86efac' : '#fca5a5'; ?>; border-radius: 3px; font-size: 12px;"><?php echo ucfirst($o['status']); ?></span></td>
+                    <td style="padding: 12px; font-size: 12px;"><?php echo date('d/m/Y', strtotime($o['criado_em'])); ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<?php else: ?>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h3 style="font-size: 20px; font-weight: 900; margin: 0;">👥 Clientes</h3>
+</div>
+
+<?php if (count($customers) > 0): ?>
+
+<div style="background: rgba(0,0,0,0.1); border: 1px solid rgba(147,51,234,0.3); border-radius: 8px; overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <thead style="background: rgba(0,0,0,0.2);">
+            <tr>
+                <th style="padding: 12px; text-align: left;">Nome</th>
+                <th style="padding: 12px; text-align: left;">Email</th>
+                <th style="padding: 12px; text-align: left;">Telefone</th>
+                <th style="padding: 12px; text-align: left;">Pedidos</th>
+                <th style="padding: 12px; text-align: left;">Total Gasto</th>
+                <th style="padding: 12px; text-align: left;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($customers as $c): ?>
+            <tr style="border-bottom: 1px solid rgba(147,51,234,0.15);">
+                <td style="padding: 12px;"><?php echo htmlspecialchars($c['nome']); ?></td>
+                <td style="padding: 12px; font-size: 12px;"><?php echo htmlspecialchars($c['email']); ?></td>
+                <td style="padding: 12px;"><?php echo htmlspecialchars($c['telefone'] ?? '-'); ?></td>
+                <td style="padding: 12px;"><?php echo $c['total_pedidos']; ?></td>
+                <td style="padding: 12px;">R$ <?php echo number_format($c['total_gasto'], 2, ',', '.'); ?></td>
+                <td style="padding: 12px;"><a href="?page=customers&action=detail&id=<?php echo $c['id']; ?>" style="padding: 6px 12px; background: rgba(59,130,246,0.2); color: #93c5fd; text-decoration: none; border-radius: 4px; font-size: 12px;">👁️</a></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php else: ?>
+
+<div style="color: #94a3b8; background: rgba(0,0,0,0.1); padding: 40px; border-radius: 8px; text-align: center;">
+    <p>Nenhum cliente</p>
+</div>
+
+<?php endif; ?>
+
+<?php endif; ?>
