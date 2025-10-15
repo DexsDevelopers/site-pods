@@ -13,11 +13,11 @@ date_default_timezone_set(TIMEZONE ?: 'America/Sao_Paulo');
 // Chaves externas vêm do .env via includes/config.php
 // ONESIGNAL_APP_ID, ONESIGNAL_REST_API_KEY, GEMINI_API_KEY
 
-$host = 'localhost';
-$dbname = 'u853242961_loja_pods';
-$user = 'u853242961_pods_saluc';
-$pass = 'Lucastav8012@';
-$charset = 'utf8mb4';
+$host = DB_HOST;
+$dbname = DB_NAME;
+$user = DB_USER;
+$pass = DB_PASS;
+$charset = DB_CHARSET;
 
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
 $options = [
@@ -30,7 +30,15 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
     $pdo->exec("SET time_zone = '-03:00'");
 } catch (PDOException $e) {
-    throw new PDOException($e->getMessage(), (int)$e->getCode());
+    $logPath = __DIR__ . '/../logs/error.log';
+    error_log('[' . date('Y-m-d H:i:s') . "] [ERROR] [db_connect] " . $e->getMessage(), 3, $logPath);
+    if (defined('APP_ENV') && APP_ENV !== 'production') {
+        echo 'Erro ao conectar ao banco: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    } else {
+        echo 'Erro ao conectar ao banco de dados.';
+    }
+    http_response_code(500);
+    exit;
 }
 
 

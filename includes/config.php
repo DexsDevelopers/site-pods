@@ -13,7 +13,7 @@ if (file_exists($envPath)) {
 define('APP_NAME', $_ENV['APP_NAME'] ?? 'Pods Store');
 define('APP_ENV', $_ENV['APP_ENV'] ?? 'production');
 define('APP_URL', $_ENV['APP_URL'] ?? '');
-define('DB_HOST', $_ENV['DB_HOST'] ?? 'localhost');
+define('DB_HOST', $_ENV['DB_HOST'] ?? '127.0.0.1');
 define('DB_NAME', $_ENV['DB_NAME'] ?? 'pods_store');
 define('DB_USER', $_ENV['DB_USER'] ?? 'root');
 define('DB_PASS', $_ENV['DB_PASS'] ?? '');
