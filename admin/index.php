@@ -92,27 +92,11 @@ if (!in_array($page, $pages)) {
             <?php
             $page_file = "includes/{$page}.php";
             
-            try {
-                if (file_exists($page_file)) {
-                    ob_start();
-                    include $page_file;
-                    $content = ob_get_clean();
-                    
-                    if (empty($content) || trim($content) === '') {
-                        echo '<div style="color: #fbbf24; background: rgba(217,119,6,0.2); padding: 16px; border-radius: 8px; border: 1px solid rgba(217,119,6,0.5);">';
-                        echo '⚠️ Arquivo vazio: ' . htmlspecialchars($page_file);
-                        echo '</div>';
-                    } else {
-                        echo $content;
-                    }
-                } else {
-                    echo '<div style="color: red; background: rgba(220,38,38,0.2); padding: 16px; border-radius: 8px; border: 1px solid rgba(220,38,38,0.5);">';
-                    echo '❌ Arquivo não encontrado: ' . htmlspecialchars($page_file);
-                    echo '</div>';
-                }
-            } catch (Exception $e) {
-                echo '<div style="color: #f87171; background: rgba(220,38,38,0.2); padding: 16px; border-radius: 8px; border: 1px solid rgba(220,38,38,0.5);">';
-                echo '❌ Erro: ' . htmlspecialchars($e->getMessage());
+            if (file_exists($page_file)) {
+                include $page_file;
+            } else {
+                echo '<div style="color: red; background: rgba(220,38,38,0.2); padding: 16px; border-radius: 8px; border: 1px solid rgba(220,38,38,0.5);">';
+                echo '❌ Arquivo não encontrado: ' . htmlspecialchars($page_file);
                 echo '</div>';
             }
             ?>
