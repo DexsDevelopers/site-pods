@@ -1,38 +1,57 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
 session_start();
 
-// Tente incluir os arquivos
-try {
-    if (!file_exists('../includes/config.php')) {
-        throw new Exception('Arquivo config.php não encontrado');
-    }
-    include '../includes/config.php';
-    
-    if (!file_exists('../includes/db.php')) {
-        throw new Exception('Arquivo db.php não encontrado');
-    }
-    include '../includes/db.php';
-} catch (Exception $e) {
-    $erro_config = $e->getMessage();
-    $conexao_ok = false;
-    $db = null;
-}
+// ========== CONEXÃO DIRETA (sem usar a classe Database) ==========
+$project_root = dirname(dirname(__FILE__));
+$env_file = $project_root . '/.env';
 
-// Tente conectar ao banco
 $conexao_ok = false;
-$erro_conexao = null;
+$erro_conexao = 'Desconhecido';
+$conn = null;
 $tabelas_status = [];
 $total_criadas = 0;
 
-if (isset($db)) {
+// 1. Verificar .env
+if (!file_exists($env_file)) {
+    $erro_conexao = 'Arquivo .env não encontrado';
+} else {
+    // 2. Ler .env
+    $env_content = file_get_contents($env_file);
+    
+    // Parse manual do .env
+    $env_vars = [];
+    $lines = explode("\n", $env_content);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (empty($line) || strpos($line, '#') === 0) continue;
+        
+        if (strpos($line, '=') !== false) {
+            list($key, $value) = explode('=', $line, 2);
+            $env_vars[trim($key)] = trim($value);
+        }
+    }
+    
+    // 3. Tentar conectar
     try {
-        $conn = $db->getConnection();
-        $test = $conn->query("SELECT 1");
+        $host = $env_vars['DB_HOST'] ?? 'localhost';
+        $port = $env_vars['DB_PORT'] ?? 3306;
+        $name = $env_vars['DB_NAME'] ?? '';
+        $user = $env_vars['DB_USER'] ?? 'root';
+        $pass = $env_vars['DB_PASSWORD'] ?? '';
+        
+        $dsn = "mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4";
+        
+        $conn = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+        
         $conexao_ok = true;
-    } catch (Exception $e) {
+    } catch (PDOException $e) {
         $conexao_ok = false;
         $erro_conexao = $e->getMessage();
     }
@@ -182,17 +201,15 @@ $required_tables = [
 ];
 
 // Verificar e criar tabelas
-if ($conexao_ok && isset($conn)) {
+if ($conexao_ok && $conn !== null) {
     foreach ($required_tables as $tabela => $sql) {
         try {
-            // Verificar se tabela existe com timeout seguro
-            $result = @$conn->query("SELECT 1 FROM `$tabela` LIMIT 1");
+            @$conn->query("SELECT 1 FROM `$tabela` LIMIT 1");
             $tabelas_status[$tabela] = ['existe' => true, 'acao' => 'Já existe'];
         } catch (PDOException $e) {
-            // Tabela não existe, tentar criar
             try {
                 @$conn->exec($sql);
-                $tabelas_status[$tabela] = ['existe' => true, 'acao' => 'Criada com sucesso ✅'];
+                $tabelas_status[$tabela] = ['existe' => true, 'acao' => 'Criada ✅'];
                 $total_criadas++;
             } catch (PDOException $e2) {
                 $tabelas_status[$tabela] = ['existe' => false, 'acao' => 'Erro ao criar'];
@@ -237,7 +254,7 @@ if ($conexao_ok && isset($conn)) {
                     <i class="fas fa-check-circle text-2xl"></i>
                     <div>
                         <p class="font-bold">Conexão com Banco de Dados: ✅ OK</p>
-                        <p class="text-sm opacity-80">Host: localhost | Database: <?php echo defined('DB_NAME') ? DB_NAME : 'N/A'; ?></p>
+                        <p class="text-sm opacity-80">Host: <?php echo htmlspecialchars($env_vars['DB_HOST'] ?? 'localhost'); ?> | Database: <?php echo htmlspecialchars($env_vars['DB_NAME'] ?? 'N/A'); ?></p>
                     </div>
                 </div>
             <?php else: ?>
@@ -245,7 +262,7 @@ if ($conexao_ok && isset($conn)) {
                     <i class="fas fa-exclamation-circle text-2xl"></i>
                     <div>
                         <p class="font-bold">❌ Erro na Conexão</p>
-                        <p class="text-sm"><?php echo htmlspecialchars($erro_conexao ?? 'Erro desconhecido'); ?></p>
+                        <p class="text-sm"><?php echo htmlspecialchars($erro_conexao); ?></p>
                     </div>
                 </div>
             <?php endif; ?>
@@ -330,14 +347,11 @@ if ($conexao_ok && isset($conn)) {
 
         <!-- Ações -->
         <div class="flex gap-4 mt-8 flex-wrap">
-            <a href="test_connection.php" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2">
-                <i class="fas fa-check-circle"></i> Testar Conexão
+            <a href="/" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2">
+                <i class="fas fa-home"></i> Ir para Home
             </a>
             <a href="../admin/" class="px-6 py-3 bg-slate-700 text-white rounded-lg font-bold hover:bg-slate-600 transition flex items-center gap-2">
                 <i class="fas fa-arrow-right"></i> Ir para Admin
-            </a>
-            <a href="/" class="px-6 py-3 bg-slate-700 text-white rounded-lg font-bold hover:bg-slate-600 transition flex items-center gap-2">
-                <i class="fas fa-home"></i> Ir para Home
             </a>
             <button onclick="location.reload()" class="px-6 py-3 bg-slate-700 text-white rounded-lg font-bold hover:bg-slate-600 transition flex items-center gap-2">
                 <i class="fas fa-sync"></i> Recarregar
