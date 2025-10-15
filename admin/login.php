@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email === 'admin@techvapor.com' && $password === 'admin123') {
         $_SESSION['admin_id'] = 1;
         $_SESSION['admin_name'] = 'Administrador';
-        header('Location: dashboard.php');
+        header('Location: index.php');
         exit;
     } else {
         $erro = 'Email ou senha inválidos!';
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_SESSION['admin_id'])) {
-    header('Location: dashboard.php');
+    header('Location: index.php');
     exit;
 }
 ?>
