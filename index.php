@@ -468,18 +468,6 @@ $marcas = [
         </nav>
     </header>
 
-    <!-- FLASH SALE BANNER -->
-    <div class="flash-banner py-6 mt-20">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <div class="flex items-center justify-center gap-3">
-                <i class="fas fa-fire text-white text-2xl pulse-sale"></i>
-                <h2 class="text-2xl font-bold text-white">OFERTA IMPERDÍVEL!</h2>
-                <i class="fas fa-fire text-white text-2xl pulse-sale"></i>
-            </div>
-            <p class="text-white/90 mt-2">🎉 Até 40% OFF em produtos selecionados - Apenas HOJE!</p>
-        </div>
-    </div>
-
     <!-- Hero Section -->
     <section id="home" class="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto w-full">
