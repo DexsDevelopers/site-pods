@@ -1,6 +1,9 @@
-Options -Indexes
-<FilesMatch "\.(php|phar|phtml|php\d)$">
-  Deny from all
+
+# Prevenir execução de PHP em uploads
+php_flag engine off
+
+# Permitir apenas certos tipos de arquivo
+<FilesMatch "\.(?:php|phtml|php3|php4|php5|phtml|shtml)$">
+    Order allow,deny
+    Deny from all
 </FilesMatch>
-
-

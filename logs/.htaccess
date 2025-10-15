@@ -1,9 +1,6 @@
-Options -Indexes
-<IfModule mod_authz_core.c>
-  Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-  Deny from all
-</IfModule>
 
-
+# Proteger acesso direto aos logs
+<FilesMatch "\.log$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

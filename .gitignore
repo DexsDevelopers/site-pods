@@ -1,27 +1,62 @@
-# OS/Editor
+# ========================================
+# ARQUIVOS DE AMBIENTE E CONFIGURAÇÃO
+# ========================================
+.env
+.env.local
+.env.*.local
+.env.backup
+.env.production
+
+# ========================================
+# DEPENDÊNCIAS E MÓDULOS
+# ========================================
+vendor/
+node_modules/
+composer.lock
+package-lock.json
+yarn.lock
+
+# ========================================
+# LOGS E CACHE
+# ========================================
+logs/
+*.log
+cache/
+.cache/
+*.tmp
+
+# ========================================
+# UPLOADS E ARQUIVOS DE USUÁRIO
+# ========================================
+uploads/
+!uploads/.htaccess
+public/uploads/
+public/temp/
+
+# ========================================
+# IDE E EDITORES
+# ========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
 Thumbs.db
-.idea/
-.vscode/
+*.sublime-workspace
 
-# Cursor/agent
-.cursor/
+# ========================================
+# ARQUIVOS DO SISTEMA
+# ========================================
+.DS_Store
+.env.*.php
+.history/
+.phpunit.result.cache
 
-# Dependencies/Build
-node_modules/
+# ========================================
+# BUILD E DISTRIBUIÇÃO
+# ========================================
 dist/
-
-# Env/Secrets
-.env
-.env.*
-logs/*.log
-uploads/*
-!uploads/.htaccess
-logs/*
-!logs/.htaccess
-
-# Local DB override (NÃO VERSIONAR)
-includes/db_connect.local.php
-
-# Git
-.git-credentials
+build/
+*.zip
+*.tar.gz

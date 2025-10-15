@@ -1,0 +1,260 @@
+/* ------------------------------------- */
+/* 1. VARIÁVEIS E CONFIGURAÇÕES GLOBAIS */
+/* ------------------------------------- */
+:root {
+    --primary-color: #007bff; /* Azul moderno */
+    --secondary-color: #333;
+    --background-color: #f8f9fa; /* Fundo leve */
+    --card-bg: #fff;
+    --text-color: #495057;
+    --font-family: 'Inter', sans-serif; /* Fonte moderna e limpa */
+}
+
+/* Reset básico e tipografia */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ------------------------------------- */
+/* 2. CABEÇALHO (Mobile-First) */
+/* ------------------------------------- */
+.main-header {
+    background-color: var(--card-bg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 15px 0;
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* Menu (Mobile - Escondido por padrão) */
+.main-nav {
+    display: none; /* Esconde a navegação principal no mobile */
+    position: absolute;
+    top: 60px; /* Ajuste para ficar abaixo do cabeçalho */
+    left: 0;
+    width: 100%;
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.nav-list li a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: var(--secondary-color);
+    transition: background-color 0.3s;
+}
+
+.nav-list li a:hover {
+    background-color: #eee;
+}
+
+/* Estado ativo do menu (exibido quando o botão é clicado) */
+.nav-list.active {
+    display: block;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--secondary-color);
+}
+
+
+/* ------------------------------------- */
+/* 3. HERO BANNER */
+/* ------------------------------------- */
+.hero-banner {
+    background: var(--secondary-color);
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.hero-banner h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 10px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+}
+
+
+/* ------------------------------------- */
+/* 4. GRID DE PRODUTOS (Responsivo) */
+/* ------------------------------------- */
+.product-grid {
+    padding: 40px 0;
+}
+
+.product-grid h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+}
+
+.grid {
+    display: grid;
+    /* Mobile-First: uma coluna */
+    grid-template-columns: 1fr; 
+    gap: 20px;
+}
+
+.product-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-card img {
+    max-width: 100%; /* Imagem flexível */
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.product-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--secondary-color);
+}
+
+.product-card .price {
+    display: block;
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.add-to-cart {
+    display: block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+/* ------------------------------------- */
+/* 5. MEDIA QUERIES (Responsividade) */
+/* Transição para Tablet/Desktop */
+/* ------------------------------------- */
+
+/* PONTO DE INTERRUPÇÃO 1: Tablets (Min-width: 600px) */
+@media (min-width: 600px) {
+    .grid {
+        /* Tablet: Duas colunas */
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-banner h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* PONTO DE INTERRUPÇÃO 2: Desktops (Min-width: 992px) */
+@media (min-width: 992px) {
+    /* CABEÇALHO (Desktop) */
+    .main-nav {
+        /* Exibe o menu no desktop e remove os estilos mobile */
+        display: block;
+        position: static;
+        box-shadow: none;
+        width: auto;
+    }
+
+    .nav-list {
+        display: flex;
+        padding: 0;
+    }
+
+    .nav-list li a {
+        padding: 5px 15px;
+    }
+
+    .menu-toggle {
+        display: none; /* Esconde o botão hamburguer no desktop */
+    }
+
+    /* GRID DE PRODUTOS (Desktop) */
+    .grid {
+        /* Desktop: Três colunas */
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .hero-banner {
+        padding: 100px 0;
+    }
+
+    .hero-banner h1 {
+        font-size: 3rem;
+    }
+}
+
+/* ------------------------------------- */
+/* 6. RODAPÉ */
+/* ------------------------------------- */
+.main-footer {
+    background-color: var(--secondary-color);
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    font-size: 0.9rem;
+}

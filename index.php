@@ -1,64 +1,58 @@
 <?php
-session_start();
+// Inclui o cabeçalho
+include 'header.php';
 
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/helpers.php';
-require_once __DIR__ . '/includes/db_connect.php';
-
-// Simple router using REQUEST_URI
-$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
-if ($basePath !== '' && str_starts_with($requestUri, $basePath)) {
-    $requestUri = substr($requestUri, strlen($basePath));
-}
-$requestUri = '/' . ltrim($requestUri, '/');
-
-// Route map
-$routes = [
-    '/' => 'pages/home.php',
-    '/loja' => 'pages/shop.php',
-    '/carrinho' => 'pages/cart.php',
-    '/checkout' => 'pages/checkout.php',
-    '/sucesso' => 'pages/success.php',
-    // Admin
-    '/admin' => 'admin/index.php',
-    '/admin/login' => 'admin/login.php',
-    '/admin/logout' => 'admin/logout.php',
-    '/admin/produtos' => 'admin/products.php',
-    '/admin/produto' => 'admin/product_edit.php',
-    '/admin/categorias' => 'admin/categories.php',
-    '/admin/categoria' => 'admin/category_edit.php',
-    '/admin/pedidos' => 'admin/orders.php',
-    // API
-    '/api/cart' => 'api/cart.php',
-    '/api/checkout' => 'api/checkout.php',
+// Simulação de dados de produtos (em um projeto real, viria de um Banco de Dados)
+$produtos = [
+    [
+        'nome' => 'Vapor Premium X-01',
+        'descricao' => 'Design elegante, alta performance e bateria de longa duração.',
+        'preco' => 'R$ 299,90',
+        'imagem' => 'produto_x01.jpg' // Substitua por imagens reais
+    ],
+    [
+        'nome' => 'Acessório Ultra Slim',
+        'descricao' => 'Case de proteção minimalista e resistente para seu dispositivo.',
+        'preco' => 'R$ 89,90',
+        'imagem' => 'acessorio_slim.jpg'
+    ],
+    // Adicione mais produtos aqui
 ];
+?>
 
-// Dynamic product route: /produto/{slug}
-if (preg_match('#^/produto/([a-z0-9\-]+)$#i', $requestUri, $m)) {
-    $params = ['slug' => $m[1]];
-    $page = 'pages/product.php';
-} else {
-    $page = $routes[$requestUri] ?? null;
-    $params = [];
-}
+<main class="content">
+    <section class="hero-banner">
+        <div class="container">
+            <h1>A Revolução da Tecnologia Pessoal</h1>
+            <p>Explore nossa linha de produtos com design minimalista e performance superior.</p>
+            <a href="#" class="cta-button">Ver Produtos</a>
+        </div>
+    </section>
 
-// Serve API endpoints directly (JSON)
-if ($page && str_starts_with($page, 'api/')) {
-    require __DIR__ . '/' . $page;
-    exit;
-}
+    <section class="product-grid">
+        <div class="container">
+            <h2>Nossos Destaques</h2>
+            <div class="grid">
+                <?php foreach ($produtos as $produto) : ?>
+                    <div class="product-card">
+                        <img src="imagens/<?php echo htmlspecialchars($produto['imagem']); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>">
+                        <h3><?php echo htmlspecialchars($produto['nome']); ?></h3>
+                        <p><?php echo htmlspecialchars($produto['descricao']); ?></p>
+                        <span class="price"><?php echo htmlspecialchars($produto['preco']); ?></span>
+                        <a href="#" class="add-to-cart">Detalhes</a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
 
-// 404 handler
-if (!$page || !file_exists(__DIR__ . '/' . $page)) {
-    http_response_code(404);
-    $page = 'pages/404.php';
-}
+    <section class="features">
+        <div class="container">
+            </div>
+    </section>
+</main>
 
-// Render
-$pageTitle = 'Pods Store';
-include __DIR__ . '/templates/header.php';
-include __DIR__ . '/' . $page;
-include __DIR__ . '/templates/footer.php';
-
-
+<?php
+// Inclui o rodapé
+include 'footer.php';
+?>
