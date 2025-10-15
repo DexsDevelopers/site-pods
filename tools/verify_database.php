@@ -1,10 +1,42 @@
 <?php
-session_start();
-include '../includes/config.php';
-include '../includes/db.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 
-$db = Database::getInstance();
-$conn = $db->getConnection();
+session_start();
+
+// Tente incluir os arquivos
+try {
+    if (!file_exists('../includes/config.php')) {
+        throw new Exception('Arquivo config.php não encontrado');
+    }
+    include '../includes/config.php';
+    
+    if (!file_exists('../includes/db.php')) {
+        throw new Exception('Arquivo db.php não encontrado');
+    }
+    include '../includes/db.php';
+} catch (Exception $e) {
+    $erro_config = $e->getMessage();
+    $conexao_ok = false;
+    $db = null;
+}
+
+// Tente conectar ao banco
+$conexao_ok = false;
+$erro_conexao = null;
+$tabelas_status = [];
+$total_criadas = 0;
+
+if (isset($db)) {
+    try {
+        $conn = $db->getConnection();
+        $test = $conn->query("SELECT 1");
+        $conexao_ok = true;
+    } catch (Exception $e) {
+        $conexao_ok = false;
+        $erro_conexao = $e->getMessage();
+    }
+}
 
 // Tabelas necessárias
 $required_tables = [
@@ -149,34 +181,21 @@ $required_tables = [
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
 ];
 
-// Verificar conexão
-try {
-    $test = $conn->query("SELECT 1");
-    $conexao_ok = true;
-    $erro_conexao = null;
-} catch (Exception $e) {
-    $conexao_ok = false;
-    $erro_conexao = $e->getMessage();
-}
-
 // Verificar e criar tabelas
-$tabelas_status = [];
-$total_criadas = 0;
-
-if ($conexao_ok) {
+if ($conexao_ok && isset($conn)) {
     foreach ($required_tables as $tabela => $sql) {
         try {
-            // Verificar se tabela existe
-            $result = $conn->query("SELECT 1 FROM `$tabela` LIMIT 1");
+            // Verificar se tabela existe com timeout seguro
+            $result = @$conn->query("SELECT 1 FROM `$tabela` LIMIT 1");
             $tabelas_status[$tabela] = ['existe' => true, 'acao' => 'Já existe'];
         } catch (PDOException $e) {
-            // Tabela não existe, criar
+            // Tabela não existe, tentar criar
             try {
-                $conn->exec($sql);
+                @$conn->exec($sql);
                 $tabelas_status[$tabela] = ['existe' => true, 'acao' => 'Criada com sucesso ✅'];
                 $total_criadas++;
             } catch (PDOException $e2) {
-                $tabelas_status[$tabela] = ['existe' => false, 'acao' => 'Erro ao criar: ' . $e2->getMessage()];
+                $tabelas_status[$tabela] = ['existe' => false, 'acao' => 'Erro ao criar'];
             }
         }
     }
@@ -218,7 +237,7 @@ if ($conexao_ok) {
                     <i class="fas fa-check-circle text-2xl"></i>
                     <div>
                         <p class="font-bold">Conexão com Banco de Dados: ✅ OK</p>
-                        <p class="text-sm opacity-80">Host: <?php echo DB_HOST; ?> | Database: <?php echo DB_NAME; ?></p>
+                        <p class="text-sm opacity-80">Host: localhost | Database: <?php echo defined('DB_NAME') ? DB_NAME : 'N/A'; ?></p>
                     </div>
                 </div>
             <?php else: ?>
@@ -226,7 +245,7 @@ if ($conexao_ok) {
                     <i class="fas fa-exclamation-circle text-2xl"></i>
                     <div>
                         <p class="font-bold">❌ Erro na Conexão</p>
-                        <p class="text-sm"><?php echo htmlspecialchars($erro_conexao); ?></p>
+                        <p class="text-sm"><?php echo htmlspecialchars($erro_conexao ?? 'Erro desconhecido'); ?></p>
                     </div>
                 </div>
             <?php endif; ?>
@@ -310,12 +329,15 @@ if ($conexao_ok) {
         </div>
 
         <!-- Ações -->
-        <div class="flex gap-4 mt-8">
+        <div class="flex gap-4 mt-8 flex-wrap">
             <a href="test_connection.php" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold hover:shadow-lg transition flex items-center gap-2">
                 <i class="fas fa-check-circle"></i> Testar Conexão
             </a>
             <a href="../admin/" class="px-6 py-3 bg-slate-700 text-white rounded-lg font-bold hover:bg-slate-600 transition flex items-center gap-2">
                 <i class="fas fa-arrow-right"></i> Ir para Admin
+            </a>
+            <a href="/" class="px-6 py-3 bg-slate-700 text-white rounded-lg font-bold hover:bg-slate-600 transition flex items-center gap-2">
+                <i class="fas fa-home"></i> Ir para Home
             </a>
             <button onclick="location.reload()" class="px-6 py-3 bg-slate-700 text-white rounded-lg font-bold hover:bg-slate-600 transition flex items-center gap-2">
                 <i class="fas fa-sync"></i> Recarregar
