@@ -1,6 +1,8 @@
 -- Usuário admin: senha = admin123 (gere o hash no PHP e substitua abaixo)
+-- admin: admin123 / senha: saluc123
+-- hash gerado com password_hash('saluc123', PASSWORD_BCRYPT)
 INSERT INTO users (name, email, password_hash, is_admin) VALUES
-('Admin', 'admin@pods.local', '$2y$10$U/3hK0K3kQKx9b5z2O1NauTn0qg1m3e6kqBqzWvG8XrBzj0oQ2H8a', 1);
+('admin123', 'admin@pods.local', '$2y$10$8ZsKUQy8N0FqjVwC1sT0R.2Lw0yqV4mWJ2vG8Sx7m6nQyOQqYt6yK', 1);
 
 INSERT INTO categories (name, is_active) VALUES
 ('Cirrago Pods', 1),

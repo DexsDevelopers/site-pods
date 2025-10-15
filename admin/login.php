@@ -1,14 +1,14 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/helpers.php';
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/db_connect.php';
 
 if (!empty($_SESSION['admin'])) { redirect('/admin'); }
 
 if (is_post()) {
   $email = trim($_POST['email'] ?? '');
   $pass = $_POST['password'] ?? '';
-  $stmt = $pdo->prepare('SELECT id, name, email, password_hash FROM users WHERE email = :e AND is_admin = 1 AND is_active = 1 LIMIT 1');
+  $stmt = $pdo->prepare('SELECT id, name, email, password_hash FROM users WHERE (email = :e OR name = :e) AND is_admin = 1 AND is_active = 1 LIMIT 1');
   $stmt->execute([':e'=>$email]);
   $u = $stmt->fetch();
   if ($u && password_verify($pass, $u['password_hash'])) {

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/helpers.php';
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/db_connect.php';
 if (empty($_SESSION['admin'])) { redirect('/admin/login'); }
 
 $rows = $pdo->query('SELECT p.id, p.name, p.slug, p.price, p.is_active, c.name AS category FROM products p LEFT JOIN categories c ON c.id=p.category_id ORDER BY p.created_at DESC')->fetchAll();

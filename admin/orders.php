@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/helpers.php';
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/db_connect.php';
 if (empty($_SESSION['admin'])) { redirect('/admin/login'); }
 
 $orders = $pdo->query('SELECT id, customer_name, customer_email, total_amount, status, created_at FROM orders ORDER BY created_at DESC')->fetchAll();

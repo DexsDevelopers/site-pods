@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/db_connect.php';
 
 header('Content-Type: text/plain; charset=utf-8');
 echo "APP_ENV=" . APP_ENV . "\n";
