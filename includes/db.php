@@ -7,9 +7,14 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
 } catch (Throwable $e) {
-    error_log('[' . date('Y-m-d H:i:s') . "] [ERROR] [db.php] " . $e->getMessage());
+    $logPath = __DIR__ . '/../logs/error.log';
+    error_log('[' . date('Y-m-d H:i:s') . "] [ERROR] [db.php] " . $e->getMessage(), 3, $logPath);
     http_response_code(500);
-    echo 'Erro ao conectar ao banco de dados.';
+    if (APP_ENV !== 'production') {
+        echo 'Erro ao conectar ao banco de dados: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    } else {
+        echo 'Erro ao conectar ao banco de dados.';
+    }
     exit;
 }
 

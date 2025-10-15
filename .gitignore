@@ -20,5 +20,8 @@ uploads/*
 logs/*
 !logs/.htaccess
 
+# Local DB override (NÃO VERSIONAR)
+includes/db_connect.local.php
+
 # Git
 .git-credentials

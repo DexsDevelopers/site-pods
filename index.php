@@ -3,7 +3,7 @@ session_start();
 
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/helpers.php';
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/db_connect.php';
 
 // Simple router using REQUEST_URI
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

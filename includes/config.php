@@ -20,6 +20,11 @@ define('DB_PASS', $_ENV['DB_PASS'] ?? '');
 define('DB_CHARSET', $_ENV['DB_CHARSET'] ?? 'utf8mb4');
 define('TIMEZONE', $_ENV['TIMEZONE'] ?? 'UTC');
 
+// Optional external service keys (never hardcode secrets here)
+define('ONESIGNAL_APP_ID', $_ENV['ONESIGNAL_APP_ID'] ?? '');
+define('ONESIGNAL_REST_API_KEY', $_ENV['ONESIGNAL_REST_API_KEY'] ?? '');
+define('GEMINI_API_KEY', $_ENV['GEMINI_API_KEY'] ?? '');
+
 date_default_timezone_set(TIMEZONE);
 
 // Security headers
