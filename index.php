@@ -1,25 +1,55 @@
 <?php
-session_start();
-include 'includes/config.php';
-include 'includes/db.php';
+// Configuração de erros ANTES de tudo
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
+// Iniciar buffer para capturar erros
+ob_start();
+
+session_start();
+
+// Tente carregar configurações
 try {
-    $db = Database::getInstance();
+    if (!file_exists('includes/config.php')) {
+        throw new Exception('Arquivo config.php não encontrado');
+    }
+    include 'includes/config.php';
     
-    // Buscar categorias
-    $stmt = $db->getConnection()->prepare("SELECT * FROM categories ORDER BY nome LIMIT 6");
-    $stmt->execute();
-    $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Buscar produtos em destaque (últimos 8)
-    $stmt = $db->getConnection()->prepare(
-        "SELECT p.*, c.nome as categoria_nome FROM products p 
-         LEFT JOIN categories c ON p.categoria_id = c.id 
-         ORDER BY p.criado_em DESC LIMIT 8"
-    );
-    $stmt->execute();
-    $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!file_exists('includes/db.php')) {
+        throw new Exception('Arquivo db.php não encontrado');
+    }
+    include 'includes/db.php';
 } catch (Exception $e) {
+    error_log('ERRO na home: ' . $e->getMessage());
+    $categorias = [];
+    $produtos = [];
+}
+
+// Tente buscar dados do banco
+try {
+    if (isset($db)) {
+        $db = Database::getInstance();
+        
+        // Buscar categorias
+        $stmt = $db->getConnection()->prepare("SELECT * FROM categories ORDER BY nome LIMIT 6");
+        $stmt->execute();
+        $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Buscar produtos em destaque (últimos 8)
+        $stmt = $db->getConnection()->prepare(
+            "SELECT p.*, c.nome as categoria_nome FROM products p 
+             LEFT JOIN categories c ON p.categoria_id = c.id 
+             ORDER BY p.criado_em DESC LIMIT 8"
+        );
+        $stmt->execute();
+        $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $categorias = [];
+        $produtos = [];
+    }
+} catch (Exception $e) {
+    error_log('ERRO ao buscar dados BD na home: ' . $e->getMessage());
     $categorias = [];
     $produtos = [];
 }
