@@ -89,10 +89,10 @@ $categorias = [
     
     <style>
         :root {
-            --primary: #667eea;
-            --primary-dark: #5568d3;
-            --secondary: #764ba2;
-            --accent: #f093fb;
+            --primary: #9333ea;
+            --primary-dark: #7e22ce;
+            --secondary: #1f2937;
+            --accent: #c084fc;
         }
 
         * {
@@ -105,33 +105,33 @@ $categorias = [
 
         /* Glassmorphism */
         .glass {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(147, 51, 234, 0.2);
             border-radius: 16px;
         }
 
         body.dark .glass {
-            background: rgba(30, 30, 46, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(147, 51, 234, 0.3);
         }
 
         /* Neumorphism - Soft UI */
         .neomorphic {
-            background: linear-gradient(145deg, #f0f0f0, #ffffff);
-            box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            box-shadow: 8px 8px 16px #0a0a0a, -8px -8px 16px #2a2a3e;
             border-radius: 20px;
             border: none;
         }
 
         body.dark .neomorphic {
-            background: linear-gradient(145deg, #1e1e2e, #2a2a3e);
-            box-shadow: 8px 8px 16px #0a0a0a, -8px -8px 16px #2e2e42;
+            background: linear-gradient(145deg, #0f0f1e, #1a1a2e);
+            box-shadow: 8px 8px 16px #000000, -8px -8px 16px #242438;
         }
 
         /* Gradient Text */
         .gradient-text {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -162,7 +162,7 @@ $categorias = [
 
         .btn-hover:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 24px rgba(147, 51, 234, 0.4);
         }
 
         /* Floating Animation */
@@ -193,7 +193,7 @@ $categorias = [
         }
 
         .gradient-animated {
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #667eea);
+            background: linear-gradient(-45deg, #000000, #9333ea, #c084fc, #000000);
             background-size: 400% 400%;
             animation: gradient-shift 15s ease infinite;
         }
@@ -205,7 +205,7 @@ $categorias = [
 
         .card-hover:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3);
         }
 
         /* Ripple Effect */
@@ -264,7 +264,12 @@ $categorias = [
 
         /* Tailwind Dark Mode */
         body.dark {
-            background-color: #0f172a;
+            background-color: #0a0a0f;
+            color: #e0e7ff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%);
             color: #e0e7ff;
         }
 
@@ -274,27 +279,27 @@ $categorias = [
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #1a1a2e;
         }
 
         body.dark ::-webkit-scrollbar-track {
-            background: #1e1e2e;
+            background: #0a0a0f;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #9333ea;
             border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #c084fc;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900">
+<body class="bg-gradient-to-br from-slate-900 to-black text-slate-100">
 
     <!-- Header/Navbar -->
-    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-white/80 shadow-lg dark:bg-slate-900/80">
+    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 shadow-lg">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
@@ -306,29 +311,29 @@ $categorias = [
 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#home" class="text-slate-700 dark:text-slate-300 hover:text-blue-600 transition">Home</a>
-                    <a href="#produtos" class="text-slate-700 dark:text-slate-300 hover:text-blue-600 transition">Produtos</a>
-                    <a href="#categorias" class="text-slate-700 dark:text-slate-300 hover:text-blue-600 transition">Categorias</a>
-                    <a href="#contato" class="text-slate-700 dark:text-slate-300 hover:text-blue-600 transition">Contato</a>
+                    <a href="#home" class="text-slate-300 hover:text-purple-400 transition">Home</a>
+                    <a href="#produtos" class="text-slate-300 hover:text-purple-400 transition">Produtos</a>
+                    <a href="#categorias" class="text-slate-300 hover:text-purple-400 transition">Categorias</a>
+                    <a href="#contato" class="text-slate-300 hover:text-purple-400 transition">Contato</a>
                 </div>
 
                 <!-- Right Side -->
                 <div class="flex items-center gap-4">
                     <!-- Dark Mode Toggle -->
-                    <button id="theme-toggle" class="p-2 rounded-lg glass hover:bg-white/20 transition btn-hover">
-                        <i class="fas fa-moon dark:hidden"></i>
-                        <i class="fas fa-sun hidden dark:block"></i>
+                    <button id="theme-toggle" class="p-2 rounded-lg glass hover:bg-white/10 transition btn-hover">
+                        <i class="fas fa-moon text-purple-400 dark:hidden"></i>
+                        <i class="fas fa-sun text-yellow-400 hidden dark:block"></i>
                     </button>
 
                     <!-- Cart -->
-                    <button class="relative p-2 rounded-lg glass hover:bg-white/20 transition btn-hover">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center badge-pulse">3</span>
+                    <button class="relative p-2 rounded-lg glass hover:bg-white/10 transition btn-hover">
+                        <i class="fas fa-shopping-cart text-purple-400"></i>
+                        <span class="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center badge-pulse">3</span>
                     </button>
 
                     <!-- Menu Hamburger -->
-                    <button id="menu-toggle" class="md:hidden p-2 rounded-lg glass hover:bg-white/20 transition">
-                        <i class="fas fa-bars"></i>
+                    <button id="menu-toggle" class="md:hidden p-2 rounded-lg glass hover:bg-white/10 transition">
+                        <i class="fas fa-bars text-purple-400"></i>
                     </button>
                 </div>
             </div>
@@ -351,16 +356,16 @@ $categorias = [
                         A Revolução do <span class="gradient-text">Vapor</span> Começa Aqui
                     </h1>
                     
-                    <p class="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+                    <p class="text-xl text-slate-300 mb-8 leading-relaxed">
                         Descubra a melhor seleção de vaporizadores e acessórios premium. Tecnologia de ponta, design elegante e performance superior em um só lugar.
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold btn-hover ripple relative z-10 hover:shadow-xl">
+                        <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold btn-hover ripple relative z-10 hover:shadow-xl">
                             <i class="fas fa-shopping-bag mr-2"></i>
                             Explorar Loja
                         </button>
-                        <button class="px-8 py-4 glass text-slate-900 dark:text-white rounded-lg font-semibold btn-hover ripple relative z-10">
+                        <button class="px-8 py-4 glass text-white rounded-lg font-semibold btn-hover ripple relative z-10">
                             <i class="fas fa-play mr-2"></i>
                             Ver Demo
                         </button>
@@ -370,15 +375,15 @@ $categorias = [
                     <div class="flex gap-8 mt-12">
                         <div class="text-center">
                             <div class="text-3xl font-bold gradient-text">1000+</div>
-                            <div class="text-sm text-slate-600 dark:text-slate-400">Produtos</div>
+                            <div class="text-sm text-slate-400">Produtos</div>
                         </div>
                         <div class="text-center">
                             <div class="text-3xl font-bold gradient-text">5000+</div>
-                            <div class="text-sm text-slate-600 dark:text-slate-400">Clientes</div>
+                            <div class="text-sm text-slate-400">Clientes</div>
                         </div>
                         <div class="text-center">
                             <div class="text-3xl font-bold gradient-text">24/7</div>
-                            <div class="text-sm text-slate-600 dark:text-slate-400">Suporte</div>
+                            <div class="text-sm text-slate-400">Suporte</div>
                         </div>
                     </div>
                 </div>
@@ -398,24 +403,24 @@ $categorias = [
     </section>
 
     <!-- Categorias Section -->
-    <section id="categorias" class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-800 bg-opacity-50">
+    <section id="categorias" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4">
                     Explore Nossas <span class="gradient-text">Categorias</span>
                 </h2>
-                <p class="text-lg text-slate-600 dark:text-slate-400">Tudo que você precisa em um só lugar</p>
+                <p class="text-lg text-slate-400">Tudo que você precisa em um só lugar</p>
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <?php foreach ($categorias as $i => $cat): ?>
                 <div class="neomorphic p-8 text-center hover:shadow-2xl transition cursor-pointer group" data-aos="zoom-in" data-aos-delay="<?php echo $i * 100; ?>">
-                    <div class="text-5xl mb-4 group-hover:scale-110 transition">
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition text-purple-400">
                         <i class="fas fa-<?php echo $cat['icon']; ?>"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2"><?php echo $cat['nome']; ?></h3>
-                    <p class="text-slate-600 dark:text-slate-400 mb-4"><?php echo $cat['count']; ?> produtos</p>
-                    <button class="w-full py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold btn-hover text-sm">
+                    <h3 class="text-xl font-bold mb-2 text-slate-100"><?php echo $cat['nome']; ?></h3>
+                    <p class="text-slate-400 mb-4"><?php echo $cat['count']; ?> produtos</p>
+                    <button class="w-full py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold btn-hover text-sm">
                         Ver Mais <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
@@ -431,16 +436,16 @@ $categorias = [
                 <h2 class="text-4xl md:text-5xl font-bold mb-4">
                     Produtos <span class="gradient-text">Destaque</span>
                 </h2>
-                <p class="text-lg text-slate-600 dark:text-slate-400">Os mais vendidos e procurados</p>
+                <p class="text-lg text-slate-400">Os mais vendidos e procurados</p>
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php foreach ($produtos as $i => $produto): ?>
                 <div class="glass rounded-2xl overflow-hidden card-hover group" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
                     <!-- Product Image -->
-                    <div class="relative h-48 overflow-hidden bg-gradient-to-br from-blue-400 to-purple-500">
+                    <div class="relative h-48 overflow-hidden bg-gradient-to-br from-purple-900 to-black">
                         <img src="<?php echo $produto['imagem']; ?>" alt="<?php echo $produto['nome']; ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold badge-pulse">
+                        <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold badge-pulse">
                             <?php echo $produto['tag']; ?>
                         </div>
                     </div>
@@ -448,10 +453,10 @@ $categorias = [
                     <!-- Content -->
                     <div class="p-6">
                         <div class="flex items-center mb-3">
-                            <i class="fas fa-<?php echo $produto['icone']; ?> text-blue-600 mr-2"></i>
-                            <h3 class="text-xl font-bold"><?php echo $produto['nome']; ?></h3>
+                            <i class="fas fa-<?php echo $produto['icone']; ?> text-purple-400 mr-2"></i>
+                            <h3 class="text-xl font-bold text-slate-100"><?php echo $produto['nome']; ?></h3>
                         </div>
-                        <p class="text-slate-600 dark:text-slate-400 text-sm mb-4"><?php echo $produto['descricao']; ?></p>
+                        <p class="text-slate-400 text-sm mb-4"><?php echo $produto['descricao']; ?></p>
                         
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-2xl font-bold gradient-text"><?php echo $produto['preco']; ?></span>
@@ -464,7 +469,7 @@ $categorias = [
                             </div>
                         </div>
 
-                        <button class="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold btn-hover ripple relative z-10">
+                        <button class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold btn-hover ripple relative z-10">
                             <i class="fas fa-cart-plus mr-2"></i>
                             Adicionar ao Carrinho
                         </button>
@@ -474,7 +479,7 @@ $categorias = [
             </div>
 
             <div class="text-center mt-12">
-                <button class="px-8 py-4 glass rounded-lg font-semibold btn-hover ripple relative z-10">
+                <button class="px-8 py-4 glass rounded-lg font-semibold btn-hover ripple relative z-10 text-slate-100">
                     <i class="fas fa-box mr-2"></i>
                     Ver Todos os Produtos
                 </button>
@@ -483,7 +488,7 @@ $categorias = [
     </section>
 
     <!-- Features Section -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/5 dark:to-purple-600/5">
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-900/20 to-black/20">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4">
@@ -493,27 +498,27 @@ $categorias = [
 
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="neomorphic p-8 text-center" data-aos="zoom-in">
-                    <div class="text-5xl mb-4 inline-block p-4 bg-gradient-to-br from-blue-500 to-purple-500 text-white rounded-full">
+                    <div class="text-5xl mb-4 inline-block p-4 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-full">
                         <i class="fas fa-truck"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3">Entrega Rápida</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Enviamos seus produtos em 24h com rastreamento completo</p>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-100">Entrega Rápida</h3>
+                    <p class="text-slate-400">Enviamos seus produtos em 24h com rastreamento completo</p>
                 </div>
 
                 <div class="neomorphic p-8 text-center" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="text-5xl mb-4 inline-block p-4 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-full">
+                    <div class="text-5xl mb-4 inline-block p-4 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-full">
                         <i class="fas fa-lock"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3">100% Seguro</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Pagamentos criptografados com SSL de confiança</p>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-100">100% Seguro</h3>
+                    <p class="text-slate-400">Pagamentos criptografados com SSL de confiança</p>
                 </div>
 
                 <div class="neomorphic p-8 text-center" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="text-5xl mb-4 inline-block p-4 bg-gradient-to-br from-pink-500 to-blue-500 text-white rounded-full">
+                    <div class="text-5xl mb-4 inline-block p-4 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-full">
                         <i class="fas fa-headset"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3">Suporte 24/7</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Nossa equipe está sempre pronta para ajudar você</p>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-100">Suporte 24/7</h3>
+                    <p class="text-slate-400">Nossa equipe está sempre pronta para ajudar você</p>
                 </div>
             </div>
         </div>
@@ -523,16 +528,16 @@ $categorias = [
     <section class="py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto" data-aos="fade-up">
             <div class="glass rounded-3xl p-12 md:p-16 text-center">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-slate-100">
                     Pronto para Começar?
                 </h2>
-                <p class="text-xl text-slate-600 dark:text-slate-400 mb-8">
+                <p class="text-xl text-slate-300 mb-8">
                     Cadastre-se agora e receba 10% de desconto na primeira compra!
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <input type="email" placeholder="Seu e-mail" class="px-6 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-600 w-full sm:w-auto">
-                    <button class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold btn-hover ripple relative z-10 whitespace-nowrap">
+                    <input type="email" placeholder="Seu e-mail" class="px-6 py-3 rounded-lg bg-slate-800 text-slate-100 border border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full sm:w-auto placeholder-slate-500">
+                    <button class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold btn-hover ripple relative z-10 whitespace-nowrap">
                         <i class="fas fa-rocket mr-2"></i>
                         Começar Agora
                     </button>
@@ -542,52 +547,52 @@ $categorias = [
     </section>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 dark:bg-black text-white py-16 px-4 sm:px-6 lg:px-8">
+    <footer class="bg-black text-slate-300 py-16 px-4 sm:px-6 lg:px-8 border-t border-purple-900/30">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-12 mb-12">
                 <!-- Brand -->
                 <div>
-                    <div class="text-2xl font-bold mb-4">
+                    <div class="text-2xl font-bold mb-4 text-purple-400">
                         <i class="fas fa-bolt mr-2"></i>TechVapor
                     </div>
                     <p class="text-slate-400">A melhor plataforma para vaporizadores e acessórios premium.</p>
                     <div class="flex gap-4 mt-6">
-                        <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-purple-400 transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-purple-400 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-purple-400 transition"><i class="fab fa-twitter"></i></a>
                     </div>
                 </div>
 
                 <!-- Products -->
                 <div>
-                    <h4 class="text-lg font-bold mb-4">Produtos</h4>
+                    <h4 class="text-lg font-bold mb-4 text-slate-100">Produtos</h4>
                     <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-white transition">Vaporizadores</a></li>
-                        <li><a href="#" class="hover:text-white transition">Acessórios</a></li>
-                        <li><a href="#" class="hover:text-white transition">Líquidos</a></li>
-                        <li><a href="#" class="hover:text-white transition">Promoções</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Vaporizadores</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Acessórios</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Líquidos</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Promoções</a></li>
                     </ul>
                 </div>
 
                 <!-- Support -->
                 <div>
-                    <h4 class="text-lg font-bold mb-4">Suporte</h4>
+                    <h4 class="text-lg font-bold mb-4 text-slate-100">Suporte</h4>
                     <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-white transition">Contato</a></li>
-                        <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white transition">Envios</a></li>
-                        <li><a href="#" class="hover:text-white transition">Devoluções</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Contato</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">FAQ</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Envios</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Devoluções</a></li>
                     </ul>
                 </div>
 
                 <!-- Legal -->
                 <div>
-                    <h4 class="text-lg font-bold mb-4">Legal</h4>
+                    <h4 class="text-lg font-bold mb-4 text-slate-100">Legal</h4>
                     <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-white transition">Privacidade</a></li>
-                        <li><a href="#" class="hover:text-white transition">Termos</a></li>
-                        <li><a href="#" class="hover:text-white transition">Cookies</a></li>
-                        <li><a href="#" class="hover:text-white transition">Sitemap</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Privacidade</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Termos</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Cookies</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Sitemap</a></li>
                     </ul>
                 </div>
             </div>
@@ -604,7 +609,7 @@ $categorias = [
     </footer>
 
     <!-- Scroll to Top Button -->
-    <button id="scroll-top" class="scroll-top bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full hover:shadow-lg transition">
+    <button id="scroll-top" class="scroll-top bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full hover:shadow-lg transition">
         <i class="fas fa-arrow-up"></i>
     </button>
 
