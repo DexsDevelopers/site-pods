@@ -11,134 +11,106 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 $page = $_GET['page'] ?? 'dashboard';
+$pages = ['dashboard', 'products', 'categories', 'orders', 'customers'];
+
+// Validar página
+if (!in_array($page, $pages)) {
+    $page = 'dashboard';
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - TechVapor</title>
+    <title>Admin - TechVapor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { 
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%); 
-        }
-        .glass { 
-            background: rgba(0, 0, 0, 0.1); 
-            backdrop-filter: blur(10px); 
-        }
-        .sidebar-link { 
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: #64748b;
-            display: block;
-            margin-bottom: 8px;
-            transition: all 0.3s ease;
-        }
-        .sidebar-link:hover { 
-            background-color: #9333ea;
-            color: white;
-        }
-        .sidebar-link.active { 
-            background-color: #9333ea; 
-            color: white;
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-    </style>
 </head>
-<body class="text-slate-100 m-0">
+<body class="bg-slate-900 text-slate-100">
 
-    <div class="flex h-screen bg-gradient-to-br from-slate-900 to-slate-800">
-        <!-- Sidebar -->
-        <aside class="w-64 glass border-r border-purple-600/30 p-6 overflow-y-auto flex flex-col">
-            <h1 class="text-2xl font-black mb-8 gradient-text">
-                <i class="fas fa-cloud mr-2"></i>TechVapor
-            </h1>
+<div style="display: flex; height: 100vh;">
+    
+    <!-- SIDEBAR -->
+    <div style="width: 250px; background: rgba(0,0,0,0.3); border-right: 1px solid rgba(147,51,234,0.3); padding: 24px; overflow-y: auto; flex-shrink: 0;">
+        <h1 style="font-size: 24px; font-weight: 900; margin-bottom: 32px; background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <i class="fas fa-cloud" style="margin-right: 8px;"></i>TechVapor
+        </h1>
 
-            <nav class="space-y-2 flex-1">
-                <a href="?page=dashboard" class="sidebar-link <?php echo $page === 'dashboard' ? 'active' : ''; ?>">
-                    <i class="fas fa-chart-line mr-2"></i>Dashboard
-                </a>
-                <a href="?page=products" class="sidebar-link <?php echo $page === 'products' ? 'active' : ''; ?>">
-                    <i class="fas fa-box mr-2"></i>Produtos
-                </a>
-                <a href="?page=categories" class="sidebar-link <?php echo $page === 'categories' ? 'active' : ''; ?>">
-                    <i class="fas fa-folder mr-2"></i>Categorias
-                </a>
-                <a href="?page=orders" class="sidebar-link <?php echo $page === 'orders' ? 'active' : ''; ?>">
-                    <i class="fas fa-shopping-cart mr-2"></i>Pedidos
-                </a>
-                <a href="?page=customers" class="sidebar-link <?php echo $page === 'customers' ? 'active' : ''; ?>">
-                    <i class="fas fa-users mr-2"></i>Clientes
-                </a>
-            </nav>
-
-            <hr class="border-slate-700 my-6">
-
-            <a href="logout.php" class="sidebar-link">
-                <i class="fas fa-sign-out-alt mr-2"></i>Sair
+        <nav style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px;">
+            <a href="?page=dashboard" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'dashboard' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'dashboard' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
+                <i class="fas fa-chart-line" style="margin-right: 8px;"></i>Dashboard
             </a>
-        </aside>
+            <a href="?page=products" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'products' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'products' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
+                <i class="fas fa-box" style="margin-right: 8px;"></i>Produtos
+            </a>
+            <a href="?page=categories" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'categories' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'categories' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
+                <i class="fas fa-folder" style="margin-right: 8px;"></i>Categorias
+            </a>
+            <a href="?page=orders" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'orders' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'orders' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
+                <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>Pedidos
+            </a>
+            <a href="?page=customers" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'customers' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'customers' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
+                <i class="fas fa-users" style="margin-right: 8px;"></i>Clientes
+            </a>
+        </nav>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto flex flex-col bg-gradient-to-br from-slate-900 to-slate-800">
-            <!-- Top Bar -->
-            <div class="glass border-b border-purple-600/30 p-6 sticky top-0 z-10">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-2xl font-black">
-                        <?php
-                        echo match($page) {
-                            'dashboard' => '📊 Dashboard',
-                            'products' => '📦 Produtos',
-                            'categories' => '📂 Categorias',
-                            'orders' => '🛒 Pedidos',
-                            'customers' => '👥 Clientes',
-                            default => '📊 Admin Panel'
-                        };
-                        ?>
-                    </h2>
-                    <div class="flex items-center gap-4">
-                        <span class="text-slate-400">Bem-vindo, <?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?></span>
-                        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-user text-white"></i>
-                        </div>
-                    </div>
+        <hr style="border: none; border-top: 1px solid rgba(71,85,105,0.5); margin: 24px 0;">
+
+        <a href="logout.php" style="display: block; padding: 12px 16px; border-radius: 8px; text-decoration: none; color: #94a3b8; transition: all 0.3s;">
+            <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>Sair
+        </a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+        
+        <!-- TOP BAR -->
+        <div style="background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(147,51,234,0.3); padding: 24px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+            <h2 style="font-size: 24px; font-weight: 900; margin: 0;">
+                <?php
+                echo match($page) {
+                    'dashboard' => '📊 Dashboard',
+                    'products' => '📦 Produtos',
+                    'categories' => '📂 Categorias',
+                    'orders' => '🛒 Pedidos',
+                    'customers' => '👥 Clientes',
+                    default => '📊 Admin'
+                };
+                ?>
+            </h2>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span style="color: #94a3b8;">Bem-vindo, <?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?></span>
+                <div style="width: 40px; height: 40px; background: linear-gradient(to right, #9333ea, #ec4899); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user" style="color: white;"></i>
                 </div>
             </div>
+        </div>
 
-            <!-- Page Content -->
-            <div class="p-6 flex-1 overflow-y-auto">
-                <?php
-                $pages = ['dashboard', 'products', 'categories', 'orders', 'customers'];
-                $page_file = "includes/{$page}.php";
-                
-                if (in_array($page, $pages) && file_exists($page_file)) {
-                    try {
-                        include $page_file;
-                    } catch (Exception $e) {
-                        echo '<div class="bg-red-600/20 border border-red-600 text-red-400 px-4 py-3 rounded">';
-                        echo '❌ Erro ao carregar página: ' . htmlspecialchars($e->getMessage());
-                        echo '</div>';
-                    }
+        <!-- PAGE CONTENT -->
+        <div style="flex: 1; overflow-y: auto; padding: 24px;">
+            <?php
+            $page_file = "includes/{$page}.php";
+            
+            try {
+                if (file_exists($page_file)) {
+                    include $page_file;
                 } else {
-                    try {
-                        include 'includes/dashboard.php';
-                    } catch (Exception $e) {
-                        echo '<div class="bg-red-600/20 border border-red-600 text-red-400 px-4 py-3 rounded">';
-                        echo '❌ Erro ao carregar dashboard: ' . htmlspecialchars($e->getMessage());
-                        echo '</div>';
-                    }
+                    echo '<div style="color: red; background: rgba(220,38,38,0.2); padding: 16px; border-radius: 8px; border: 1px solid rgba(220,38,38,0.5);">';
+                    echo '❌ Arquivo não encontrado: ' . htmlspecialchars($page_file);
+                    echo '</div>';
                 }
-                ?>
-            </div>
-        </main>
+            } catch (Exception $e) {
+                echo '<div style="color: #f87171; background: rgba(220,38,38,0.2); padding: 16px; border-radius: 8px; border: 1px solid rgba(220,38,38,0.5);">';
+                echo '❌ Erro: ' . htmlspecialchars($e->getMessage());
+                echo '</div>';
+            }
+            ?>
+        </div>
+
     </div>
+
+</div>
 
 </body>
 </html>
