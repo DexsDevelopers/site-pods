@@ -23,83 +23,243 @@ if (!in_array($page, $pages)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - TechVapor</title>
+    <title>Admin - Loja de Pods</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-slate-900 text-slate-100">
+    <style>
+        :root {
+            --primary: #9333ea;
+            --primary-dark: #7e22ce;
+            --secondary: #1f2937;
+            --accent: #c084fc;
+        }
 
-<div style="display: flex; height: 100vh;">
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%);
+            color: #e0e7ff;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(147, 51, 234, 0.15);
+            border-radius: 16px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-link {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #9333ea, #c084fc);
+            border-radius: 0 4px 4px 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-link.active::before {
+            opacity: 1;
+        }
+
+        .sidebar-link.active {
+            background: rgba(147, 51, 234, 0.15);
+            color: #c084fc;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(147, 51, 234, 0.1);
+            transform: translateX(4px);
+        }
+
+        .stat-card {
+            background: rgba(147, 51, 234, 0.05);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(147, 51, 234, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.2);
+        }
+
+        .table-row:hover {
+            background: rgba(147, 51, 234, 0.08);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #9333ea, #c084fc);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(147, 51, 234, 0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .sidebar {
+            background: rgba(0, 0, 0, 0.2);
+            border-right: 1px solid rgba(147, 51, 234, 0.2);
+        }
+
+        .topbar {
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+            backdrop-filter: blur(20px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(147, 51, 234, 0.4);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(147, 51, 234, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 to-black">
+
+<div class="flex h-screen">
     
     <!-- SIDEBAR -->
-    <div style="width: 250px; background: rgba(0,0,0,0.3); border-right: 1px solid rgba(147,51,234,0.3); padding: 24px; overflow-y: auto; flex-shrink: 0;">
-        <h1 style="font-size: 24px; font-weight: 900; margin-bottom: 32px; background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-            <i class="fas fa-cloud" style="margin-right: 8px;"></i>TechVapor
-        </h1>
+    <div class="sidebar w-64 overflow-y-auto flex-shrink-0 py-6 px-4 flex flex-col">
+        <!-- Logo -->
+        <div class="mb-8 px-4">
+            <div class="gradient-text text-2xl font-black flex items-center gap-2">
+                <i class="fas fa-cloud-mist text-2xl"></i>
+                <span>Loja de Pods</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-2">Panel Administrativo</p>
+        </div>
 
-        <nav style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px;">
-            <a href="?page=dashboard" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'dashboard' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'dashboard' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
-                <i class="fas fa-chart-line" style="margin-right: 8px;"></i>Dashboard
+        <!-- Navigation -->
+        <nav class="flex-1 space-y-2 mb-8">
+            <a href="?page=dashboard" class="sidebar-link <?php echo $page === 'dashboard' ? 'active' : ''; ?> block px-4 py-3 rounded-lg text-slate-300 font-medium">
+                <i class="fas fa-chart-line w-5 mr-3"></i>Dashboard
             </a>
-            <a href="?page=products" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'products' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'products' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
-                <i class="fas fa-box" style="margin-right: 8px;"></i>Produtos
+            <a href="?page=products" class="sidebar-link <?php echo $page === 'products' ? 'active' : ''; ?> block px-4 py-3 rounded-lg text-slate-300 font-medium">
+                <i class="fas fa-box w-5 mr-3"></i>Produtos
             </a>
-            <a href="?page=categories" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'categories' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'categories' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
-                <i class="fas fa-folder" style="margin-right: 8px;"></i>Categorias
+            <a href="?page=categories" class="sidebar-link <?php echo $page === 'categories' ? 'active' : ''; ?> block px-4 py-3 rounded-lg text-slate-300 font-medium">
+                <i class="fas fa-folder w-5 mr-3"></i>Categorias
             </a>
-            <a href="?page=orders" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'orders' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'orders' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
-                <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>Pedidos
+            <a href="?page=orders" class="sidebar-link <?php echo $page === 'orders' ? 'active' : ''; ?> block px-4 py-3 rounded-lg text-slate-300 font-medium">
+                <i class="fas fa-shopping-cart w-5 mr-3"></i>Pedidos
             </a>
-            <a href="?page=customers" style="padding: 12px 16px; border-radius: 8px; text-decoration: none; color: <?php echo $page === 'customers' ? 'white' : '#94a3b8'; ?>; background-color: <?php echo $page === 'customers' ? 'rgba(147,51,234,0.8)' : 'transparent'; ?>; transition: all 0.3s;">
-                <i class="fas fa-users" style="margin-right: 8px;"></i>Clientes
+            <a href="?page=customers" class="sidebar-link <?php echo $page === 'customers' ? 'active' : ''; ?> block px-4 py-3 rounded-lg text-slate-300 font-medium">
+                <i class="fas fa-users w-5 mr-3"></i>Clientes
             </a>
         </nav>
 
-        <hr style="border: none; border-top: 1px solid rgba(71,85,105,0.5); margin: 24px 0;">
-
-        <a href="logout.php" style="display: block; padding: 12px 16px; border-radius: 8px; text-decoration: none; color: #94a3b8; transition: all 0.3s;">
-            <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>Sair
-        </a>
+        <!-- Divider -->
+        <div class="border-t border-slate-700 py-4 px-4 space-y-2">
+            <a href="logout.php" class="sidebar-link block px-4 py-3 rounded-lg text-slate-400 font-medium hover:text-red-400">
+                <i class="fas fa-sign-out-alt w-5 mr-3"></i>Sair
+            </a>
+        </div>
     </div>
 
     <!-- MAIN CONTENT -->
-    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+    <div class="flex-1 flex flex-col overflow-hidden">
         
         <!-- TOP BAR -->
-        <div style="background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(147,51,234,0.3); padding: 24px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
-            <h2 style="font-size: 24px; font-weight: 900; margin: 0;">
-                <?php
-                echo match($page) {
-                    'dashboard' => '📊 Dashboard',
-                    'products' => '📦 Produtos',
-                    'categories' => '📂 Categorias',
-                    'orders' => '🛒 Pedidos',
-                    'customers' => '👥 Clientes',
-                    default => '📊 Admin'
-                };
-                ?>
-            </h2>
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <span style="color: #94a3b8;">Bem-vindo, <?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Admin'); ?></span>
-                <div style="width: 40px; height: 40px; background: linear-gradient(to right, #9333ea, #ec4899); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-user" style="color: white;"></i>
+        <div class="topbar px-8 py-4 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h2 class="text-2xl font-black">
+                    <?php
+                    echo match($page) {
+                        'dashboard' => '📊 Dashboard',
+                        'products' => '📦 Produtos',
+                        'categories' => '📂 Categorias',
+                        'orders' => '🛒 Pedidos',
+                        'customers' => '👥 Clientes',
+                        default => '📊 Admin'
+                    };
+                    ?>
+                </h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-sm text-slate-400">Bem-vindo!</p>
+                    <p class="font-bold text-slate-100"><?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Administrador'); ?></p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <i class="fas fa-user text-white text-lg"></i>
                 </div>
             </div>
         </div>
 
         <!-- PAGE CONTENT -->
-        <div style="flex: 1; overflow-y: auto; padding: 24px;">
-            <?php
-            $page_file = "includes/{$page}.php";
-            
-            if (file_exists($page_file)) {
-                include $page_file;
-            } else {
-                echo '<div style="color: red; background: rgba(220,38,38,0.2); padding: 16px; border-radius: 8px; border: 1px solid rgba(220,38,38,0.5);">';
-                echo '❌ Arquivo não encontrado: ' . htmlspecialchars($page_file);
-                echo '</div>';
-            }
-            ?>
+        <div class="flex-1 overflow-y-auto px-8 py-6">
+            <div class="max-w-7xl">
+                <?php
+                $page_file = "includes/{$page}.php";
+                
+                if (file_exists($page_file)) {
+                    include $page_file;
+                } else {
+                    echo '<div class="glass p-6 rounded-lg border border-red-500/30 bg-red-500/5">';
+                    echo '<i class="fas fa-exclamation-circle text-red-400 mr-3"></i>';
+                    echo '<strong>Erro:</strong> Página não encontrada: ' . htmlspecialchars($page_file);
+                    echo '</div>';
+                }
+                ?>
+            </div>
         </div>
 
     </div>
