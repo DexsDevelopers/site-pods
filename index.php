@@ -306,12 +306,7 @@ $avaliacoes = [
 
                 <div data-aos="fade-left" data-aos-duration="1000" class="relative h-96 md:h-full min-h-96">
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl blur-2xl opacity-40"></div>
-                    <div class="relative h-full glass rounded-3xl p-8 flex items-center justify-center text-center border-2 border-purple-200">
-                        <div>
-                            <i class="fas fa-skull text-6xl gradient-text mb-4" style="display: block;"></i>
-                            <h3 class="text-5xl font-black gradient-text mb-2">WAZZY</h3>
-                            <p class="text-lg font-bold text-purple-600">Premium Vape Experience</p>
-                        </div>
+                    <div class="relative h-full glass rounded-3xl p-8 flex items-center justify-center text-center border-2 border-purple-800/50" style="background-image: url('WhatsApp Image 2025-10-17 at 16.17.27.jpeg'); background-size: cover; background-position: center;">
                     </div>
                 </div>
             </div>
