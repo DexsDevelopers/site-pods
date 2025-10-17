@@ -86,22 +86,22 @@ $avaliacoes = [
         }
 
         body {
-            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-            color: #1f2937;
+            background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
+            color: #e2e8f0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         /* Glassmorphism Moderno */
         .glass {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
             border-radius: 16px;
         }
 
         /* Gradiente de Texto */
         .gradient-text {
-            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -113,12 +113,12 @@ $avaliacoes = [
             color: white;
             border: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
         }
 
         /* Card Hover */
@@ -128,12 +128,12 @@ $avaliacoes = [
 
         .card-hover:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.25);
         }
 
         /* Hero Gradient */
         .hero-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 50%, #f3f4f6 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #16213e 100%);
             position: relative;
             overflow: hidden;
         }
@@ -145,7 +145,7 @@ $avaliacoes = [
             right: -20%;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
             border-radius: 50%;
             animation: float-slow 20s infinite;
         }
@@ -173,7 +173,7 @@ $avaliacoes = [
             background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
             color: white;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
         }
 
         .scroll-top.show {
@@ -183,7 +183,7 @@ $avaliacoes = [
 
         .scroll-top:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
         }
 
         /* Badge */
@@ -196,15 +196,15 @@ $avaliacoes = [
         }
 
         .badge-primary {
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-            color: #7c3aed;
-            border: 1px solid rgba(124, 58, 237, 0.2);
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            color: #c7d2fe;
+            border: 1px solid rgba(124, 58, 237, 0.3);
         }
 
         .badge-success {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, 0.15);
             color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
         ::-webkit-scrollbar {
@@ -212,7 +212,7 @@ $avaliacoes = [
         }
 
         ::-webkit-scrollbar-track {
-            background: #f3f4f6;
+            background: #1a1f3a;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -221,14 +221,14 @@ $avaliacoes = [
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #6d28d9;
+            background: #a78bfa;
         }
     </style>
 </head>
 <body>
 
     <!-- Header Premium -->
-    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-white/95 shadow-sm border-b border-gray-100">
+    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-slate-950/95 shadow-lg border-b border-purple-900/30">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -237,21 +237,21 @@ $avaliacoes = [
                     </div>
                     <div>
                         <div class="font-black text-xl gradient-text">WAZZY</div>
-                        <div class="text-xs font-bold text-gray-500">VAPE</div>
+                        <div class="text-xs font-bold text-slate-400">VAPE</div>
                     </div>
                 </div>
 
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#home" class="text-gray-600 hover:gradient-text transition font-medium">Home</a>
-                    <a href="#produtos" class="text-gray-600 hover:gradient-text transition font-medium">Produtos</a>
-                    <a href="#categorias" class="text-gray-600 hover:gradient-text transition font-medium">Categorias</a>
-                    <a href="#avaliacoes" class="text-gray-600 hover:gradient-text transition font-medium">Avaliações</a>
+                    <a href="#home" class="text-slate-300 hover:text-purple-300 transition font-medium">Home</a>
+                    <a href="#produtos" class="text-slate-300 hover:text-purple-300 transition font-medium">Produtos</a>
+                    <a href="#categorias" class="text-slate-300 hover:text-purple-300 transition font-medium">Categorias</a>
+                    <a href="#avaliacoes" class="text-slate-300 hover:text-purple-300 transition font-medium">Avaliações</a>
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <button class="relative p-2 hover:bg-gray-100 rounded-lg transition">
-                        <i class="fas fa-shopping-cart text-purple-600 text-lg"></i>
-                        <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
+                    <button class="relative p-2 hover:bg-slate-800 rounded-lg transition">
+                        <i class="fas fa-shopping-cart text-purple-400 text-lg"></i>
+                        <span class="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
                     </button>
                 </div>
             </div>
@@ -269,11 +269,11 @@ $avaliacoes = [
                         </span>
                     </div>
                     
-                    <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight text-gray-900">
+                    <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight text-slate-50">
                         Wazzy <span class="gradient-text">Vape</span>
                     </h1>
                     
-                    <p class="text-xl text-gray-600 mb-12 leading-relaxed">
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
                         Descubra a melhor seleção de pods premium com qualidade garantida, entrega rápida e atendimento excepcional.
                     </p>
 
@@ -282,7 +282,7 @@ $avaliacoes = [
                             <i class="fas fa-shopping-bag mr-2"></i>
                             Comprar Agora
                         </button>
-                        <button class="px-8 py-4 glass text-purple-600 rounded-lg font-bold ripple relative z-10 text-lg hover:bg-gray-50 transition">
+                        <button class="px-8 py-4 glass text-purple-300 rounded-lg font-bold ripple relative z-10 text-lg hover:bg-slate-800 transition">
                             <i class="fas fa-arrow-down mr-2"></i>
                             Ver Produtos
                         </button>
@@ -319,60 +319,60 @@ $avaliacoes = [
     </section>
 
     <!-- Quick Stats Banner -->
-    <section class="py-8 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-100">
+    <section class="py-8 px-4 sm:px-6 lg:px-8 bg-slate-900/40 border-b border-purple-900/30">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-truck text-2xl gradient-text mb-2"></i>
-                    <p class="font-bold text-gray-900">Frete Grátis</p>
-                    <p class="text-xs text-gray-500">Acima de R$ 100</p>
+                    <i class="fas fa-truck text-2xl text-purple-400 mb-2"></i>
+                    <p class="font-bold text-slate-100">Frete Grátis</p>
+                    <p class="text-xs text-slate-400">Acima de R$ 100</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-shield-alt text-2xl gradient-text mb-2"></i>
-                    <p class="font-bold text-gray-900">100% Seguro</p>
-                    <p class="text-xs text-gray-500">Proteção total</p>
+                    <i class="fas fa-shield-alt text-2xl text-purple-400 mb-2"></i>
+                    <p class="font-bold text-slate-100">100% Seguro</p>
+                    <p class="text-xs text-slate-400">Proteção total</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-redo text-2xl gradient-text mb-2"></i>
-                    <p class="font-bold text-gray-900">Devolução</p>
-                    <p class="text-xs text-gray-500">30 dias garantidos</p>
+                    <i class="fas fa-redo text-2xl text-purple-400 mb-2"></i>
+                    <p class="font-bold text-slate-100">Devolução</p>
+                    <p class="text-xs text-slate-400">30 dias garantidos</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-headset text-2xl gradient-text mb-2"></i>
-                    <p class="font-bold text-gray-900">Suporte 24/7</p>
-                    <p class="text-xs text-gray-500">Sempre pronto</p>
+                    <i class="fas fa-headset text-2xl text-purple-400 mb-2"></i>
+                    <p class="font-bold text-slate-100">Suporte 24/7</p>
+                    <p class="text-xs text-slate-400">Sempre pronto</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Categorias -->
-    <section id="categorias" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section id="categorias" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/20">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-5xl font-black mb-4 text-gray-900">
+                <h2 class="text-5xl font-black mb-4 text-slate-50">
                     Escolha sua <span class="gradient-text">Categoria</span>
                 </h2>
-                <p class="text-xl text-gray-600">Explore nossa seleção premium de pods</p>
+                <p class="text-xl text-slate-400">Explore nossa seleção premium de pods</p>
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-100" data-aos="zoom-in">
+                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-800/50" data-aos="zoom-in">
                     <div class="text-5xl mb-4">📱</div>
-                    <h3 class="text-2xl font-bold mb-2 text-gray-900">Pods Descartáveis</h3>
-                    <p class="text-gray-600 mb-4">Pronto para usar, máxima praticidade</p>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-100">Pods Descartáveis</h3>
+                    <p class="text-slate-400 mb-4">Pronto para usar, máxima praticidade</p>
                     <p class="text-sm font-bold gradient-text">24+ Produtos</p>
                 </div>
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-100" data-aos="zoom-in" data-aos-delay="100">
+                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-800/50" data-aos="zoom-in" data-aos-delay="100">
                     <div class="text-5xl mb-4">🔄</div>
-                    <h3 class="text-2xl font-bold mb-2 text-gray-900">Pods Recarregáveis</h3>
-                    <p class="text-gray-600 mb-4">Sustentável e econômico</p>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-100">Pods Recarregáveis</h3>
+                    <p class="text-slate-400 mb-4">Sustentável e econômico</p>
                     <p class="text-sm font-bold gradient-text">18+ Produtos</p>
                 </div>
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-100" data-aos="zoom-in" data-aos-delay="200">
+                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-800/50" data-aos="zoom-in" data-aos-delay="200">
                     <div class="text-5xl mb-4">🎁</div>
-                    <h3 class="text-2xl font-bold mb-2 text-gray-900">Acessórios</h3>
-                    <p class="text-gray-600 mb-4">Tudo que você precisa</p>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-100">Acessórios</h3>
+                    <p class="text-slate-400 mb-4">Tudo que você precisa</p>
                     <p class="text-sm font-bold gradient-text">31+ Produtos</p>
                 </div>
             </div>
@@ -380,26 +380,26 @@ $avaliacoes = [
     </section>
 
     <!-- Produtos -->
-    <section id="produtos" class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <section id="produtos" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
                 <span class="badge badge-primary mb-4">
                     <i class="fas fa-fire mr-2"></i> Mais Vendidos
                 </span>
-                <h2 class="text-5xl font-black mb-4 text-gray-900">
+                <h2 class="text-5xl font-black mb-4 text-slate-50">
                     Produtos em <span class="gradient-text">Destaque</span>
                 </h2>
-                <p class="text-xl text-gray-600">Seleção premium dos melhores produtos</p>
+                <p class="text-xl text-slate-400">Seleção premium dos melhores produtos</p>
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <?php foreach (array_slice($produtos, 0, 8) as $i => $produto): ?>
-                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-100" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
+                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-800/50" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
                     <div class="absolute top-4 right-4 badge badge-primary z-10">
                         -30%
                     </div>
 
-                    <div class="relative h-56 overflow-hidden bg-gray-100">
+                    <div class="relative h-56 overflow-hidden bg-slate-800">
                         <img src="<?php echo htmlspecialchars($produto['imagem'] ?? 'https://via.placeholder.com/400x300?text=' . urlencode($produto['nome'])); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=Produto'">
                         <div class="absolute top-4 left-4 badge badge-primary">
                             <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
@@ -407,8 +407,8 @@ $avaliacoes = [
                     </div>
 
                     <div class="p-5">
-                        <h3 class="text-lg font-bold text-gray-900 line-clamp-2 mb-3"><?php echo htmlspecialchars($produto['nome']); ?></h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars(substr($produto['descricao'] ?? '', 0, 80)); ?>...</p>
+                        <h3 class="text-lg font-bold text-slate-100 line-clamp-2 mb-3"><?php echo htmlspecialchars($produto['nome']); ?></h3>
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars(substr($produto['descricao'] ?? '', 0, 80)); ?>...</p>
                         
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex gap-0.5">
@@ -416,12 +416,12 @@ $avaliacoes = [
                                     <i class="fas fa-star text-yellow-400 text-xs"></i>
                                 <?php endfor; ?>
                             </div>
-                            <span class="text-yellow-600 text-xs font-bold">5.0</span>
+                            <span class="text-yellow-400 text-xs font-bold">5.0</span>
                         </div>
 
-                        <div class="mb-5 pb-5 border-b border-gray-200">
+                        <div class="mb-5 pb-5 border-b border-slate-700">
                             <span class="text-2xl font-black gradient-text">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></span>
-                            <span class="text-gray-400 line-through ml-2 text-sm">R$ <?php echo number_format($produto['preco'] * 1.43, 2, ',', '.'); ?></span>
+                            <span class="text-slate-500 line-through ml-2 text-sm">R$ <?php echo number_format($produto['preco'] * 1.43, 2, ',', '.'); ?></span>
                         </div>
 
                         <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $produto['preco']; ?>)" class="w-full py-3 btn-primary rounded-lg font-bold text-sm transition">
@@ -434,7 +434,7 @@ $avaliacoes = [
             </div>
 
             <div class="text-center mt-12">
-                <button class="px-10 py-4 glass rounded-lg font-bold text-lg gradient-text hover:shadow-lg transition border border-purple-100">
+                <button class="px-10 py-4 glass rounded-lg font-bold text-lg gradient-text hover:shadow-lg transition border border-purple-800/50">
                     <i class="fas fa-box mr-2"></i>
                     Ver Todos os Produtos
                 </button>
@@ -443,10 +443,10 @@ $avaliacoes = [
     </section>
 
     <!-- Avaliações -->
-    <section id="avaliacoes" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section id="avaliacoes" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/40">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-5xl font-black mb-4 text-gray-900">
+                <h2 class="text-5xl font-black mb-4 text-slate-50">
                     O que nossos <span class="gradient-text">Clientes</span> dizem
                 </h2>
                 <div class="flex justify-center gap-1 mb-4">
@@ -454,25 +454,25 @@ $avaliacoes = [
                         <i class="fas fa-star text-yellow-400 text-2xl"></i>
                     <?php endfor; ?>
                 </div>
-                <p class="text-xl text-gray-600">5.0 ★ em mais de 2.500 avaliações verificadas</p>
+                <p class="text-xl text-slate-400">5.0 ★ em mais de 2.500 avaliações verificadas</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
                 <?php foreach ($avaliacoes as $i => $avaliacao): ?>
-                <div class="glass rounded-2xl p-8 card-hover border border-purple-100" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                <div class="glass rounded-2xl p-8 card-hover border border-purple-800/50" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
                     <div class="flex gap-1 mb-4">
                         <?php for($j = 0; $j < 5; $j++): ?>
                             <i class="fas fa-star text-yellow-400 text-lg"></i>
                         <?php endfor; ?>
                     </div>
-                    <p class="text-gray-700 mb-6 italic text-lg">"<?php echo $avaliacao['texto']; ?>"</p>
-                    <div class="flex items-center gap-4 pt-4 border-t border-gray-200">
+                    <p class="text-slate-300 mb-6 italic text-lg">"<?php echo $avaliacao['texto']; ?>"</p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-slate-700">
                         <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-user text-white"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-gray-900"><?php echo $avaliacao['nome']; ?></p>
-                            <p class="text-gray-500 text-sm"><i class="fas fa-check-circle text-green-500 mr-1"></i>Comprador Verificado</p>
+                            <p class="font-bold text-slate-100"><?php echo $avaliacao['nome']; ?></p>
+                            <p class="text-slate-500 text-sm"><i class="fas fa-check-circle text-green-500 mr-1"></i>Comprador Verificado</p>
                         </div>
                     </div>
                 </div>
@@ -482,30 +482,30 @@ $avaliacoes = [
     </section>
 
     <!-- Newsletter -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50">
         <div class="max-w-4xl mx-auto" data-aos="fade-up">
-            <div class="glass rounded-3xl p-12 md:p-16 text-center border-2 border-purple-200 relative">
-                <h2 class="text-5xl font-black mb-6 text-gray-900">
+            <div class="glass rounded-3xl p-12 md:p-16 text-center border-2 border-purple-800/50 relative">
+                <h2 class="text-5xl font-black mb-6 text-slate-50">
                     Ganhe <span class="gradient-text">20% OFF</span>
                 </h2>
-                <p class="text-xl text-gray-600 mb-10">
+                <p class="text-xl text-slate-300 mb-10">
                     Inscreva-se na newsletter e receba 20% de desconto + acesso exclusivo a promoções!
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                    <input type="email" placeholder="seu@email.com" class="flex-1 px-6 py-4 rounded-lg bg-gray-50 text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-600 placeholder-gray-500 text-base">
+                    <input type="email" placeholder="seu@email.com" class="flex-1 px-6 py-4 rounded-lg bg-slate-800/50 text-slate-100 border border-purple-800/50 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-slate-500 text-base">
                     <button class="px-8 py-4 btn-primary rounded-lg font-bold whitespace-nowrap text-base">
                         <i class="fas fa-paper-plane mr-2"></i>
                         Inscrever
                     </button>
                 </div>
-                <p class="text-gray-500 text-sm mt-6">📧 Sem spam, apenas promoções!</p>
+                <p class="text-slate-400 text-sm mt-6">📧 Sem spam, apenas promoções!</p>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
+    <footer class="bg-slate-950 text-slate-400 py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-800">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-12 mb-12">
                 <div>
@@ -513,18 +513,18 @@ $avaliacoes = [
                         <i class="fas fa-skull-crossbones"></i>
                         <span>WAZZY VAPE</span>
                     </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed">Sua loja premium de pods com qualidade garantida e atendimento excepcional.</p>
+                    <p class="text-slate-400 mb-6 leading-relaxed">Sua loja premium de pods com qualidade garantida e atendimento excepcional.</p>
                     <div class="flex gap-4">
-                        <a href="#" class="text-gray-400 hover:gradient-text transition text-lg"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-gray-400 hover:gradient-text transition text-lg"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-gray-400 hover:gradient-text transition text-lg"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" class="text-gray-400 hover:gradient-text transition text-lg"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" class="text-slate-400 hover:gradient-text transition text-lg"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-slate-400 hover:gradient-text transition text-lg"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:gradient-text transition text-lg"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="text-slate-400 hover:gradient-text transition text-lg"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-white">Produtos</h4>
-                    <ul class="space-y-3 text-gray-400">
+                    <h4 class="text-lg font-bold mb-6 text-slate-200">Produtos</h4>
+                    <ul class="space-y-3 text-slate-400">
                         <li><a href="#" class="hover:gradient-text transition">Pods Descartáveis</a></li>
                         <li><a href="#" class="hover:gradient-text transition">Pods Recarregáveis</a></li>
                         <li><a href="#" class="hover:gradient-text transition">Acessórios</a></li>
@@ -533,8 +533,8 @@ $avaliacoes = [
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-white">Suporte</h4>
-                    <ul class="space-y-3 text-gray-400">
+                    <h4 class="text-lg font-bold mb-6 text-slate-200">Suporte</h4>
+                    <ul class="space-y-3 text-slate-400">
                         <li><a href="#" class="hover:gradient-text transition">WhatsApp: (11) 9999-9999</a></li>
                         <li><a href="#" class="hover:gradient-text transition">FAQ & Dúvidas</a></li>
                         <li><a href="#" class="hover:gradient-text transition">Rastrear Pedido</a></li>
@@ -543,8 +543,8 @@ $avaliacoes = [
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-white">Legal</h4>
-                    <ul class="space-y-3 text-gray-400 text-sm">
+                    <h4 class="text-lg font-bold mb-6 text-slate-200">Legal</h4>
+                    <ul class="space-y-3 text-slate-400 text-sm">
                         <li><a href="#" class="hover:gradient-text transition">Política de Privacidade</a></li>
                         <li><a href="#" class="hover:gradient-text transition">Termos de Uso</a></li>
                         <li><a href="#" class="hover:gradient-text transition">Aviso de Saúde</a></li>
@@ -553,13 +553,13 @@ $avaliacoes = [
                 </div>
             </div>
 
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-gray-400 text-center md:text-left">© 2024 Wazzy Vape. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-slate-400 text-center md:text-left">© 2024 Wazzy Vape. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
                 <div class="flex gap-6">
-                    <i class="fab fa-cc-visa text-2xl text-gray-400 hover:gradient-text transition cursor-pointer"></i>
-                    <i class="fab fa-cc-mastercard text-2xl text-gray-400 hover:gradient-text transition cursor-pointer"></i>
-                    <i class="fab fa-cc-paypal text-2xl text-gray-400 hover:gradient-text transition cursor-pointer"></i>
-                    <i class="fab fa-bitcoin text-2xl text-gray-400 hover:gradient-text transition cursor-pointer"></i>
+                    <i class="fab fa-cc-visa text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>
+                    <i class="fab fa-cc-mastercard text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>
+                    <i class="fab fa-cc-paypal text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>
+                    <i class="fab fa-bitcoin text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>
                 </div>
             </div>
         </div>
