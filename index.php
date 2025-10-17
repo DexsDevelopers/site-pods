@@ -48,7 +48,7 @@ try {
 }
 
 $avaliacoes = [
-    ['nome' => 'João Silva', 'texto' => 'Wazzy Vape oferece a melhor qualidade do mercado. Entrega rápida e excelente atendimento!', 'rating' => 5],
+    ['nome' => 'João Silva', 'texto' => 'Wazzy Pods oferece a melhor qualidade do mercado. Entrega rápida e excelente atendimento!', 'rating' => 5],
     ['nome' => 'Maria Santos', 'texto' => 'Adorei! Produtos premium com entrega no prazo. Voltarei com certeza!', 'rating' => 5],
     ['nome' => 'Pedro Costa', 'texto' => 'Melhor loja de pods que já comprei. Qualidade garantida em tudo!', 'rating' => 5],
 ];
@@ -58,8 +58,8 @@ $avaliacoes = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wazzy Vape - Pods Premium</title>
-    <meta name="description" content="Wazzy Vape - Loja premium de pods com qualidade garantida e entrega rápida.">
+    <title>Wazzy Pods - Pods Premium</title>
+    <meta name="description" content="Wazzy Pods - Loja premium de pods com qualidade garantida e entrega rápida.">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -270,7 +270,7 @@ $avaliacoes = [
                     </div>
                     
                     <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight text-slate-50">
-                        Wazzy <span class="gradient-text">Vape</span>
+                        Wazzy <span class="gradient-text">Pods</span>
                     </h1>
                     
                     <p class="text-xl text-slate-300 mb-12 leading-relaxed">
@@ -506,7 +506,7 @@ $avaliacoes = [
                 <div>
                     <div class="text-2xl font-black mb-6 gradient-text flex items-center gap-2">
                         <i class="fas fa-skull-crossbones"></i>
-                        <span>WAZZY VAPE</span>
+                        <span>WAZZY PODS</span>
                     </div>
                     <p class="text-slate-400 mb-6 leading-relaxed">Sua loja premium de pods com qualidade garantida e atendimento excepcional.</p>
                     <div class="flex gap-4">
@@ -549,7 +549,7 @@ $avaliacoes = [
             </div>
 
             <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-slate-400 text-center md:text-left">© 2024 Wazzy Vape. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
+                <p class="text-slate-400 text-center md:text-left">© 2024 Wazzy Pods. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
                 <div class="flex gap-6">
                     <i class="fab fa-cc-visa text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>
                     <i class="fab fa-cc-mastercard text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>

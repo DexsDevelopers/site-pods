@@ -182,7 +182,7 @@ if (!in_array($page, $pages)) {
         <div class="mb-8 px-4">
             <div class="gradient-text text-2xl font-black flex items-center gap-2">
                 <i class="fas fa-skull-crossbones text-2xl"></i>
-                <span>Wazzy Vape</span>
+                <span>Wazzy Pods</span>
             </div>
             <p class="text-xs text-slate-400 mt-2">Panel Administrativo</p>
         </div>
