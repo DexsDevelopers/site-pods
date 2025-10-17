@@ -309,46 +309,6 @@ $marcas = [
             background: #c084fc;
         }
 
-        /* Age Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%);
-            border: 2px solid #9333ea;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
         /* Flash Sale Banner */
         .flash-banner {
             background: linear-gradient(135deg, #ff1744, #d32f2f);
@@ -393,23 +353,6 @@ $marcas = [
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 to-black text-slate-100">
-
-    <!-- Age Verification Modal -->
-    <div id="ageModal" class="modal show">
-        <div class="modal-content">
-            <div class="text-5xl mb-4">⚠️</div>
-            <h2 class="text-2xl font-bold mb-4 text-slate-100">Verificação de Idade</h2>
-            <p class="text-slate-300 mb-6">Você deve ter 18 anos ou mais para acessar este site. Este site contém produtos que podem conter nicotina.</p>
-            <div class="flex gap-4">
-                <button onclick="rejectAge()" class="flex-1 px-4 py-3 bg-slate-600 text-white rounded-lg font-semibold hover:bg-slate-700 transition">
-                    ❌ Sair
-                </button>
-                <button onclick="confirmAge()" class="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold btn-hover">
-                    ✅ Confirmo (18+)
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Header/Navbar -->
     <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 shadow-lg">
@@ -788,25 +731,6 @@ $marcas = [
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     
     <script>
-        // Age Verification
-        function confirmAge() {
-            localStorage.setItem('ageVerified', 'true');
-            document.getElementById('ageModal').classList.remove('show');
-        }
-
-        function rejectAge() {
-            window.location.href = 'https://www.google.com';
-        }
-
-        // Check age verification on load
-        window.addEventListener('load', function() {
-            if (!localStorage.getItem('ageVerified')) {
-                document.getElementById('ageModal').classList.add('show');
-            } else {
-                document.getElementById('ageModal').classList.remove('show');
-            }
-        });
-
         // Initialize AOS
         AOS.init({
             duration: 1000,
