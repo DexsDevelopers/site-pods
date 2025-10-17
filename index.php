@@ -87,7 +87,7 @@ $marcas = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechVapor - Loja Premium de Vaporizadores e Acessórios</title>
+    <title>Loja de Pods - Pods Descartáveis e Recarregáveis</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -418,7 +418,7 @@ $marcas = [
                 <!-- Logo -->
                 <div class="flex items-center gap-3">
                     <div class="gradient-text text-3xl font-bold">
-                        <i class="fas fa-cloud"></i> TechVapor
+                        <i class="fas fa-cloud"></i> Loja de Pods
                     </div>
                 </div>
 
@@ -456,16 +456,16 @@ $marcas = [
                 <div data-aos="fade-right" data-aos-duration="800">
                     <div class="mb-6">
                         <span class="inline-block px-4 py-2 glass rounded-full text-sm font-semibold gradient-text mb-6">
-                            <i class="fas fa-star"></i> Bem-vindo ao TechVapor Premium
+                            <i class="fas fa-star"></i> Bem-vindo à Loja de Pods
                         </span>
                     </div>
                     
                     <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight">
-                        Vapor de <span class="gradient-text">Qualidade</span> Premium
+                        Pods de <span class="gradient-text">Qualidade</span> Premium
                     </h1>
                     
-                    <p class="text-xl text-slate-300 mb-8 leading-relaxed">
-                        Descubra a melhor seleção de vaporizadores, acessórios e líquidos premium. Qualidade garantida, entrega rápida e atendimento impecável.
+                        <p class="text-xl text-slate-300 mb-8 leading-relaxed">
+                        Descubra a melhor seleção de pods descartáveis, pods recarregáveis e acessórios premium. Qualidade garantida, entrega rápida e atendimento impecável.
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4">
@@ -501,7 +501,7 @@ $marcas = [
                     <div class="gradient-animated rounded-3xl p-8 h-full flex items-center justify-center text-white text-center float">
                         <div>
                             <i class="fas fa-cloud text-8xl mb-4 opacity-20"></i>
-                            <h3 class="text-4xl font-black">VAPOR</h3>
+                            <h3 class="text-4xl font-black">PODS</h3>
                             <p class="mt-4 opacity-80 text-lg">Premium & Qualidade</p>
                             <p class="text-5xl mt-6">💨</p>
                         </div>
@@ -606,7 +606,7 @@ $marcas = [
                 <h2 class="text-5xl font-black mb-4">
                     <span class="gradient-text">Blog</span> & Dicas
                 </h2>
-                <p class="text-xl text-slate-400">Aprenda mais sobre vapor e lifestyle</p>
+                <p class="text-xl text-slate-400">Aprenda mais sobre pods e lifestyle</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
@@ -716,9 +716,9 @@ $marcas = [
                 <!-- Brand -->
                 <div>
                     <div class="text-3xl font-bold mb-4 text-purple-400">
-                        <i class="fas fa-cloud mr-2"></i>TechVapor
+                        <i class="fas fa-cloud mr-2"></i>Loja de Pods
                     </div>
-                    <p class="text-slate-400 mb-4">Sua loja premium de vaporizadores e acessórios de qualidade.</p>
+                    <p class="text-slate-400 mb-4">Sua loja premium de pods descartáveis, recarregáveis e acessórios.</p>
                     <div class="flex gap-4">
                         <a href="#" class="text-slate-400 hover:text-purple-400 transition text-lg"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-slate-400 hover:text-purple-400 transition text-lg"><i class="fab fa-instagram"></i></a>
@@ -761,7 +761,7 @@ $marcas = [
             </div>
 
             <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-slate-400">© 2024 TechVapor. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
+                <p class="text-slate-400">© 2024 Loja de Pods. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
                 <div class="flex gap-6 mt-4 md:mt-0">
                     <i class="fab fa-cc-visa text-2xl text-slate-400"></i>
                     <i class="fab fa-cc-mastercard text-2xl text-slate-400"></i>

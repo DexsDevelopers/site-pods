@@ -8,8 +8,8 @@ $product_id = $_GET['id'] ?? 1;
 
 $product = [
     'id' => 1,
-    'nome' => 'Vapor Premium X-01',
-    'categoria' => 'Vaporizadores',
+    'nome' => 'Pod Descartável X-01',
+    'categoria' => 'Pods Descartáveis',
     'preco' => 299.90,
     'preco_original' => 429.90,
     'rating' => 4.8,
@@ -20,8 +20,8 @@ $product = [
         'https://images.unsplash.com/photo-1600856062241-98e5dba7214d?w=600&h=600&fit=crop',
         'https://images.unsplash.com/photo-1617638924702-92d37d439220?w=600&h=600&fit=crop',
     ],
-    'descricao_curta' => 'Vaporizador de última geração com tecnologia avançada',
-    'descricao_completa' => 'Vaporizador Premium X-01 é o topo de linha com tecnologia revolucionária. Bateria de longa duração, design elegante e performance superior.',
+    'descricao_curta' => 'Pod descartável de última geração com excelente autonomia e sabor',
+    'descricao_completa' => 'O Pod Descartável X-01 entrega praticidade e performance com sabores intensos. Autonomia estendida, design elegante e experiência premium para o dia a dia.',
     'estoque' => 12,
     'garantia' => '12 meses',
     'frete' => 'Frete grátis acima de R$ 100',
@@ -65,7 +65,7 @@ $relacionados = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $product['nome']; ?> - TechVapor</title>
+    <title><?php echo $product['nome']; ?> - Loja de Pods</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
@@ -82,7 +82,7 @@ $relacionados = [
     <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 py-4 border-b border-purple-900/30">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
             <a href="../index.php" class="text-2xl font-bold gradient-text">
-                <i class="fas fa-cloud mr-2"></i>TechVapor
+                <i class="fas fa-cloud mr-2"></i>Loja de Pods
             </a>
             <div class="flex gap-4">
                 <a href="javascript:history.back()" class="px-4 py-2 glass rounded-lg hover:bg-white/10 transition">

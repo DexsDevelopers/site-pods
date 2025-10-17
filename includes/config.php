@@ -58,7 +58,7 @@ define('DATABASE_URL', 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname='
 // ========================================
 // CONFIGURAÇÕES DA APLICAÇÃO
 // ========================================
-define('APP_NAME', $_ENV['APP_NAME'] ?? 'TechVapor');
+define('APP_NAME', $_ENV['APP_NAME'] ?? 'Loja de Pods');
 define('APP_ENV', $_ENV['APP_ENV'] ?? 'production');
 define('APP_DEBUG', $_ENV['APP_DEBUG'] ?? false);
 define('APP_URL', $_ENV['APP_URL'] ?? 'http://localhost');
