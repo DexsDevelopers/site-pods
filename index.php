@@ -62,15 +62,15 @@ $sabores = [
 ];
 
 $avaliacoes = [
-    ['nome' => 'João Silva', 'texto' => 'Melhor loja de vaper que conheço! Produtos de qualidade e entrega rápida!', 'rating' => 5],
+    ['nome' => 'João Silva', 'texto' => 'Melhor loja de pods que conheço! Produtos de qualidade e entrega rápida!', 'rating' => 5],
     ['nome' => 'Maria Santos', 'texto' => 'Adorei o atendimento, muito atencioso e eficiente!', 'rating' => 5],
     ['nome' => 'Pedro Costa', 'texto' => 'Qualidade excepcional, voltarei com certeza!', 'rating' => 4.5],
 ];
 
 $blog = [
-    ['titulo' => 'Guia Completo: Como Escolher seu Primeiro Vaper', 'data' => '15 de Outubro', 'img' => 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=300&h=200&fit=crop'],
+    ['titulo' => 'Guia Completo: Como Escolher seu Primeiro Pod', 'data' => '15 de Outubro', 'img' => 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=300&h=200&fit=crop'],
     ['titulo' => '5 Sabores Imprescindíveis para Iniciantes', 'data' => '12 de Outubro', 'img' => 'https://images.unsplash.com/photo-1600856062241-98e5dba7214d?w=300&h=200&fit=crop'],
-    ['titulo' => 'Manutenção Correta do seu Dispositivo', 'data' => '10 de Outubro', 'img' => 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&h=200&fit=crop'],
+    ['titulo' => 'Manutenção Correta do seu Pod Recarregável', 'data' => '10 de Outubro', 'img' => 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&h=200&fit=crop'],
 ];
 
 $marcas = [
@@ -87,7 +87,8 @@ $marcas = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja de Pods - Pods Descartáveis e Recarregáveis</title>
+    <title>Loja de Pods Premium - Pods Descartáveis e Recarregáveis</title>
+    <meta name="description" content="Loja oficial de pods descartáveis e recarregáveis. Qualidade garantida, entrega rápida. Confira nossa seleção premium.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -107,6 +108,7 @@ $marcas = [
             --primary-dark: #7e22ce;
             --secondary: #1f2937;
             --accent: #c084fc;
+            --success: #10b981;
         }
 
         * {
@@ -117,30 +119,17 @@ $marcas = [
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Glassmorphism */
+        /* Premium Glassmorphism */
         .glass {
-            background: rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(147, 51, 234, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(147, 51, 234, 0.15);
             border-radius: 16px;
         }
 
         body.dark .glass {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(147, 51, 234, 0.3);
-        }
-
-        /* Neumorphism - Soft UI */
-        .neomorphic {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            box-shadow: 8px 8px 16px #0a0a0a, -8px -8px 16px #2a2a3e;
-            border-radius: 20px;
-            border: none;
-        }
-
-        body.dark .neomorphic {
-            background: linear-gradient(145deg, #0f0f1e, #1a1a2e);
-            box-shadow: 8px 8px 16px #000000, -8px -8px 16px #242438;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(147, 51, 234, 0.25);
         }
 
         /* Gradient Text */
@@ -181,35 +170,12 @@ $marcas = [
 
         /* Floating Animation */
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
         .float {
             animation: float 3s ease-in-out infinite;
-        }
-
-        /* Gradient Animated */
-        @keyframes gradient-shift {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        .gradient-animated {
-            background: linear-gradient(-45deg, #000000, #9333ea, #c084fc, #000000);
-            background-size: 400% 400%;
-            animation: gradient-shift 15s ease infinite;
         }
 
         /* Card Hover Effect */
@@ -222,28 +188,39 @@ $marcas = [
             box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3);
         }
 
-        /* Ripple Effect */
-        .ripple {
+        /* Badge Animation */
+        .badge-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Trust Badge */
+        .trust-badge {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Premium Hero */
+        .hero-gradient {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             position: relative;
             overflow: hidden;
         }
 
-        .ripple::after {
+        .hero-gradient::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .ripple:active::after {
-            width: 300px;
-            height: 300px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(192, 132, 252, 0.1) 0%, transparent 50%);
+            pointer-events: none;
         }
 
         /* Scroll to top button */
@@ -260,31 +237,6 @@ $marcas = [
         .scroll-top.show {
             opacity: 1;
             visibility: visible;
-        }
-
-        /* Badge Animation */
-        .badge-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        /* Tailwind Dark Mode */
-        body.dark {
-            background-color: #0a0a0f;
-            color: #e0e7ff;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%);
-            color: #e0e7ff;
         }
 
         /* Smooth scrollbar */
@@ -309,68 +261,71 @@ $marcas = [
             background: #c084fc;
         }
 
-        /* Flash Sale Banner */
-        .flash-banner {
-            background: linear-gradient(135deg, #ff1744, #d32f2f);
-            position: relative;
-            overflow: hidden;
+        /* Section Divider */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.3), transparent);
         }
 
-        .flash-banner::before {
-            content: '';
+        /* Premium Input */
+        .premium-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .premium-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(147, 51, 234, 0.6);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.2);
+        }
+
+        /* Product Badge */
+        .badge-sale {
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shine 2s infinite;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #ff1744, #d32f2f);
+            padding: 8px 12px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            animation: pulse 2s infinite;
+            z-index: 10;
         }
 
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        /* Tailwind Dark Mode */
+        body.dark {
+            background-color: #0a0a0f;
+            color: #e0e7ff;
         }
 
-        /* Pulse effect for sale items */
-        .pulse-sale {
-            animation: pulseSale 1s ease-in-out infinite;
-        }
-
-        @keyframes pulseSale {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* Live chat bubble */
-        .chat-bubble {
-            position: fixed;
-            bottom: 80px;
-            right: 30px;
-            z-index: 98;
-            animation: float 3s ease-in-out infinite;
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%);
+            color: #e0e7ff;
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 to-black text-slate-100">
 
-    <!-- Header/Navbar -->
-    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 shadow-lg">
+    <!-- Header/Navbar Premium -->
+    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 shadow-lg border-b border-purple-900/30">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <div class="gradient-text text-3xl font-bold">
-                        <i class="fas fa-cloud"></i> Loja de Pods
+                    <div class="gradient-text text-3xl font-bold flex items-center gap-2">
+                        <i class="fas fa-cloud-mist"></i>
+                        <span>Loja de Pods</span>
                     </div>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#home" class="text-slate-300 hover:text-purple-400 transition">Home</a>
-                    <a href="#produtos" class="text-slate-300 hover:text-purple-400 transition">Produtos</a>
-                    <a href="#sabores" class="text-slate-300 hover:text-purple-400 transition">Sabores</a>
-                    <a href="#blog" class="text-slate-300 hover:text-purple-400 transition">Blog</a>
+                    <a href="#home" class="text-slate-300 hover:text-purple-400 transition font-medium">Home</a>
+                    <a href="#produtos" class="text-slate-300 hover:text-purple-400 transition font-medium">Produtos</a>
+                    <a href="#categorias" class="text-slate-300 hover:text-purple-400 transition font-medium">Categorias</a>
+                    <a href="#avaliacoes" class="text-slate-300 hover:text-purple-400 transition font-medium">Avaliações</a>
                 </div>
 
                 <!-- Right Side -->
@@ -391,62 +346,63 @@ $marcas = [
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto w-full">
+    <!-- Hero Section Premium -->
+    <section id="home" class="hero-gradient pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative">
+        <div class="max-w-7xl mx-auto w-full relative z-10">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <!-- Left Content -->
-                <div data-aos="fade-right" data-aos-duration="800">
-                    <div class="mb-6">
-                        <span class="inline-block px-4 py-2 glass rounded-full text-sm font-semibold gradient-text mb-6">
-                            <i class="fas fa-star"></i> Bem-vindo à Loja de Pods
+                <div data-aos="fade-right" data-aos-duration="1000">
+                    <div class="mb-8">
+                        <span class="inline-block px-5 py-2 glass rounded-full text-sm font-bold gradient-text mb-6">
+                            <i class="fas fa-star"></i> Premium Quality Pods
                         </span>
                     </div>
                     
-                    <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight">
-                        Pods de <span class="gradient-text">Qualidade</span> Premium
+                    <h1 class="text-7xl md:text-8xl font-black mb-6 leading-tight">
+                        Pods de <span class="gradient-text">Qualidade</span>
                     </h1>
                     
-                        <p class="text-xl text-slate-300 mb-8 leading-relaxed">
-                        Descubra a melhor seleção de pods descartáveis, pods recarregáveis e acessórios premium. Qualidade garantida, entrega rápida e atendimento impecável.
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
+                        Descubra a melhor seleção de pods descartáveis e recarregáveis. Qualidade garantida, entrega rápida e atendimento excepcional para você.
                     </p>
 
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 hover:shadow-xl text-lg">
+                    <div class="flex flex-col sm:flex-row gap-5 mb-12">
+                        <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 hover:shadow-xl text-lg transition-all duration-300">
                             <i class="fas fa-shopping-bag mr-2"></i>
                             Comprar Agora
                         </button>
-                        <button class="px-8 py-4 glass text-white rounded-lg font-bold btn-hover ripple relative z-10 text-lg">
-                            <i class="fas fa-play mr-2"></i>
-                            Ver Catálogo
+                        <button class="px-8 py-4 glass text-white rounded-lg font-bold btn-hover ripple relative z-10 text-lg hover:bg-white/20 transition-all">
+                            <i class="fas fa-arrow-down mr-2"></i>
+                            Ver Produtos
                         </button>
                     </div>
 
-                    <!-- Stats -->
-                    <div class="flex gap-12 mt-12">
-                        <div>
-                            <div class="text-4xl font-black gradient-text">500+</div>
-                            <div class="text-slate-400">Produtos</div>
+                    <!-- Trust Signals -->
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="trust-badge p-4 rounded-lg backdrop-blur">
+                            <div class="text-2xl font-bold gradient-text">500+</div>
+                            <div class="text-xs text-slate-400 mt-1">Produtos</div>
                         </div>
-                        <div>
-                            <div class="text-4xl font-black gradient-text">10K+</div>
-                            <div class="text-slate-400">Clientes</div>
+                        <div class="trust-badge p-4 rounded-lg backdrop-blur">
+                            <div class="text-2xl font-bold gradient-text">10K+</div>
+                            <div class="text-xs text-slate-400 mt-1">Clientes</div>
                         </div>
-                        <div>
-                            <div class="text-4xl font-black gradient-text">24/7</div>
-                            <div class="text-slate-400">Suporte</div>
+                        <div class="trust-badge p-4 rounded-lg backdrop-blur">
+                            <div class="text-2xl font-bold gradient-text">4.9★</div>
+                            <div class="text-xs text-slate-400 mt-1">Avaliação</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Right Visual -->
-                <div data-aos="fade-left" data-aos-duration="800" class="relative h-96 md:h-full">
-                    <div class="gradient-animated rounded-3xl p-8 h-full flex items-center justify-center text-white text-center float">
+                <div data-aos="fade-left" data-aos-duration="1000" class="relative h-96 md:h-full min-h-96">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-3xl blur-3xl"></div>
+                    <div class="relative h-full bg-gradient-to-br from-purple-900/40 to-black rounded-3xl p-8 flex items-center justify-center text-white text-center float border border-purple-500/30">
                         <div>
-                            <i class="fas fa-cloud text-8xl mb-4 opacity-20"></i>
-                            <h3 class="text-4xl font-black">PODS</h3>
-                            <p class="mt-4 opacity-80 text-lg">Premium & Qualidade</p>
-                            <p class="text-5xl mt-6">💨</p>
+                            <i class="fas fa-cloud-mist text-8xl mb-6 opacity-30"></i>
+                            <h3 class="text-5xl font-black mb-4">PREMIUM</h3>
+                            <p class="text-xl opacity-80 mb-2">Pods & Qualidade</p>
+                            <p class="text-6xl mt-8">💨</p>
                         </div>
                     </div>
                 </div>
@@ -454,273 +410,270 @@ $marcas = [
         </div>
     </section>
 
-    <!-- Sabores Section -->
-    <section id="sabores" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
+    <!-- Quick Stats Banner -->
+    <section class="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-900/30 to-transparent border-y border-purple-900/20">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-5xl font-black mb-4">
-                    Explore nossos <span class="gradient-text">Sabores</span>
-                </h2>
-                <p class="text-xl text-slate-400">Mais de 150 sabores incríveis para escolher</p>
-            </div>
-
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <?php foreach ($sabores as $i => $sabor): ?>
-                <div class="neomorphic p-8 text-center hover:shadow-2xl transition cursor-pointer group" data-aos="zoom-in" data-aos-delay="<?php echo $i * 100; ?>">
-                    <div class="text-7xl mb-4 group-hover:scale-125 transition">
-                        <?php echo $sabor['emoji']; ?>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-100"><?php echo $sabor['nome']; ?></h3>
-                    <p class="text-slate-400 mb-4 text-lg"><?php echo $sabor['produtos']; ?> produtos</p>
-                    <button class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover text-base">
-                        Explorar <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-truck text-3xl text-green-400 mb-2"></i>
+                    <p class="font-bold">Frete Grátis</p>
+                    <p class="text-xs text-slate-400">Acima de R$ 100</p>
                 </div>
-                <?php endforeach; ?>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-shield-alt text-3xl text-blue-400 mb-2"></i>
+                    <p class="font-bold">100% Seguro</p>
+                    <p class="text-xs text-slate-400">Proteção total</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-redo text-3xl text-purple-400 mb-2"></i>
+                    <p class="font-bold">Devolução</p>
+                    <p class="text-xs text-slate-400">30 dias garantidos</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-headset text-3xl text-pink-400 mb-2"></i>
+                    <p class="font-bold">Suporte 24/7</p>
+                    <p class="text-xs text-slate-400">Sempre pronto</p>
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- Categorias Section -->
+    <section id="categorias" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-5xl font-black mb-4">
+                    Escolha sua <span class="gradient-text">Categoria</span>
+                </h2>
+                <p class="text-xl text-slate-400">Pods descartáveis, recarregáveis e acessórios premium</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="group glass rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer border border-purple-500/20 hover:border-purple-500/50" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="text-6xl mb-4">📱</div>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-400 transition">Pods Descartáveis</h3>
+                    <p class="text-slate-400 mb-4">Pronto para usar, máxima praticidade</p>
+                    <p class="text-sm text-purple-400 font-bold">24+ Produtos</p>
+                </div>
+                <div class="group glass rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer border border-purple-500/20 hover:border-purple-500/50" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="text-6xl mb-4">🔄</div>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-400 transition">Pods Recarregáveis</h3>
+                    <p class="text-slate-400 mb-4">Sustentável e econômico</p>
+                    <p class="text-sm text-purple-400 font-bold">18+ Produtos</p>
+                </div>
+                <div class="group glass rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer border border-purple-500/20 hover:border-purple-500/50" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="text-6xl mb-4">🎁</div>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-400 transition">Acessórios</h3>
+                    <p class="text-slate-400 mb-4">Tudo que você precisa</p>
+                    <p class="text-sm text-purple-400 font-bold">31+ Produtos</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider max-w-7xl mx-auto"></div>
 
     <!-- Produtos Destaque -->
     <section id="produtos" class="py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-2 glass rounded-full text-sm font-bold gradient-text mb-4">
+                    <i class="fas fa-fire"></i> Mais Vendidos
+                </span>
                 <h2 class="text-5xl font-black mb-4">
-                    Nossos <span class="gradient-text">Destaques</span>
+                    Produtos em <span class="gradient-text">Destaque</span>
                 </h2>
-                <p class="text-xl text-slate-400">Produtos mais vendidos e bem avaliados</p>
+                <p class="text-xl text-slate-400">Seleção premium de mais vendidos</p>
             </div>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php foreach ($produtos as $i => $produto): ?>
-                <div class="glass rounded-2xl overflow-hidden card-hover group relative" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <?php foreach (array_slice($produtos, 0, 8) as $i => $produto): ?>
+                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-500/20 hover:border-purple-500/50" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
                     <!-- Sale Badge -->
-                    <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-2 rounded-full text-sm font-bold badge-pulse z-10">
+                    <div class="badge-sale">
                         -30%
                     </div>
 
                     <!-- Product Image -->
-                    <div class="relative h-48 overflow-hidden bg-gradient-to-br from-purple-900 to-black">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-purple-900/50 to-black">
                         <img src="<?php echo htmlspecialchars($produto['imagem'] ?? 'https://via.placeholder.com/400x300?text=' . urlencode($produto['nome'])); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=Produto'">
-                        <div class="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        <div class="absolute top-4 left-4 bg-purple-600/80 backdrop-blur text-white px-3 py-1 rounded-full text-xs font-bold">
                             <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
                         </div>
                     </div>
 
                     <!-- Content -->
-                    <div class="p-6">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-cloud text-purple-400 mr-2 text-xl"></i>
-                            <h3 class="text-xl font-bold text-slate-100"><?php echo htmlspecialchars($produto['nome']); ?></h3>
+                    <div class="p-5">
+                        <div class="flex items-start gap-2 mb-3">
+                            <i class="fas fa-cloud-mist text-purple-400 text-lg flex-shrink-0 mt-0.5"></i>
+                            <h3 class="text-lg font-bold text-slate-100 line-clamp-2"><?php echo htmlspecialchars($produto['nome']); ?></h3>
                         </div>
-                        <p class="text-slate-400 text-sm mb-4"><?php echo htmlspecialchars(substr($produto['descricao'] ?? '', 0, 100)); ?>...</p>
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars(substr($produto['descricao'] ?? '', 0, 80)); ?>...</p>
                         
-                        <!-- Rating (simulado) -->
+                        <!-- Rating -->
                         <div class="flex items-center justify-between mb-4">
-                            <div class="flex gap-1">
+                            <div class="flex gap-0.5">
                                 <?php for($j = 0; $j < 5; $j++): ?>
-                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
                                 <?php endfor; ?>
                             </div>
-                            <span class="text-yellow-400 font-bold">5.0</span>
+                            <span class="text-yellow-400 text-xs font-bold">5.0</span>
                         </div>
 
                         <!-- Price -->
-                        <div class="mb-4">
+                        <div class="mb-5 pb-5 border-b border-slate-700">
                             <span class="text-2xl font-black gradient-text">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></span>
-                            <span class="text-slate-500 line-through ml-2">R$ <?php echo number_format($produto['preco'] * 1.43, 2, ',', '.'); ?></span>
+                            <span class="text-slate-500 line-through ml-2 text-sm">R$ <?php echo number_format($produto['preco'] * 1.43, 2, ',', '.'); ?></span>
                         </div>
 
-                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $produto['preco']; ?>)" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10">
+                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $produto['preco']; ?>)" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 text-sm hover:shadow-lg transition">
                             <i class="fas fa-cart-plus mr-2"></i>
-                            Adicionar ao Carrinho
+                            Adicionar
                         </button>
                     </div>
                 </div>
                 <?php endforeach; ?>
             </div>
-        </div>
-    </section>
 
-    <!-- Blog Section -->
-    <section id="blog" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-5xl font-black mb-4">
-                    <span class="gradient-text">Blog</span> & Dicas
-                </h2>
-                <p class="text-xl text-slate-400">Aprenda mais sobre pods e lifestyle</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <?php foreach ($blog as $i => $post): ?>
-                <div class="glass rounded-2xl overflow-hidden card-hover group cursor-pointer" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
-                    <div class="h-48 overflow-hidden bg-gradient-to-br from-purple-900 to-black">
-                        <img src="<?php echo $post['img']; ?>" alt="" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    </div>
-                    <div class="p-6">
-                        <p class="text-purple-400 text-sm font-bold mb-2">
-                            <i class="fas fa-calendar mr-2"></i><?php echo $post['data']; ?>
-                        </p>
-                        <h3 class="text-lg font-bold text-slate-100 group-hover:text-purple-400 transition"><?php echo $post['titulo']; ?></h3>
-                        <button class="mt-4 text-purple-400 font-bold group-hover:text-pink-600 transition">
-                            Leia mais <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-
-    <!-- Marcas Section -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-5xl font-black mb-4">
-                    Marcas <span class="gradient-text">Premium</span>
-                </h2>
-                <p class="text-xl text-slate-400">Trabalhamos com as melhores marcas do mundo</p>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                <?php foreach ($marcas as $i => $marca): ?>
-                <div class="neomorphic p-8 text-center hover:shadow-2xl transition group cursor-pointer" data-aos="zoom-in" data-aos-delay="<?php echo $i * 50; ?>">
-                    <div class="text-5xl font-black gradient-text group-hover:scale-125 transition mb-3">
-                        <?php echo $marca['logo']; ?>
-                    </div>
-                    <p class="text-slate-300 font-bold"><?php echo $marca['nome']; ?></p>
-                </div>
-                <?php endforeach; ?>
+            <div class="text-center mt-12">
+                <button class="px-10 py-4 glass border border-purple-500/50 rounded-lg font-bold hover:bg-white/10 transition btn-hover text-lg">
+                    <i class="fas fa-box mr-2"></i>
+                    Ver Todos os Produtos
+                </button>
             </div>
         </div>
     </section>
 
     <!-- Avaliações -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-900/20 to-black/20">
+    <section id="avaliacoes" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-900/20 to-black/20">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-5xl font-black mb-4">
                     O que nossos <span class="gradient-text">Clientes</span> dizem
                 </h2>
-                <p class="text-xl text-slate-400">4.9 ★ em mais de 1000 avaliações</p>
+                <div class="flex justify-center gap-1 mb-4">
+                    <?php for($i = 0; $i < 5; $i++): ?>
+                        <i class="fas fa-star text-yellow-400 text-2xl"></i>
+                    <?php endfor; ?>
+                </div>
+                <p class="text-xl text-slate-400">4.9 ★ em mais de 2.500 avaliações verificadas</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
                 <?php foreach ($avaliacoes as $i => $avaliacao): ?>
-                <div class="glass rounded-2xl p-8 card-hover" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                <div class="glass rounded-2xl p-8 card-hover border border-purple-500/20 hover:border-purple-500/50" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
                     <div class="flex gap-1 mb-4">
                         <?php for($j = 0; $j < 5; $j++): ?>
                             <i class="fas fa-star text-yellow-400 text-lg"></i>
                         <?php endfor; ?>
                     </div>
-                    <p class="text-slate-300 mb-4 italic">"<?php echo $avaliacao['texto']; ?>"</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-user text-white"></i>
+                    <p class="text-slate-300 mb-6 italic text-lg">"<?php echo $avaliacao['texto']; ?>"</p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-slate-700">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user text-white text-lg"></i>
                         </div>
                         <div>
                             <p class="font-bold text-slate-100"><?php echo $avaliacao['nome']; ?></p>
-                            <p class="text-slate-400 text-sm">Cliente verificado</p>
+                            <p class="text-slate-400 text-sm"><i class="fas fa-check-circle text-green-400 mr-1"></i>Comprador Verificado</p>
                         </div>
                     </div>
-                    </div>
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>
     </section>
 
-    <!-- Newsletter CTA -->
+    <!-- Newsletter CTA Premium -->
     <section class="py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto" data-aos="fade-up">
-            <div class="glass rounded-3xl p-12 md:p-16 text-center border-2 border-purple-600">
-                <h2 class="text-5xl font-black mb-6 text-slate-100">
-                    Ganhe <span class="gradient-text">15% de Desconto</span>!
-                </h2>
-                <p class="text-xl text-slate-300 mb-8">
-                    Inscreva-se na nossa newsletter e receba 15% OFF + dicas exclusivas!
-                </p>
+            <div class="glass rounded-3xl p-12 md:p-16 text-center border-2 border-purple-600/50 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-full blur-3xl -z-0"></div>
                 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <input type="email" placeholder="seu@email.com" class="px-6 py-4 rounded-lg bg-slate-800 text-slate-100 border border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full sm:w-auto placeholder-slate-500 text-base">
-                    <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 whitespace-nowrap text-base">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        Inscrever
-                    </button>
+                <div class="relative z-10">
+                    <h2 class="text-5xl font-black mb-6 text-slate-100">
+                        Ganhe <span class="gradient-text">20% OFF</span>
+                    </h2>
+                    <p class="text-xl text-slate-300 mb-10">
+                        Inscreva-se na newsletter e receba 20% de desconto + acesso exclusivo a promoções!
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                        <input type="email" placeholder="seu@email.com" class="flex-1 px-6 py-4 rounded-lg bg-slate-800/50 text-slate-100 border border-purple-600/50 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-slate-500 text-base premium-input">
+                        <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 whitespace-nowrap text-base hover:shadow-xl transition-all">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Inscrever
+                        </button>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-6">📧 Garantido: sem spam, apenas promoções!</p>
                 </div>
             </div>
-            </div>
+        </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Footer Premium -->
     <footer class="bg-black text-slate-300 py-16 px-4 sm:px-6 lg:px-8 border-t border-purple-900/30">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-12 mb-12">
                 <!-- Brand -->
                 <div>
-                    <div class="text-3xl font-bold mb-4 text-purple-400">
-                        <i class="fas fa-cloud mr-2"></i>Loja de Pods
+                    <div class="text-3xl font-bold mb-6 text-purple-400 flex items-center gap-2">
+                        <i class="fas fa-cloud-mist"></i>
+                        <span>Loja de Pods</span>
                     </div>
-                    <p class="text-slate-400 mb-4">Sua loja premium de pods descartáveis, recarregáveis e acessórios.</p>
+                    <p class="text-slate-400 mb-6 leading-relaxed">Sua loja premium de pods descartáveis, recarregáveis e acessórios de qualidade superior.</p>
                     <div class="flex gap-4">
-                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-lg"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-lg"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-lg"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
 
                 <!-- Produtos -->
                 <div>
-                    <h4 class="text-lg font-bold mb-4 text-slate-100">Produtos</h4>
-                    <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-purple-400 transition">Vaporizadores</a></li>
+                    <h4 class="text-lg font-bold mb-6 text-slate-100">Produtos</h4>
+                    <ul class="space-y-3 text-slate-400">
+                        <li><a href="#" class="hover:text-purple-400 transition">Pods Descartáveis</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Pods Recarregáveis</a></li>
                         <li><a href="#" class="hover:text-purple-400 transition">Acessórios</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Líquidos</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Black Friday</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Ofertas Especiais</a></li>
                     </ul>
                 </div>
 
                 <!-- Suporte -->
                 <div>
-                    <h4 class="text-lg font-bold mb-4 text-slate-100">Suporte</h4>
-                    <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-purple-400 transition">WhatsApp</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">FAQ</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Envios</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Devoluções</a></li>
+                    <h4 class="text-lg font-bold mb-6 text-slate-100">Suporte</h4>
+                    <ul class="space-y-3 text-slate-400">
+                        <li><a href="#" class="hover:text-purple-400 transition">WhatsApp: (11) 9999-9999</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">FAQ & Dúvidas</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Rastrear Pedido</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Trocas e Devoluções</a></li>
                     </ul>
                 </div>
 
                 <!-- Legal -->
                 <div>
-                    <h4 class="text-lg font-bold mb-4 text-slate-100">Legal</h4>
-                    <ul class="space-y-2 text-slate-400 text-sm">
-                        <li><a href="#" class="hover:text-purple-400 transition">Privacidade</a></li>
+                    <h4 class="text-lg font-bold mb-6 text-slate-100">Legal</h4>
+                    <ul class="space-y-3 text-slate-400 text-sm">
+                        <li><a href="#" class="hover:text-purple-400 transition">Política de Privacidade</a></li>
                         <li><a href="#" class="hover:text-purple-400 transition">Termos de Uso</a></li>
                         <li><a href="#" class="hover:text-purple-400 transition">Aviso de Saúde</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">18+ Years Only</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition">Restrição de Idade: 18+</a></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-slate-400">© 2024 Loja de Pods. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
-                <div class="flex gap-6 mt-4 md:mt-0">
-                    <i class="fab fa-cc-visa text-2xl text-slate-400"></i>
-                    <i class="fab fa-cc-mastercard text-2xl text-slate-400"></i>
-                    <i class="fab fa-cc-paypal text-2xl text-slate-400"></i>
-                    <i class="fab fa-bitcoin text-2xl text-slate-400"></i>
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-slate-400 text-center md:text-left">© 2024 Loja de Pods. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
+                <div class="flex gap-6">
+                    <i class="fab fa-cc-visa text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
+                    <i class="fab fa-cc-mastercard text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
+                    <i class="fab fa-cc-paypal text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
+                    <i class="fab fa-bitcoin text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- Live Chat Widget -->
-    <div class="chat-bubble">
-        <button class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full hover:shadow-lg transition shadow-lg">
-            <i class="fas fa-comments text-2xl"></i>
-        </button>
-    </div>
 
     <!-- Scroll to Top Button -->
     <button id="scroll-top" class="scroll-top bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full hover:shadow-lg transition">
@@ -787,8 +740,8 @@ $marcas = [
         
         // Hero Title Animation
         gsap.from('h1', {
-            duration: 1,
-            y: 50,
+            duration: 1.2,
+            y: 60,
             opacity: 0,
             ease: 'power3.out'
         });
@@ -801,6 +754,15 @@ $marcas = [
             stagger: 0.2,
             ease: 'power2.out'
         });
+
+        // Add to Cart
+        function addToCart(id, nome, preco) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const item = { id, nome, preco, qty: 1 };
+            cart.push(item);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('✅ ' + nome + ' adicionado ao carrinho!');
+        }
     </script>
 
 </body>
