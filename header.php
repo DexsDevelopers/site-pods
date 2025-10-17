@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja de Pods - Pods Descartáveis e Recarregáveis</title>
+    <title>Wazzy Vape - Pods Neon Premium</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -11,7 +11,7 @@
 
 <header class="main-header">
     <div class="container">
-        <a href="index.php" class="logo">Loja de Pods</a>
+        <a href="index.php" class="logo">Wazzy Vape</a>
         <nav class="main-nav">
             <ul class="nav-list">
                 <li><a href="#">Pods</a></li>

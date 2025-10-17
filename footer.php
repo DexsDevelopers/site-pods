@@ -1,7 +1,7 @@
 <footer class="main-footer">
         <div class="container">
-            <p>&copy; <?php echo date("Y"); ?> Loja de Pods. Todos os direitos reservados.</p>
-            <p>Este é um exemplo de site moderno e responsivo em PHP.</p>
+            <p>&copy; <?php echo date("Y"); ?> Wazzy Vape. Todos os direitos reservados.</p>
+            <p>Pods neon premium com design extraordinário e qualidade garantida.</p>
         </div>
     </footer>
 

@@ -1,15 +1,11 @@
 <?php
-// Configuração de erros ANTES de tudo
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 
-// Iniciar buffer para capturar erros
 ob_start();
-
 session_start();
 
-// Tente carregar configurações
 try {
     if (!file_exists('includes/config.php')) {
         throw new Exception('Arquivo config.php não encontrado');
@@ -26,17 +22,14 @@ try {
     $produtos = [];
 }
 
-// Tente buscar dados do banco
 try {
     if (isset($db)) {
         $db = Database::getInstance();
         
-        // Buscar categorias
         $stmt = $db->getConnection()->prepare("SELECT * FROM categories ORDER BY nome LIMIT 6");
         $stmt->execute();
         $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Buscar produtos em destaque (últimos 8)
         $stmt = $db->getConnection()->prepare(
             "SELECT p.*, c.nome as categoria_nome FROM products p 
              LEFT JOIN categories c ON p.categoria_id = c.id 
@@ -62,24 +55,9 @@ $sabores = [
 ];
 
 $avaliacoes = [
-    ['nome' => 'João Silva', 'texto' => 'Melhor loja de pods que conheço! Produtos de qualidade e entrega rápida!', 'rating' => 5],
-    ['nome' => 'Maria Santos', 'texto' => 'Adorei o atendimento, muito atencioso e eficiente!', 'rating' => 5],
-    ['nome' => 'Pedro Costa', 'texto' => 'Qualidade excepcional, voltarei com certeza!', 'rating' => 4.5],
-];
-
-$blog = [
-    ['titulo' => 'Guia Completo: Como Escolher seu Primeiro Pod', 'data' => '15 de Outubro', 'img' => 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=300&h=200&fit=crop'],
-    ['titulo' => '5 Sabores Imprescindíveis para Iniciantes', 'data' => '12 de Outubro', 'img' => 'https://images.unsplash.com/photo-1600856062241-98e5dba7214d?w=300&h=200&fit=crop'],
-    ['titulo' => 'Manutenção Correta do seu Pod Recarregável', 'data' => '10 de Outubro', 'img' => 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&h=200&fit=crop'],
-];
-
-$marcas = [
-    ['nome' => 'VooPoo', 'logo' => 'V'],
-    ['nome' => 'Geekvape', 'logo' => 'G'],
-    ['nome' => 'Smok', 'logo' => 'S'],
-    ['nome' => 'Lost Vape', 'logo' => 'L'],
-    ['nome' => 'Eleaf', 'logo' => 'E'],
-    ['nome' => 'Innokin', 'logo' => 'I'],
+    ['nome' => 'João Silva', 'texto' => 'Wazzy Vape é incrível! Pods de qualidade e design neon futurista!', 'rating' => 5],
+    ['nome' => 'Maria Santos', 'texto' => 'Adorei! Entrega rápida e atendimento excelente. Recomendo muito!', 'rating' => 5],
+    ['nome' => 'Pedro Costa', 'texto' => 'Melhor marca que conheço. Voltarei sempre!', 'rating' => 5],
 ];
 ?>
 <!DOCTYPE html>
@@ -87,28 +65,22 @@ $marcas = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja de Pods Premium - Pods Descartáveis e Recarregáveis</title>
-    <meta name="description" content="Loja oficial de pods descartáveis e recarregáveis. Qualidade garantida, entrega rápida. Confira nossa seleção premium.">
+    <title>Wazzy Vape - Pods Neon Premium</title>
+    <meta name="description" content="Wazzy Vape - Pods neon premium com design cyberpunk. Qualidade garantida, entrega rápida.">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS - Animate On Scroll -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    
-    <!-- GSAP - Animation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <style>
         :root {
-            --primary: #9333ea;
-            --primary-dark: #7e22ce;
-            --secondary: #1f2937;
-            --accent: #c084fc;
-            --success: #10b981;
+            --primary: #ff00ff;
+            --primary-dark: #cc00cc;
+            --secondary: #1a0033;
+            --accent: #00ffff;
+            --neon-purple: #b000ff;
+            --neon-magenta: #ff0080;
         }
 
         * {
@@ -116,97 +88,89 @@ $marcas = [
         }
 
         body {
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background: linear-gradient(135deg, #0a0015 0%, #1a0033 50%, #0f0020 100%);
+            color: #e0e7ff;
+            position: relative;
         }
 
-        /* Premium Glassmorphism */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(176, 0, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Neon Glow Classes */
+        .neon-glow {
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
+            color: #ff00ff;
+        }
+
+        .neon-glow-cyan {
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+            color: #00ffff;
+        }
+
+        .glow-box {
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3), inset 0 0 20px rgba(255, 0, 255, 0.1);
+            border: 2px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.05);
+        }
+
+        .glow-box-cyan {
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
         .glass {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(147, 51, 234, 0.15);
+            border: 1px solid rgba(255, 0, 255, 0.2);
             border-radius: 16px;
         }
 
-        body.dark .glass {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(147, 51, 234, 0.25);
-        }
-
-        /* Gradient Text */
-        .gradient-text {
-            background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
+        .gradient-neon {
+            background: linear-gradient(135deg, #ff00ff 0%, #00ffff 50%, #b000ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        /* Smooth Transitions */
-        .btn-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+        .btn-neon {
+            background: linear-gradient(135deg, #ff00ff, #b000ff);
+            color: white;
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
-        .btn-hover::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: left 0.3s ease;
-            z-index: 0;
-        }
-
-        .btn-hover:hover::before {
-            left: 100%;
-        }
-
-        .btn-hover:hover {
+        .btn-neon:hover {
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.8), inset 0 0 20px rgba(255, 0, 255, 0.2);
             transform: translateY(-3px);
-            box-shadow: 0 12px 24px rgba(147, 51, 234, 0.4);
         }
 
-        /* Floating Animation */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .float {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        /* Card Hover Effect */
         .card-hover {
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .card-hover:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
         }
 
-        /* Badge Animation */
-        .badge-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Trust Badge */
-        .trust-badge {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        /* Premium Hero */
         .hero-gradient {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #0a0015 0%, #1a0033 50%, #0f0020 100%);
             position: relative;
             overflow: hidden;
         }
@@ -214,16 +178,32 @@ $marcas = [
         .hero-gradient::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(192, 132, 252, 0.1) 0%, transparent 50%);
-            pointer-events: none;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 0, 255, 0.1) 0%, transparent 70%);
+            animation: float 20s infinite;
         }
 
-        /* Scroll to top button */
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+        }
+
+        @keyframes neon-pulse {
+            0%, 100% { 
+                text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+            }
+            50% { 
+                text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 60px #ff00ff;
+            }
+        }
+
+        .neon-pulse {
+            animation: neon-pulse 2s ease-in-out infinite;
+        }
+
         .scroll-top {
             position: fixed;
             bottom: 2rem;
@@ -239,170 +219,113 @@ $marcas = [
             visibility: visible;
         }
 
-        /* Smooth scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #1a1a2e;
-        }
-
-        body.dark ::-webkit-scrollbar-track {
-            background: #0a0a0f;
+            background: rgba(0, 0, 0, 0.4);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #9333ea;
+            background: #ff00ff;
             border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #c084fc;
-        }
-
-        /* Section Divider */
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.3), transparent);
-        }
-
-        /* Premium Input */
-        .premium-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(147, 51, 234, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .premium-input:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(147, 51, 234, 0.6);
-            box-shadow: 0 0 20px rgba(147, 51, 234, 0.2);
-        }
-
-        /* Product Badge */
-        .badge-sale {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, #ff1744, #d32f2f);
-            padding: 8px 12px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            animation: pulse 2s infinite;
-            z-index: 10;
-        }
-
-        /* Tailwind Dark Mode */
-        body.dark {
-            background-color: #0a0a0f;
-            color: #e0e7ff;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%);
-            color: #e0e7ff;
+            background: #00ffff;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 to-black text-slate-100">
+<body class="relative z-10">
 
-    <!-- Header/Navbar Premium -->
-    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 shadow-lg border-b border-purple-900/30">
+    <!-- Header Premium Neon -->
+    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 shadow-lg border-b border-purple-900/50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <div class="gradient-text text-3xl font-bold flex items-center gap-2">
-                        <i class="fas fa-cloud-mist"></i>
-                        <span>Loja de Pods</span>
+                    <div class="neon-glow text-4xl font-black">
+                        <i class="fas fa-skull-crossbones"></i>
+                    </div>
+                    <div>
+                        <div class="neon-glow text-3xl font-black">WAZZY</div>
+                        <div class="neon-glow-cyan text-xs font-bold">VAPE</div>
                     </div>
                 </div>
 
-                <!-- Navigation Links -->
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#home" class="text-slate-300 hover:text-purple-400 transition font-medium">Home</a>
-                    <a href="#produtos" class="text-slate-300 hover:text-purple-400 transition font-medium">Produtos</a>
-                    <a href="#categorias" class="text-slate-300 hover:text-purple-400 transition font-medium">Categorias</a>
-                    <a href="#avaliacoes" class="text-slate-300 hover:text-purple-400 transition font-medium">Avaliações</a>
+                    <a href="#home" class="text-slate-300 hover:neon-glow transition font-bold">HOME</a>
+                    <a href="#produtos" class="text-slate-300 hover:neon-glow transition font-bold">PODS</a>
+                    <a href="#categorias" class="text-slate-300 hover:neon-glow transition font-bold">CATEGORIAS</a>
+                    <a href="#avaliacoes" class="text-slate-300 hover:neon-glow transition font-bold">AVALIAÇÕES</a>
                 </div>
 
-                <!-- Right Side -->
                 <div class="flex items-center gap-4">
-                    <!-- Dark Mode Toggle -->
-                    <button id="theme-toggle" class="p-2 rounded-lg glass hover:bg-white/10 transition btn-hover">
-                        <i class="fas fa-moon text-purple-400 dark:hidden"></i>
-                        <i class="fas fa-sun text-yellow-400 hidden dark:block"></i>
-                    </button>
-
-                    <!-- Cart -->
-                    <button class="relative p-2 rounded-lg glass hover:bg-white/10 transition btn-hover">
-                        <i class="fas fa-shopping-cart text-purple-400"></i>
-                        <span class="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center badge-pulse">0</span>
+                    <button class="relative p-2 glass hover:bg-white/10 transition">
+                        <i class="fas fa-shopping-cart neon-glow"></i>
+                        <span class="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center neon-pulse">0</span>
                     </button>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Hero Section Premium -->
+    <!-- Hero Section Neon -->
     <section id="home" class="hero-gradient pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative">
         <div class="max-w-7xl mx-auto w-full relative z-10">
             <div class="grid md:grid-cols-2 gap-12 items-center">
-                <!-- Left Content -->
                 <div data-aos="fade-right" data-aos-duration="1000">
                     <div class="mb-8">
-                        <span class="inline-block px-5 py-2 glass rounded-full text-sm font-bold gradient-text mb-6">
-                            <i class="fas fa-star"></i> Premium Quality Pods
+                        <span class="inline-block px-5 py-2 glow-box rounded-full text-sm font-bold neon-glow mb-6">
+                            <i class="fas fa-bolt"></i> NEON PREMIUM
                         </span>
                     </div>
                     
-                    <h1 class="text-7xl md:text-8xl font-black mb-6 leading-tight">
-                        Pods de <span class="gradient-text">Qualidade</span>
+                    <h1 class="text-8xl md:text-9xl font-black mb-6 leading-tight neon-glow neon-pulse">
+                        WAZZY
                     </h1>
+                    <h2 class="text-5xl font-black mb-8 gradient-neon">
+                        VAPE
+                    </h2>
                     
-                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
-                        Descubra a melhor seleção de pods descartáveis e recarregáveis. Qualidade garantida, entrega rápida e atendimento excepcional para você.
+                    <p class="text-xl text-slate-300 mb-12 leading-relaxed font-bold">
+                        Pods neon premium com design cyberpunk extraordinário. Qualidade garantida, entrega rápida e atendimento futurista.
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-5 mb-12">
-                        <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 hover:shadow-xl text-lg transition-all duration-300">
-                            <i class="fas fa-shopping-bag mr-2"></i>
-                            Comprar Agora
+                        <button class="px-8 py-4 btn-neon rounded-lg ripple relative z-10 text-lg transition-all duration-300">
+                            <i class="fas fa-cart-plus mr-2"></i>
+                            COMPRAR AGORA
                         </button>
-                        <button class="px-8 py-4 glass text-white rounded-lg font-bold btn-hover ripple relative z-10 text-lg hover:bg-white/20 transition-all">
+                        <button class="px-8 py-4 glow-box-cyan text-cyan-300 rounded-lg font-bold ripple relative z-10 text-lg hover:bg-cyan-900/20 transition-all">
                             <i class="fas fa-arrow-down mr-2"></i>
-                            Ver Produtos
+                            VER PRODUTOS
                         </button>
                     </div>
 
-                    <!-- Trust Signals -->
                     <div class="grid grid-cols-3 gap-6">
-                        <div class="trust-badge p-4 rounded-lg backdrop-blur">
-                            <div class="text-2xl font-bold gradient-text">500+</div>
-                            <div class="text-xs text-slate-400 mt-1">Produtos</div>
+                        <div class="glow-box p-4 rounded-lg backdrop-blur text-center">
+                            <div class="text-3xl font-bold neon-glow">500+</div>
+                            <div class="text-xs text-slate-400 mt-1">PODS</div>
                         </div>
-                        <div class="trust-badge p-4 rounded-lg backdrop-blur">
-                            <div class="text-2xl font-bold gradient-text">10K+</div>
-                            <div class="text-xs text-slate-400 mt-1">Clientes</div>
+                        <div class="glow-box p-4 rounded-lg backdrop-blur text-center">
+                            <div class="text-3xl font-bold neon-glow">10K+</div>
+                            <div class="text-xs text-slate-400 mt-1">CLIENTES</div>
                         </div>
-                        <div class="trust-badge p-4 rounded-lg backdrop-blur">
-                            <div class="text-2xl font-bold gradient-text">4.9★</div>
-                            <div class="text-xs text-slate-400 mt-1">Avaliação</div>
+                        <div class="glow-box p-4 rounded-lg backdrop-blur text-center">
+                            <div class="text-3xl font-bold neon-glow-cyan">5.0★</div>
+                            <div class="text-xs text-slate-400 mt-1">RATING</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Visual -->
                 <div data-aos="fade-left" data-aos-duration="1000" class="relative h-96 md:h-full min-h-96">
-                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-3xl blur-3xl"></div>
-                    <div class="relative h-full bg-gradient-to-br from-purple-900/40 to-black rounded-3xl p-8 flex items-center justify-center text-white text-center float border border-purple-500/30">
+                    <div class="absolute inset-0 glow-box rounded-3xl blur-3xl"></div>
+                    <div class="relative h-full glow-box rounded-3xl p-8 flex items-center justify-center text-white text-center" style="animation: float 3s ease-in-out infinite;">
                         <div>
-                            <i class="fas fa-cloud-mist text-8xl mb-6 opacity-30"></i>
-                            <h3 class="text-5xl font-black mb-4">PREMIUM</h3>
-                            <p class="text-xl opacity-80 mb-2">Pods & Qualidade</p>
-                            <p class="text-6xl mt-8">💨</p>
+                            <i class="fas fa-skull text-9xl mb-6 neon-glow" style="text-shadow: 0 0 30px #ff00ff;"></i>
+                            <h3 class="text-6xl font-black neon-glow">WAZZY</h3>
+                            <p class="text-2xl neon-glow-cyan mt-4">NEON VAPE</p>
                         </div>
                     </div>
                 </div>
@@ -411,27 +334,27 @@ $marcas = [
     </section>
 
     <!-- Quick Stats Banner -->
-    <section class="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-900/30 to-transparent border-y border-purple-900/20">
+    <section class="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-900/30 to-transparent border-y border-purple-900/50">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-truck text-3xl text-green-400 mb-2"></i>
-                    <p class="font-bold">Frete Grátis</p>
+                    <i class="fas fa-truck text-3xl neon-glow-cyan mb-2"></i>
+                    <p class="font-bold">FRETE GRÁTIS</p>
                     <p class="text-xs text-slate-400">Acima de R$ 100</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-shield-alt text-3xl text-blue-400 mb-2"></i>
-                    <p class="font-bold">100% Seguro</p>
+                    <i class="fas fa-shield-alt text-3xl neon-glow mb-2"></i>
+                    <p class="font-bold">100% SEGURO</p>
                     <p class="text-xs text-slate-400">Proteção total</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-redo text-3xl text-purple-400 mb-2"></i>
-                    <p class="font-bold">Devolução</p>
+                    <i class="fas fa-redo text-3xl neon-glow mb-2"></i>
+                    <p class="font-bold">DEVOLUÇÃO</p>
                     <p class="text-xs text-slate-400">30 dias garantidos</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <i class="fas fa-headset text-3xl text-pink-400 mb-2"></i>
-                    <p class="font-bold">Suporte 24/7</p>
+                    <i class="fas fa-headset text-3xl neon-glow-cyan mb-2"></i>
+                    <p class="font-bold">SUPORTE 24/7</p>
                     <p class="text-xs text-slate-400">Sempre pronto</p>
                 </div>
             </div>
@@ -439,96 +362,87 @@ $marcas = [
     </section>
 
     <!-- Categorias Section -->
-    <section id="categorias" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
+    <section id="categorias" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/30">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-5xl font-black mb-4">
-                    Escolha sua <span class="gradient-text">Categoria</span>
-                </h2>
-                <p class="text-xl text-slate-400">Pods descartáveis, recarregáveis e acessórios premium</p>
+                <h2 class="text-5xl font-black mb-4 neon-glow">ESCOLHA SEU</h2>
+                <h2 class="text-5xl font-black neon-glow-cyan">ESTILO</h2>
+                <p class="text-xl text-slate-400 mt-4">Pods descartáveis, recarregáveis e acessórios neon</p>
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer border border-purple-500/20 hover:border-purple-500/50" data-aos="zoom-in" data-aos-delay="0">
+                <div class="group glow-box rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer" data-aos="zoom-in">
                     <div class="text-6xl mb-4">📱</div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-400 transition">Pods Descartáveis</h3>
+                    <h3 class="text-2xl font-bold mb-2 neon-glow">PODS</h3>
+                    <h3 class="text-2xl font-bold mb-2 neon-glow-cyan">DESCARTÁVEIS</h3>
                     <p class="text-slate-400 mb-4">Pronto para usar, máxima praticidade</p>
-                    <p class="text-sm text-purple-400 font-bold">24+ Produtos</p>
+                    <p class="text-sm neon-glow font-bold">24+ PRODUTOS</p>
                 </div>
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer border border-purple-500/20 hover:border-purple-500/50" data-aos="zoom-in" data-aos-delay="100">
+                <div class="group glow-box rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer" data-aos="zoom-in" data-aos-delay="100">
                     <div class="text-6xl mb-4">🔄</div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-400 transition">Pods Recarregáveis</h3>
+                    <h3 class="text-2xl font-bold mb-2 neon-glow">PODS</h3>
+                    <h3 class="text-2xl font-bold mb-2 neon-glow-cyan">RECARREGÁVEIS</h3>
                     <p class="text-slate-400 mb-4">Sustentável e econômico</p>
-                    <p class="text-sm text-purple-400 font-bold">18+ Produtos</p>
+                    <p class="text-sm neon-glow font-bold">18+ PRODUTOS</p>
                 </div>
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer border border-purple-500/20 hover:border-purple-500/50" data-aos="zoom-in" data-aos-delay="200">
+                <div class="group glow-box rounded-2xl p-8 text-center hover:shadow-2xl transition cursor-pointer" data-aos="zoom-in" data-aos-delay="200">
                     <div class="text-6xl mb-4">🎁</div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-400 transition">Acessórios</h3>
+                    <h3 class="text-2xl font-bold mb-2 neon-glow">ACESSÓRIOS</h3>
+                    <h3 class="text-2xl font-bold mb-2 neon-glow-cyan">NEON</h3>
                     <p class="text-slate-400 mb-4">Tudo que você precisa</p>
-                    <p class="text-sm text-purple-400 font-bold">31+ Produtos</p>
+                    <p class="text-sm neon-glow font-bold">31+ PRODUTOS</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="section-divider max-w-7xl mx-auto"></div>
-
     <!-- Produtos Destaque -->
     <section id="produtos" class="py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
-                <span class="inline-block px-4 py-2 glass rounded-full text-sm font-bold gradient-text mb-4">
-                    <i class="fas fa-fire"></i> Mais Vendidos
+                <span class="inline-block px-4 py-2 glow-box rounded-full text-sm font-bold neon-glow mb-4">
+                    <i class="fas fa-fire"></i> MAIS VENDIDOS
                 </span>
-                <h2 class="text-5xl font-black mb-4">
-                    Produtos em <span class="gradient-text">Destaque</span>
-                </h2>
-                <p class="text-xl text-slate-400">Seleção premium de mais vendidos</p>
+                <h2 class="text-5xl font-black mb-4 neon-glow">PRODUTOS EM</h2>
+                <h2 class="text-5xl font-black neon-glow-cyan">DESTAQUE</h2>
+                <p class="text-xl text-slate-400 mt-4">Seleção premium de pods neon</p>
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <?php foreach (array_slice($produtos, 0, 8) as $i => $produto): ?>
-                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-500/20 hover:border-purple-500/50" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
-                    <!-- Sale Badge -->
-                    <div class="badge-sale">
+                <div class="glow-box rounded-2xl overflow-hidden card-hover group relative" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
+                    <div class="absolute top-4 right-4 px-3 py-2 rounded-full text-sm font-bold neon-glow z-10 glow-box">
                         -30%
                     </div>
 
-                    <!-- Product Image -->
                     <div class="relative h-56 overflow-hidden bg-gradient-to-br from-purple-900/50 to-black">
                         <img src="<?php echo htmlspecialchars($produto['imagem'] ?? 'https://via.placeholder.com/400x300?text=' . urlencode($produto['nome'])); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=Produto'">
-                        <div class="absolute top-4 left-4 bg-purple-600/80 backdrop-blur text-white px-3 py-1 rounded-full text-xs font-bold">
-                            <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
+                        <div class="absolute top-4 left-4 neon-glow-cyan px-3 py-1 rounded-full text-xs font-bold glow-box-cyan">
+                            <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'NOVO'); ?>
                         </div>
                     </div>
 
-                    <!-- Content -->
                     <div class="p-5">
-                        <div class="flex items-start gap-2 mb-3">
-                            <i class="fas fa-cloud-mist text-purple-400 text-lg flex-shrink-0 mt-0.5"></i>
-                            <h3 class="text-lg font-bold text-slate-100 line-clamp-2"><?php echo htmlspecialchars($produto['nome']); ?></h3>
-                        </div>
+                        <h3 class="text-lg font-bold neon-glow line-clamp-2 mb-3"><?php echo htmlspecialchars($produto['nome']); ?></h3>
                         <p class="text-slate-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars(substr($produto['descricao'] ?? '', 0, 80)); ?>...</p>
                         
-                        <!-- Rating -->
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex gap-0.5">
                                 <?php for($j = 0; $j < 5; $j++): ?>
-                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star neon-glow text-xs"></i>
                                 <?php endfor; ?>
                             </div>
-                            <span class="text-yellow-400 text-xs font-bold">5.0</span>
+                            <span class="neon-glow text-xs font-bold">5.0</span>
                         </div>
 
-                        <!-- Price -->
                         <div class="mb-5 pb-5 border-b border-slate-700">
-                            <span class="text-2xl font-black gradient-text">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></span>
+                            <span class="text-2xl font-black neon-glow">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></span>
                             <span class="text-slate-500 line-through ml-2 text-sm">R$ <?php echo number_format($produto['preco'] * 1.43, 2, ',', '.'); ?></span>
                         </div>
 
-                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $produto['preco']; ?>)" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 text-sm hover:shadow-lg transition">
+                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $produto['preco']; ?>)" class="w-full py-3 btn-neon rounded-lg font-bold text-sm transition">
                             <i class="fas fa-cart-plus mr-2"></i>
-                            Adicionar
+                            ADICIONAR
                         </button>
                     </div>
                 </div>
@@ -536,9 +450,9 @@ $marcas = [
             </div>
 
             <div class="text-center mt-12">
-                <button class="px-10 py-4 glass border border-purple-500/50 rounded-lg font-bold hover:bg-white/10 transition btn-hover text-lg">
+                <button class="px-10 py-4 glow-box rounded-lg font-bold text-lg neon-glow hover:shadow-2xl transition">
                     <i class="fas fa-box mr-2"></i>
-                    Ver Todos os Produtos
+                    VER TODOS OS PRODUTOS
                 </button>
             </div>
         </div>
@@ -548,33 +462,32 @@ $marcas = [
     <section id="avaliacoes" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-900/20 to-black/20">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-5xl font-black mb-4">
-                    O que nossos <span class="gradient-text">Clientes</span> dizem
-                </h2>
-                <div class="flex justify-center gap-1 mb-4">
+                <h2 class="text-5xl font-black mb-4 neon-glow">O QUE NOSSOS</h2>
+                <h2 class="text-5xl font-black neon-glow-cyan">CLIENTES DIZEM</h2>
+                <div class="flex justify-center gap-1 mb-4 mt-4">
                     <?php for($i = 0; $i < 5; $i++): ?>
-                        <i class="fas fa-star text-yellow-400 text-2xl"></i>
+                        <i class="fas fa-star neon-glow text-2xl"></i>
                     <?php endfor; ?>
                 </div>
-                <p class="text-xl text-slate-400">4.9 ★ em mais de 2.500 avaliações verificadas</p>
+                <p class="text-xl text-slate-400">5.0 ★ em mais de 2.500 avaliações verificadas</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
                 <?php foreach ($avaliacoes as $i => $avaliacao): ?>
-                <div class="glass rounded-2xl p-8 card-hover border border-purple-500/20 hover:border-purple-500/50" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                <div class="glow-box rounded-2xl p-8 card-hover" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
                     <div class="flex gap-1 mb-4">
                         <?php for($j = 0; $j < 5; $j++): ?>
-                            <i class="fas fa-star text-yellow-400 text-lg"></i>
+                            <i class="fas fa-star neon-glow text-lg"></i>
                         <?php endfor; ?>
                     </div>
                     <p class="text-slate-300 mb-6 italic text-lg">"<?php echo $avaliacao['texto']; ?>"</p>
                     <div class="flex items-center gap-4 pt-4 border-t border-slate-700">
-                        <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0 neon-glow">
                             <i class="fas fa-user text-white text-lg"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-slate-100"><?php echo $avaliacao['nome']; ?></p>
-                            <p class="text-slate-400 text-sm"><i class="fas fa-check-circle text-green-400 mr-1"></i>Comprador Verificado</p>
+                            <p class="font-bold neon-glow"><?php echo $avaliacao['nome']; ?></p>
+                            <p class="text-slate-400 text-sm"><i class="fas fa-check-circle neon-glow-cyan mr-1"></i>Comprador Verificado</p>
                         </div>
                     </div>
                 </div>
@@ -583,100 +496,93 @@ $marcas = [
         </div>
     </section>
 
-    <!-- Newsletter CTA Premium -->
+    <!-- Newsletter CTA Neon -->
     <section class="py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto" data-aos="fade-up">
-            <div class="glass rounded-3xl p-12 md:p-16 text-center border-2 border-purple-600/50 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-full blur-3xl -z-0"></div>
-                
+            <div class="glow-box rounded-3xl p-12 md:p-16 text-center relative overflow-hidden">
                 <div class="relative z-10">
-                    <h2 class="text-5xl font-black mb-6 text-slate-100">
-                        Ganhe <span class="gradient-text">20% OFF</span>
-                    </h2>
-                    <p class="text-xl text-slate-300 mb-10">
-                        Inscreva-se na newsletter e receba 20% de desconto + acesso exclusivo a promoções!
+                    <h2 class="text-5xl font-black mb-6 neon-glow">GANHE</h2>
+                    <h2 class="text-5xl font-black neon-glow-cyan mb-10">20% OFF</h2>
+                    <p class="text-xl text-slate-300 mb-10 font-bold">
+                        Inscreva-se na newsletter e receba 20% de desconto + acesso exclusivo a promoções neon!
                     </p>
                     
                     <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                        <input type="email" placeholder="seu@email.com" class="flex-1 px-6 py-4 rounded-lg bg-slate-800/50 text-slate-100 border border-purple-600/50 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-slate-500 text-base premium-input">
-                        <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold btn-hover ripple relative z-10 whitespace-nowrap text-base hover:shadow-xl transition-all">
+                        <input type="email" placeholder="seu@email.com" class="flex-1 px-6 py-4 rounded-lg bg-slate-800/50 text-slate-100 border border-purple-600/50 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-slate-500 text-base">
+                        <button class="px-8 py-4 btn-neon rounded-lg whitespace-nowrap text-base">
                             <i class="fas fa-paper-plane mr-2"></i>
-                            Inscrever
+                            INSCREVER
                         </button>
                     </div>
-                    <p class="text-slate-400 text-sm mt-6">📧 Garantido: sem spam, apenas promoções!</p>
+                    <p class="text-slate-400 text-sm mt-6">📧 Garantido: sem spam, apenas promoções neon!</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer Premium -->
-    <footer class="bg-black text-slate-300 py-16 px-4 sm:px-6 lg:px-8 border-t border-purple-900/30">
+    <!-- Footer Neon -->
+    <footer class="bg-black/80 text-slate-300 py-16 px-4 sm:px-6 lg:px-8 border-t border-purple-900/50">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-12 mb-12">
-                <!-- Brand -->
                 <div>
-                    <div class="text-3xl font-bold mb-6 text-purple-400 flex items-center gap-2">
-                        <i class="fas fa-cloud-mist"></i>
-                        <span>Loja de Pods</span>
+                    <div class="text-3xl font-black mb-6 neon-glow flex items-center gap-2">
+                        <i class="fas fa-skull-crossbones"></i>
+                        <span>WAZZY VAPE</span>
                     </div>
-                    <p class="text-slate-400 mb-6 leading-relaxed">Sua loja premium de pods descartáveis, recarregáveis e acessórios de qualidade superior.</p>
+                    <p class="text-slate-400 mb-6 leading-relaxed">Sua loja neon de pods premium com design cyberpunk extraordinário.</p>
                     <div class="flex gap-4">
-                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" class="text-slate-400 hover:text-purple-400 transition text-xl"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" class="text-slate-400 hover:neon-glow transition text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-slate-400 hover:neon-glow transition text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:neon-glow transition text-xl"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="text-slate-400 hover:neon-glow transition text-xl"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
 
-                <!-- Produtos -->
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-slate-100">Produtos</h4>
+                    <h4 class="text-lg font-bold mb-6 neon-glow">PRODUTOS</h4>
                     <ul class="space-y-3 text-slate-400">
-                        <li><a href="#" class="hover:text-purple-400 transition">Pods Descartáveis</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Pods Recarregáveis</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Acessórios</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Ofertas Especiais</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Pods Descartáveis</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Pods Recarregáveis</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Acessórios Neon</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Ofertas Especiais</a></li>
                     </ul>
                 </div>
 
-                <!-- Suporte -->
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-slate-100">Suporte</h4>
+                    <h4 class="text-lg font-bold mb-6 neon-glow-cyan">SUPORTE</h4>
                     <ul class="space-y-3 text-slate-400">
-                        <li><a href="#" class="hover:text-purple-400 transition">WhatsApp: (11) 9999-9999</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">FAQ & Dúvidas</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Rastrear Pedido</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="hover:neon-glow-cyan transition">WhatsApp: (11) 9999-9999</a></li>
+                        <li><a href="#" class="hover:neon-glow-cyan transition">FAQ & Dúvidas</a></li>
+                        <li><a href="#" class="hover:neon-glow-cyan transition">Rastrear Pedido</a></li>
+                        <li><a href="#" class="hover:neon-glow-cyan transition">Trocas e Devoluções</a></li>
                     </ul>
                 </div>
 
-                <!-- Legal -->
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-slate-100">Legal</h4>
+                    <h4 class="text-lg font-bold mb-6 neon-glow">LEGAL</h4>
                     <ul class="space-y-3 text-slate-400 text-sm">
-                        <li><a href="#" class="hover:text-purple-400 transition">Política de Privacidade</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Termos de Uso</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Aviso de Saúde</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition">Restrição de Idade: 18+</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Política de Privacidade</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Termos de Uso</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Aviso de Saúde</a></li>
+                        <li><a href="#" class="hover:neon-glow transition">Restrição de Idade: 18+</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-slate-400 text-center md:text-left">© 2024 Loja de Pods. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
+                <p class="text-slate-400 text-center md:text-left neon-glow">© 2024 Wazzy Vape. Todos os direitos reservados. | ⚡ NEON VIBES</p>
                 <div class="flex gap-6">
-                    <i class="fab fa-cc-visa text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
-                    <i class="fab fa-cc-mastercard text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
-                    <i class="fab fa-cc-paypal text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
-                    <i class="fab fa-bitcoin text-2xl text-slate-400 hover:text-purple-400 transition cursor-pointer"></i>
+                    <i class="fab fa-cc-visa text-2xl text-slate-400 hover:neon-glow transition cursor-pointer"></i>
+                    <i class="fab fa-cc-mastercard text-2xl text-slate-400 hover:neon-glow transition cursor-pointer"></i>
+                    <i class="fab fa-cc-paypal text-2xl text-slate-400 hover:neon-glow transition cursor-pointer"></i>
+                    <i class="fab fa-bitcoin text-2xl text-slate-400 hover:neon-glow transition cursor-pointer"></i>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Scroll to Top Button -->
-    <button id="scroll-top" class="scroll-top bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full hover:shadow-lg transition">
+    <button id="scroll-top" class="scroll-top btn-neon p-4 rounded-full">
         <i class="fas fa-arrow-up text-xl"></i>
     </button>
 
@@ -689,24 +595,6 @@ $marcas = [
             duration: 1000,
             once: false,
             mirror: true
-        });
-
-        // Dark Mode Toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const html = document.documentElement;
-
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        if (currentTheme === 'dark') {
-            html.classList.add('dark');
-            document.body.classList.add('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            html.classList.toggle('dark');
-            document.body.classList.toggle('dark');
-            
-            const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
-            localStorage.setItem('theme', newTheme);
         });
 
         // Scroll to Top
