@@ -67,6 +67,7 @@ $avaliacoes = [
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         :root {
@@ -936,11 +937,25 @@ $avaliacoes = [
         });
 
         function addToCart(id, nome, preco) {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const item = { id, nome, preco, qty: 1 };
-            cart.push(item);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            alert('✅ ' + nome + ' adicionado ao carrinho!');
+            const item = {
+                id: id,
+                nome: nome,
+                preco_final: preco,
+                quantity: 1,
+                imagem: 'https://via.placeholder.com/100'
+            };
+            cart.add(item);
+            
+            // Mostrar notificação de sucesso
+            Swal.fire({
+                icon: 'success',
+                title: 'Adicionado ao Carrinho!',
+                text: nome + ' foi adicionado com sucesso',
+                timer: 2000,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
         }
     </script>
 

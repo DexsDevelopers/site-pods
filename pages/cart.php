@@ -114,11 +114,26 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
     </style>
 
     <script>
-        // Sistema de Carrinho com localStorage
+        // ========== CLASSE CART COMPLETA ==========
         class Cart {
             constructor() {
-                this.items = JSON.parse(localStorage.getItem('cart') || '[]');
+                this.items = this.loadFromStorage();
                 this.render();
+            }
+
+            loadFromStorage() {
+                try {
+                    const data = localStorage.getItem('cart');
+                    return data ? JSON.parse(data) : [];
+                } catch (e) {
+                    console.error('Erro ao carregar carrinho:', e);
+                    return [];
+                }
+            }
+
+            saveToStorage() {
+                localStorage.setItem('cart', JSON.stringify(this.items));
+                this.updateBadge();
             }
 
             add(product) {
@@ -129,74 +144,107 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
                     product.quantity = product.quantity || 1;
                     this.items.push(product);
                 }
-                this.save();
+                this.saveToStorage();
+                this.render();
             }
 
             remove(productId) {
                 this.items = this.items.filter(i => i.id !== productId);
-                this.save();
+                this.saveToStorage();
+                this.render();
             }
 
             updateQuantity(productId, quantity) {
                 const item = this.items.find(i => i.id === productId);
                 if (item) {
-                    item.quantity = Math.max(1, quantity);
-                    if (item.quantity === 0) this.remove(productId);
-                    else this.save();
+                    const newQty = Math.max(1, parseInt(quantity) || 1);
+                    if (newQty === 0) {
+                        this.remove(productId);
+                    } else {
+                        item.quantity = newQty;
+                        this.saveToStorage();
+                        this.render();
+                    }
                 }
             }
 
-            getTotal() {
+            getSubtotal() {
                 return this.items.reduce((total, item) => total + (item.preco_final * item.quantity), 0);
+            }
+
+            getTax() {
+                return this.getSubtotal() * 0.08;
+            }
+
+            getTotal() {
+                return this.getSubtotal() + this.getTax();
             }
 
             clear() {
                 this.items = [];
-                this.save();
+                this.saveToStorage();
+                this.render();
             }
 
-            save() {
-                localStorage.setItem('cart', JSON.stringify(this.items));
-                this.render();
-                updateCartBadge();
+            isEmpty() {
+                return this.items.length === 0;
+            }
+
+            updateBadge() {
+                const count = this.items.reduce((sum, item) => sum + item.quantity, 0);
+                const badges = document.querySelectorAll('#cart-count, #cart-count-mobile');
+                badges.forEach(b => b.textContent = count);
             }
 
             render() {
                 const container = document.getElementById('cart-items');
-                const empty = document.getElementById('empty-cart');
-                const summary = document.getElementById('order-summary');
+                const emptyCart = document.getElementById('empty-cart');
+                const orderSummary = document.getElementById('order-summary');
 
-                if (this.items.length === 0) {
+                if (this.isEmpty()) {
                     container.style.display = 'none';
-                    empty.style.display = 'block';
-                    summary.style.display = 'none';
+                    emptyCart.style.display = 'block';
+                    orderSummary.style.display = 'none';
                 } else {
                     container.style.display = 'block';
-                    empty.style.display = 'none';
-                    summary.style.display = 'block';
-                    
+                    emptyCart.style.display = 'none';
+                    orderSummary.style.display = 'block';
+
                     container.innerHTML = this.items.map(item => `
-                        <div class="glass rounded-xl p-6 border border-purple-800/30 flex gap-4">
-                            <img src="${item.imagem || 'https://via.placeholder.com/100'}" alt="${item.nome}" class="w-24 h-24 object-cover rounded-lg">
+                        <div class="glass rounded-xl p-6 border border-purple-800/30 flex gap-4 hover:border-purple-600/50 transition">
+                            <img src="${item.imagem || 'https://via.placeholder.com/100'}" 
+                                 alt="${item.nome}" 
+                                 class="w-24 h-24 object-cover rounded-lg bg-slate-800">
                             
                             <div class="flex-1">
-                                <h3 class="text-xl font-bold mb-1">${item.nome}</h3>
-                                <p class="text-sm text-slate-400 mb-2">${item.categoria_nome || 'Sem categoria'}</p>
+                                <h3 class="text-lg font-bold mb-1">${item.nome}</h3>
+                                <p class="text-sm text-slate-400 mb-3">${item.categoria_nome || 'Sem categoria'}</p>
                                 
                                 <div class="flex items-center gap-2">
-                                    <button onclick="cart.updateQuantity(${item.id}, ${item.quantity - 1})" class="px-3 py-1 bg-slate-800/50 border border-purple-800/30 rounded hover:bg-slate-800">
+                                    <button onclick="cart.updateQuantity(${item.id}, ${item.quantity - 1})" 
+                                            class="px-2 py-1 bg-slate-800/50 border border-purple-800/30 rounded hover:bg-slate-700 transition">
                                         <i class="fas fa-minus text-xs"></i>
                                     </button>
-                                    <input type="number" value="${item.quantity}" min="1" onchange="cart.updateQuantity(${item.id}, parseInt(this.value))" class="w-12 text-center bg-slate-800/50 border border-purple-800/30 rounded py-1">
-                                    <button onclick="cart.updateQuantity(${item.id}, ${item.quantity + 1})" class="px-3 py-1 bg-slate-800/50 border border-purple-800/30 rounded hover:bg-slate-800">
+                                    <input type="number" 
+                                           value="${item.quantity}" 
+                                           min="1" 
+                                           max="999"
+                                           onchange="cart.updateQuantity(${item.id}, this.value)" 
+                                           class="w-14 text-center bg-slate-800/50 border border-purple-800/30 rounded py-1 text-sm">
+                                    <button onclick="cart.updateQuantity(${item.id}, ${item.quantity + 1})" 
+                                            class="px-2 py-1 bg-slate-800/50 border border-purple-800/30 rounded hover:bg-slate-700 transition">
                                         <i class="fas fa-plus text-xs"></i>
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="text-right">
-                                <p class="text-2xl font-bold gradient-text mb-2">R$ ${(item.preco_final * item.quantity).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
-                                <button onclick="cart.remove(${item.id})" class="px-4 py-2 bg-red-600/20 border border-red-600/50 rounded text-red-400 hover:bg-red-600/30 transition">
+                            <div class="text-right flex flex-col justify-between">
+                                <div>
+                                    <p class="text-2xl font-bold gradient-text">R$ ${(item.preco_final * item.quantity).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                    <p class="text-xs text-slate-500">Un: R$ ${item.preco_final.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                                </div>
+                                <button onclick="cart.remove(${item.id})" 
+                                        class="px-4 py-2 bg-red-600/20 border border-red-600/50 rounded text-red-400 hover:bg-red-600/30 transition text-sm font-medium">
                                     <i class="fas fa-trash mr-2"></i> Remover
                                 </button>
                             </div>
@@ -204,39 +252,62 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
                     `).join('');
 
                     // Atualizar resumo
-                    const subtotal = this.getTotal();
-                    const tax = subtotal * 0.08;
-                    const total = subtotal + tax;
+                    const subtotal = this.getSubtotal();
+                    const tax = this.getTax();
+                    const total = this.getTotal();
 
                     document.getElementById('subtotal-value').textContent = `R$ ${subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                     document.getElementById('tax-value').textContent = `R$ ${tax.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                     document.getElementById('total-value').textContent = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                 }
+
+                this.updateBadge();
             }
         }
 
+        // Inicializar carrinho
         const cart = new Cart();
 
+        // Funções globais
         function addToCart(id, nome, preco) {
             const item = {
-                id,
-                nome,
-                preco_final: preco,
+                id: id,
+                nome: nome,
+                preco_final: parseFloat(preco),
                 quantity: 1,
-                imagem: 'https://via.placeholder.com/100'
+                imagem: 'https://via.placeholder.com/100',
+                categoria_nome: 'Pods'
             };
             cart.add(item);
-            alert('Produto adicionado ao carrinho!');
+            
+            // Notificação
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Adicionado!',
+                    html: '<strong>' + nome + '</strong><br>foi adicionado ao carrinho',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    toast: true,
+                    background: 'rgba(15, 23, 42, 0.95)',
+                    didOpen: (toast) => {
+                        toast.style.color = '#e2e8f0';
+                    }
+                });
+            }
         }
 
         function updateCartBadge() {
-            const count = cart.items.length;
-            const badges = document.querySelectorAll('#cart-count, #cart-count-mobile');
-            badges.forEach(b => b.textContent = count);
+            cart.updateBadge();
         }
 
         function checkout() {
-            alert('Sistema de checkout em desenvolvimento!');
+            if (cart.isEmpty()) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+            alert('Sistema de checkout em desenvolvimento!\n\nTotal: R$ ' + cart.getTotal().toLocaleString('pt-BR', {minimumFractionDigits: 2}));
         }
 
         function continueShopping() {
@@ -244,9 +315,15 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
         }
 
         function applyCoupon() {
-            alert('Sistema de cupons em desenvolvimento!');
+            const code = document.getElementById('coupon-code').value.trim();
+            if (!code) {
+                alert('Digite um código de cupom!');
+                return;
+            }
+            alert('Cupom "' + code + '" - em desenvolvimento!');
         }
 
+        // Sincronizar badge ao carregar a página
         updateCartBadge();
     </script>
 </body>
