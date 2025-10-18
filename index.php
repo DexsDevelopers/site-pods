@@ -225,40 +225,327 @@ $avaliacoes = [
         ::-webkit-scrollbar-thumb:hover {
             background: #a78bfa;
         }
+
+        /* Menu Mobile Animado */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Animação do hambúrguer */
+        .hamburger {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #a78bfa;
+            left: 0;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger span:nth-child(1) {
+            top: 0;
+        }
+
+        .hamburger span:nth-child(2) {
+            top: 11px;
+        }
+
+        .hamburger span:nth-child(3) {
+            top: 22px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg);
+            top: 11px;
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg);
+            top: 11px;
+        }
+
+        /* Dropdown Desktop */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 12px;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .nav-dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(124, 58, 237, 0.15);
+            color: #a78bfa;
+            padding-left: 20px;
+        }
+
+        /* Badge Carrinho */
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header Premium -->
+    <!-- Header Premium Responsivo -->
     <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-slate-950/95 shadow-lg border-b border-purple-900/30">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                <!-- Logo -->
+                <a href="#home" class="flex items-center gap-2 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center group-hover:shadow-lg group-hover:shadow-purple-600/50 transition">
                         <i class="fas fa-skull-crossbones text-white text-lg"></i>
                     </div>
                     <div>
-                        <div class="font-black text-xl gradient-text">WAZZY</div>
-                        <div class="text-xs font-bold text-slate-400">VAPE</div>
+                        <div class="font-black text-lg gradient-text group-hover:drop-shadow-lg transition">WAZZY</div>
+                        <div class="text-xs font-bold text-slate-400 leading-none">PODS</div>
                     </div>
+                </a>
+
+                <!-- Menu Desktop -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#home" class="text-slate-300 hover:text-purple-300 transition font-medium relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    
+                    <div class="nav-dropdown">
+                        <button class="text-slate-300 hover:text-purple-300 transition font-medium relative group">
+                            Produtos
+                            <i class="fas fa-chevron-down text-xs ml-2"></i>
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 group-hover:w-full transition-all duration-300"></span>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#produtos"><i class="fas fa-star mr-2 text-yellow-400"></i>Em Destaque</a>
+                            <a href="#categorias"><i class="fas fa-tags mr-2 text-purple-400"></i>Categorias</a>
+                            <a href="#"><i class="fas fa-fire mr-2 text-red-400"></i>Promoções</a>
+                            <a href="#"><i class="fas fa-box mr-2 text-blue-400"></i>Todos os Produtos</a>
+                        </div>
+                    </div>
+                    
+                    <a href="#avaliacoes" class="text-slate-300 hover:text-purple-300 transition font-medium relative group">
+                        Avaliações
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+
+                    <a href="#" class="text-slate-300 hover:text-purple-300 transition font-medium relative group">
+                        Contato
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
                 </div>
 
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="#home" class="text-slate-300 hover:text-purple-300 transition font-medium">Home</a>
-                    <a href="#produtos" class="text-slate-300 hover:text-purple-300 transition font-medium">Produtos</a>
-                    <a href="#categorias" class="text-slate-300 hover:text-purple-300 transition font-medium">Categorias</a>
-                    <a href="#avaliacoes" class="text-slate-300 hover:text-purple-300 transition font-medium">Avaliações</a>
+                <!-- Desktop Right Side -->
+                <div class="hidden lg:flex items-center gap-4">
+                    <button class="relative p-2 hover:bg-slate-800 rounded-lg transition group">
+                        <i class="fas fa-search text-purple-400 text-lg group-hover:text-purple-300 transition"></i>
+                    </button>
+                    <button class="relative p-2 hover:bg-slate-800 rounded-lg transition group" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart text-purple-400 text-lg group-hover:text-purple-300 transition"></i>
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </button>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <!-- Mobile Controls -->
+                <div class="lg:hidden flex items-center gap-4">
                     <button class="relative p-2 hover:bg-slate-800 rounded-lg transition">
+                        <i class="fas fa-search text-purple-400 text-lg"></i>
+                    </button>
+                    <button class="relative p-2 hover:bg-slate-800 rounded-lg transition" onclick="toggleCart()">
                         <i class="fas fa-shopping-cart text-purple-400 text-lg"></i>
-                        <span class="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
+                        <span class="cart-badge" id="cart-count-mobile">0</span>
+                    </button>
+                    <button class="hamburger p-2" id="hamburger-btn" onclick="toggleMobileMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
                     </button>
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay fixed inset-0 bg-black/50 lg:hidden z-40" id="menu-overlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu fixed top-0 left-0 h-full w-64 bg-slate-950 border-r border-purple-900/30 z-40 lg:hidden shadow-2xl" id="mobile-menu">
+        <div class="p-6 border-b border-purple-900/20">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                    <i class="fas fa-skull-crossbones text-white text-sm"></i>
+                </div>
+                <div>
+                    <div class="font-black text-sm gradient-text">WAZZY</div>
+                    <div class="text-xs text-slate-400">PODS</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col p-4 space-y-2">
+            <a href="#home" onclick="closeMobileMenu()" class="px-4 py-3 text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 rounded-lg transition font-medium flex items-center gap-2">
+                <i class="fas fa-home text-purple-400"></i> Home
+            </a>
+            
+            <div class="px-4 py-3">
+                <button class="w-full text-left text-slate-300 hover:text-purple-300 font-medium flex items-center gap-2" onclick="toggleDropdown(this)">
+                    <i class="fas fa-box text-purple-400"></i> Produtos
+                    <i class="fas fa-chevron-right text-xs ml-auto transition-transform" style="transform: rotate(0deg)"></i>
+                </button>
+                <div class="hidden flex-col mt-2 ml-6 space-y-2" style="display: none;">
+                    <a href="#produtos" onclick="closeMobileMenu()" class="text-slate-400 hover:text-purple-300 transition text-sm py-2 flex items-center gap-2">
+                        <i class="fas fa-star text-yellow-400 text-xs"></i>Em Destaque
+                    </a>
+                    <a href="#categorias" onclick="closeMobileMenu()" class="text-slate-400 hover:text-purple-300 transition text-sm py-2 flex items-center gap-2">
+                        <i class="fas fa-tags text-purple-400 text-xs"></i>Categorias
+                    </a>
+                    <a href="#" onclick="closeMobileMenu()" class="text-slate-400 hover:text-purple-300 transition text-sm py-2 flex items-center gap-2">
+                        <i class="fas fa-fire text-red-400 text-xs"></i>Promoções
+                    </a>
+                    <a href="#" onclick="closeMobileMenu()" class="text-slate-400 hover:text-purple-300 transition text-sm py-2 flex items-center gap-2">
+                        <i class="fas fa-all text-blue-400 text-xs"></i>Todos
+                    </a>
+                </div>
+            </div>
+
+            <a href="#avaliacoes" onclick="closeMobileMenu()" class="px-4 py-3 text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 rounded-lg transition font-medium flex items-center gap-2">
+                <i class="fas fa-star text-purple-400"></i> Avaliações
+            </a>
+
+            <a href="#" onclick="closeMobileMenu()" class="px-4 py-3 text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 rounded-lg transition font-medium flex items-center gap-2">
+                <i class="fas fa-phone text-purple-400"></i> Contato
+            </a>
+
+            <div class="border-t border-purple-900/20 mt-4 pt-4">
+                <button class="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-bold text-white flex items-center gap-2 justify-center hover:shadow-lg hover:shadow-purple-600/50 transition">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Controle do Menu Mobile
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('menu-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+            
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('menu-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+            
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+
+        // Toggle Dropdown Mobile
+        function toggleDropdown(btn) {
+            const submenu = btn.nextElementSibling;
+            const icon = btn.querySelector('i:last-child');
+            
+            submenu.style.display = submenu.style.display === 'none' ? 'flex' : 'none';
+            icon.style.transform = submenu.style.display === 'none' ? 'rotate(0deg)' : 'rotate(90deg)';
+        }
+
+        // Fechar menu ao clicar fora
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('mobile-menu');
+            const hamburger = document.getElementById('hamburger-btn');
+            
+            if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+                closeMobileMenu();
+            }
+        });
+
+        // Atualizar carrinho
+        function updateCartBadge() {
+            const count = JSON.parse(localStorage.getItem('cart') || '[]').length;
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('cart-count-mobile').textContent = count;
+        }
+
+        updateCartBadge();
+
+        function toggleCart() {
+            alert('Carrinho não implementado ainda!');
+        }
+    </script>
 
     <!-- Hero Section -->
     <section id="home" class="hero-gradient pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative">
