@@ -498,6 +498,8 @@ try {
                         }
                     },
                     y: {
+                        beginAtZero: true,
+                        min: 0,
                         grid: {
                             color: 'rgba(148, 163, 184, 0.1)'
                         },
