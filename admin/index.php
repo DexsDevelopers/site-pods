@@ -460,70 +460,141 @@ try {
 
     <script>
         // Gráfico de Vendas com dados reais
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-        gradient.addColorStop(0, 'rgba(167, 139, 250, 0.3)');
-        gradient.addColorStop(1, 'rgba(167, 139, 250, 0.01)');
-        
-        // Calcular o máximo valor para escala dinâmica
-        const vendas = <?php echo json_encode(array_column($vendas_semana_completa, 'valor')); ?>;
-        const maxVenda = Math.max(...vendas, 1); // Mínimo de 1 para evitar problemas
-        const escala = Math.ceil(maxVenda * 1.2); // 20% acima do máximo
-        
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: <?php echo json_encode(array_column($vendas_semana_completa, 'dia')); ?>,
-                datasets: [{
-                    label: 'Vendas (R$)',
-                    data: vendas,
-                    borderColor: '#a78bfa',
-                    backgroundColor: gradient,
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#a78bfa',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+        const ctx = document.getElementById('salesChart');
+        if (!ctx) {
+            console.error('Canvas salesChart não encontrado');
+        } else {
+            const canvasCtx = ctx.getContext('2d');
+            const gradient = canvasCtx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(167, 139, 250, 0.3)');
+            gradient.addColorStop(1, 'rgba(167, 139, 250, 0.01)');
+            
+            // Dados do servidor (PHP)
+            let vendas = <?php echo json_encode(array_column($vendas_semana_completa, 'valor')); ?>;
+            let labels = <?php echo json_encode(array_column($vendas_semana_completa, 'dia')); ?>;
+            
+            // Validação de dados
+            if (!vendas || vendas.length === 0) {
+                console.warn('Nenhum dado de vendas disponível');
+                vendas = [0, 0, 0, 0, 0, 0, 0];
+            }
+            
+            // Garantir que vendas é um array de números
+            vendas = vendas.map(v => {
+                const num = parseFloat(v);
+                return isNaN(num) ? 0 : num;
+            });
+            
+            // Calcular escala de forma segura
+            const valoresValidos = vendas.filter(v => !isNaN(v) && v >= 0);
+            const maxVenda = valoresValidos.length > 0 ? Math.max(...valoresValidos) : 1;
+            const escala = Math.max(Math.ceil(maxVenda * 1.2), 10); // Mínimo de 10
+            
+            console.log('Debug - Vendas:', vendas);
+            console.log('Debug - Max Venda:', maxVenda);
+            console.log('Debug - Escala:', escala);
+            
+            // Destruir gráfico anterior se existir
+            if (window.chartVendas) {
+                window.chartVendas.destroy();
+            }
+            
+            // Criar novo gráfico
+            window.chartVendas = new Chart(canvasCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Vendas (R$)',
+                        data: vendas,
+                        borderColor: '#a78bfa',
+                        backgroundColor: gradient,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#a78bfa',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        borderWidth: 3
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: {
-                            color: 'rgba(148, 163, 184, 0.1)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 750,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
                         },
-                        ticks: {
-                            color: '#94a3b8'
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                                }
+                            }
                         }
                     },
-                    y: {
-                        type: 'linear',
-                        position: 'left',
-                        beginAtZero: true,
-                        min: 0,
-                        max: escala,
-                        grid: {
-                            color: 'rgba(148, 163, 184, 0.1)'
+                    interaction: {
+                        mode: 'nearest',
+                        intersect: false
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)',
+                                drawBorder: true
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                }
+                            }
                         },
-                        ticks: {
-                            color: '#94a3b8',
-                            callback: function(value) {
-                                return 'R$ ' + value.toLocaleString('pt-BR');
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            min: 0,
+                            max: escala,
+                            ticks: {
+                                stepSize: Math.ceil(escala / 5),
+                                color: '#94a3b8',
+                                font: {
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return 'R$ ' + value.toLocaleString('pt-BR');
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)',
+                                drawBorder: true
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+    </script>
+    
+    <!-- Limpar cache e forçar recarregamento se necessário -->
+    <script>
+        // Versão do gráfico para invalidar cache
+        const chartVersion = '<?php echo md5(json_encode($vendas_semana_completa)); ?>';
+        const storageKey = 'wazzy_chart_version';
+        const lastVersion = sessionStorage.getItem(storageKey);
+        
+        if (lastVersion !== chartVersion) {
+            sessionStorage.setItem(storageKey, chartVersion);
+        }
     </script>
 </body>
 </html>
