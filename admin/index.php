@@ -192,6 +192,9 @@ try {
                 <a href="clientes.php" class="nav-item">
                     <i class="fas fa-users"></i> Clientes
                 </a>
+                <a href="integracao.php" class="nav-item">
+                    <i class="fas fa-plug"></i> Integrações
+                </a>
                 <a href="configuracoes.php" class="nav-item">
                     <i class="fas fa-cog"></i> Configurações
             </a>
