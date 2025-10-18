@@ -6,11 +6,10 @@ header('Content-Type: text/html; charset=utf-8');
 
 echo "<h2>Instalação Wazzy Pods - Banco de Dados</h2>";
 
-// Configurações (AJUSTE para sua hospedagem se necessário)
 $host = 'localhost';
-$db   = 'NOMEDOBANCO'; // ALTERE para o nome do seu banco MySQL
-$user = 'USUARIO';     // ALTERE para seu usuário MySQL
-$pass = 'SENHA';       // ALTERE para sua senha MySQL
+$db   = 'u853242961_loja_pods';
+$user = 'u853242961_pods_salu';
+$pass = 'Lucastav8012@';     // ALTERE para sua senha MySQL
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
