@@ -194,8 +194,8 @@ try {
                 </a>
                 <a href="configuracoes.php" class="nav-item">
                     <i class="fas fa-cog"></i> Configurações
-                </a>
-            </nav>
+            </a>
+        </nav>
         </aside>
 
         <!-- Main Content -->
@@ -241,7 +241,7 @@ try {
                             <i class="fas fa-history"></i> Total
                         </span>
                     </div>
-                </div>
+    </div>
 
                 <!-- Produtos -->
                 <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-xl p-6 border border-green-800/30">
@@ -276,9 +276,9 @@ try {
                         <span class="text-slate-400 text-sm">
                             <i class="fas fa-user-check"></i> Ativos
                         </span>
-                    </div>
                 </div>
             </div>
+        </div>
 
             <!-- Charts Row -->
             <div class="grid lg:grid-cols-2 gap-6 mb-8">
@@ -310,7 +310,7 @@ try {
                         <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
+        </div>
 
             <!-- Pedidos Recentes -->
             <div class="bg-slate-800/50 rounded-xl overflow-hidden backdrop-blur-sm border border-purple-800/30">
@@ -365,7 +365,7 @@ try {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            </div>
+    </div>
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
@@ -387,7 +387,7 @@ try {
                 </a>
             </div>
         </main>
-    </div>
+</div>
 
     <style>
         .gradient-text {
@@ -462,13 +462,18 @@ try {
         gradient.addColorStop(0, 'rgba(167, 139, 250, 0.3)');
         gradient.addColorStop(1, 'rgba(167, 139, 250, 0.01)');
         
+        // Calcular o máximo valor para escala dinâmica
+        const vendas = <?php echo json_encode(array_column($vendas_semana_completa, 'valor')); ?>;
+        const maxVenda = Math.max(...vendas, 1); // Mínimo de 1 para evitar problemas
+        const escala = Math.ceil(maxVenda * 1.2); // 20% acima do máximo
+        
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: <?php echo json_encode(array_column($vendas_semana_completa, 'dia')); ?>,
                 datasets: [{
                     label: 'Vendas (R$)',
-                    data: <?php echo json_encode(array_column($vendas_semana_completa, 'valor')); ?>,
+                    data: vendas,
                     borderColor: '#a78bfa',
                     backgroundColor: gradient,
                     tension: 0.4,
@@ -498,8 +503,11 @@ try {
                         }
                     },
                     y: {
+                        type: 'linear',
+                        position: 'left',
                         beginAtZero: true,
                         min: 0,
+                        max: escala,
                         grid: {
                             color: 'rgba(148, 163, 184, 0.1)'
                         },
