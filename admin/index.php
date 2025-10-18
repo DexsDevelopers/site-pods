@@ -488,11 +488,17 @@ try {
             // Calcular escala de forma segura
             const valoresValidos = vendas.filter(v => !isNaN(v) && v >= 0);
             const maxVenda = valoresValidos.length > 0 ? Math.max(...valoresValidos) : 1;
-            const escala = Math.max(Math.ceil(maxVenda * 1.2), 10); // Mínimo de 10
+            let escala = Math.max(Math.ceil(maxVenda * 1.2), 10); // Mínimo de 10
+            
+            // Proteção adicional
+            if (!isFinite(escala) || escala <= 0) {
+                escala = 100;
+                console.warn('Escala inválida, usando padrão 100');
+            }
             
             console.log('Debug - Vendas:', vendas);
             console.log('Debug - Max Venda:', maxVenda);
-            console.log('Debug - Escala:', escala);
+            console.log('Debug - Escala Final:', escala);
             
             // Destruir gráfico anterior se existir
             if (window.chartVendas) {
@@ -565,14 +571,14 @@ try {
                             min: 0,
                             max: escala,
                             ticks: {
-                                stepSize: Math.ceil(escala / 5),
                                 color: '#94a3b8',
                                 font: {
                                     size: 12
                                 },
                                 callback: function(value) {
                                     return 'R$ ' + value.toLocaleString('pt-BR');
-                                }
+                                },
+                                precision: 0
                             },
                             grid: {
                                 color: 'rgba(148, 163, 184, 0.1)',
