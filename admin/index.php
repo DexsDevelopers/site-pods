@@ -148,7 +148,6 @@ try {
     <title>Dashboard - Wazzy Pods Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-900 text-slate-100">
     <!-- Header -->
@@ -288,7 +287,57 @@ try {
                 <!-- Vendas da Semana -->
                 <div class="bg-slate-800/50 rounded-xl p-6 backdrop-blur-sm border border-purple-800/30">
                     <h2 class="text-xl font-bold mb-4 gradient-text">Vendas da Semana</h2>
-                    <canvas id="salesChart" height="150"></canvas>
+                    <div class="flex flex-col gap-4">
+                        <?php 
+                        $maxValor = max(array_column($vendas_semana_completa, 'valor'));
+                        if ($maxValor == 0) $maxValor = 1;
+                        ?>
+                        <svg width="100%" height="150" viewBox="0 0 500 150" class="border border-purple-800/20 rounded-lg">
+                            <!-- Grid -->
+                            <line x1="40" y1="10" x2="40" y2="130" stroke="#8b5cf6" stroke-width="2"/>
+                            <line x1="40" y1="130" x2="500" y2="130" stroke="#8b5cf6" stroke-width="2"/>
+                            
+                            <!-- Barras -->
+            <?php
+                            $totalDias = count($vendas_semana_completa);
+                            $espacamento = (500 - 60) / $totalDias;
+                            
+                            foreach ($vendas_semana_completa as $idx => $dia):
+                                $valor = floatval($dia['valor']);
+                                $altura = ($valor / $maxValor) * 100;
+                                $x = 50 + ($idx * $espacamento);
+                                $y = 130 - $altura;
+                            ?>
+                                <!-- Barra -->
+                                <rect x="<?php echo $x; ?>" y="<?php echo $y; ?>" width="<?php echo $espacamento * 0.6; ?>" height="<?php echo $altura; ?>" fill="url(#gradientBarra)" opacity="0.8" rx="4">
+                                    <title><?php echo $dia['dia']; ?>: R$ <?php echo number_format($valor, 2, ',', '.'); ?></title>
+                                </rect>
+                                
+                                <!-- Label X -->
+                                <text x="<?php echo $x + ($espacamento * 0.3); ?>" y="145" text-anchor="middle" font-size="11" fill="#94a3b8" font-weight="500">
+                                    <?php echo $dia['dia']; ?>
+                                </text>
+                            <?php endforeach; ?>
+                            
+                            <!-- Gradiente -->
+                            <defs>
+                                <linearGradient id="gradientBarra" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        
+                        <!-- Legenda com valores -->
+                        <div class="grid grid-cols-3 gap-2 text-xs">
+                            <?php foreach ($vendas_semana_completa as $dia): ?>
+                                <div class="p-2 bg-slate-900/50 rounded text-center border border-purple-800/20">
+                                    <p class="font-bold text-purple-400"><?php echo $dia['dia']; ?></p>
+                                    <p class="text-slate-400">R$ <?php echo number_format(floatval($dia['valor']), 2, ',', '.'); ?></p>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Produtos Populares -->
@@ -458,138 +507,7 @@ try {
         }
     </style>
 
-    <script>
-        // Gráfico de Vendas com dados reais
-        const ctx = document.getElementById('salesChart');
-        if (!ctx) {
-            console.error('Canvas salesChart não encontrado');
-        } else {
-            const canvasCtx = ctx.getContext('2d');
-            const gradient = canvasCtx.createLinearGradient(0, 0, 0, 200);
-            gradient.addColorStop(0, 'rgba(167, 139, 250, 0.3)');
-            gradient.addColorStop(1, 'rgba(167, 139, 250, 0.01)');
-            
-            // Dados do servidor (PHP)
-            let vendas = <?php echo json_encode(array_column($vendas_semana_completa, 'valor')); ?>;
-            let labels = <?php echo json_encode(array_column($vendas_semana_completa, 'dia')); ?>;
-            
-            // Validação de dados
-            if (!vendas || vendas.length === 0) {
-                console.warn('Nenhum dado de vendas disponível');
-                vendas = [0, 0, 0, 0, 0, 0, 0];
-            }
-            
-            // Garantir que vendas é um array de números
-            vendas = vendas.map(v => {
-                const num = parseFloat(v);
-                return isNaN(num) ? 0 : num;
-            });
-            
-            // Calcular escala de forma segura
-            const valoresValidos = vendas.filter(v => !isNaN(v) && v >= 0);
-            const maxVenda = valoresValidos.length > 0 ? Math.max(...valoresValidos) : 1;
-            let escala = Math.max(Math.ceil(maxVenda * 1.2), 10); // Mínimo de 10
-            
-            // Proteção adicional
-            if (!isFinite(escala) || escala <= 0) {
-                escala = 100;
-                console.warn('Escala inválida, usando padrão 100');
-            }
-            
-            console.log('Debug - Vendas:', vendas);
-            console.log('Debug - Max Venda:', maxVenda);
-            console.log('Debug - Escala Final:', escala);
-            
-            // Destruir gráfico anterior se existir
-            if (window.chartVendas) {
-                window.chartVendas.destroy();
-            }
-            
-            // Criar novo gráfico
-            window.chartVendas = new Chart(canvasCtx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Vendas (R$)',
-                        data: vendas,
-                        borderColor: '#a78bfa',
-                        backgroundColor: gradient,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#a78bfa',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        borderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 750,
-                        easing: 'easeInOutQuart'
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                                }
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        intersect: false
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.1)',
-                                drawBorder: true
-                            },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: {
-                                    size: 12,
-                                    weight: 500
-                                }
-                            }
-                        },
-                        y: {
-                            type: 'linear',
-                            position: 'left',
-                            beginAtZero: true,
-                            min: 0,
-                            max: escala,
-                            ticks: {
-                                color: '#94a3b8',
-                                font: {
-                                    size: 12
-                                },
-                                callback: function(value) {
-                                    return 'R$ ' + value.toLocaleString('pt-BR');
-                                },
-                                precision: 0
-                            },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.1)',
-                                drawBorder: true
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    </script>
+    <!-- Gráfico SVG renderizado do lado do servidor -->
     
     <!-- Limpar cache e forçar recarregamento se necessário -->
     <script>
