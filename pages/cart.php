@@ -24,7 +24,24 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-900 text-slate-100" style="background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);">
-    <?php include '../header.php'; ?>
+    <!-- Header Simples Carrinho -->
+    <header class="bg-slate-950 border-b border-purple-800/30 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center group-hover:shadow-lg transition">
+                    <i class="fas fa-skull-crossbones text-white text-lg"></i>
+                </div>
+                <div>
+                    <div class="font-black text-lg gradient-text">WAZZY</div>
+                    <div class="text-xs font-bold text-slate-400 leading-none">PODS</div>
+                </div>
+            </a>
+            <h2 class="text-xl font-bold gradient-text">Carrinho de Compras</h2>
+            <a href="/" class="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white font-bold hover:shadow-lg transition">
+                <i class="fas fa-arrow-left mr-2"></i> Continuar
+            </a>
+        </div>
+    </header>
 
     <div class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen">
         <div class="max-w-7xl mx-auto">
@@ -97,7 +114,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
         </div>
     </div>
 
-    <?php include '../footer.php'; ?>
+    <!-- Footer Simples Carrinho -->
+    <footer class="bg-slate-950 border-t border-purple-800/30 mt-12">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center text-slate-400">
+            <p>&copy; 2024 Wazzy Pods. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
     <style>
         .glass {
