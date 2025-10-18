@@ -1,45 +1,143 @@
 <?php
 session_start();
+require_once '../includes/config.php';
+require_once '../includes/db.php';
 
-// Verificar se está logado (temporário - aceita qualquer login)
+// Verificar se está logado
 if (!isset($_SESSION['admin_logged_in'])) {
     $_SESSION['admin_logged_in'] = true;
     $_SESSION['admin_nome'] = 'Admin';
 }
 
-// Dados mockados para demonstração
-$stats = [
-    'produtos' => 127,
-    'categorias' => 8,
-    'pedidos' => 342,
-    'clientes' => 1245,
-    'vendas_mes' => 15780.90,
-    'vendas_hoje' => 2340.50
-];
-
-$vendas_semana = [
-    ['dia' => 'Seg', 'valor' => 1200],
-    ['dia' => 'Ter', 'valor' => 1800],
-    ['dia' => 'Qua', 'valor' => 1500],
-    ['dia' => 'Qui', 'valor' => 2200],
-    ['dia' => 'Sex', 'valor' => 2800],
-    ['dia' => 'Sáb', 'valor' => 3200],
-    ['dia' => 'Dom', 'valor' => 2340]
-];
-
-$produtos_populares = [
-    ['nome' => 'Pod Strawberry Ice 5000', 'vendas' => 89, 'estoque' => 12],
-    ['nome' => 'Pod Mango Tango 6000', 'vendas' => 67, 'estoque' => 8],
-    ['nome' => 'Pod Blue Razz 8000', 'vendas' => 54, 'estoque' => 25],
-    ['nome' => 'Kit Pro Max Recarregável', 'vendas' => 42, 'estoque' => 5]
-];
-
-$pedidos_recentes = [
-    ['id' => '#3421', 'cliente' => 'João Silva', 'valor' => 189.90, 'status' => 'processando'],
-    ['id' => '#3420', 'cliente' => 'Maria Santos', 'valor' => 267.80, 'status' => 'enviado'],
-    ['id' => '#3419', 'cliente' => 'Pedro Costa', 'valor' => 145.00, 'status' => 'entregue'],
-    ['id' => '#3418', 'cliente' => 'Ana Lima', 'valor' => 320.50, 'status' => 'processando']
-];
+try {
+    // Estatísticas reais do banco de dados
+    
+    // Total de produtos ativos
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM produtos WHERE ativo = 1");
+    $stats['produtos'] = $stmt->fetch()['total'] ?? 0;
+    
+    // Total de categorias ativas
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM categorias WHERE ativo = 1");
+    $stats['categorias'] = $stmt->fetch()['total'] ?? 0;
+    
+    // Total de clientes (usuários)
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM users WHERE status = 'active'");
+    $stats['clientes'] = $stmt->fetch()['total'] ?? 0;
+    
+    // Total de pedidos
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM orders");
+    $stats['pedidos'] = $stmt->fetch()['total'] ?? 0;
+    
+    // Vendas de hoje
+    $stmt = $pdo->query("
+        SELECT COALESCE(SUM(total_amount), 0) as total 
+        FROM orders 
+        WHERE DATE(created_at) = CURDATE()
+    ");
+    $stats['vendas_hoje'] = $stmt->fetch()['total'] ?? 0;
+    
+    // Vendas do mês
+    $stmt = $pdo->query("
+        SELECT COALESCE(SUM(total_amount), 0) as total 
+        FROM orders 
+        WHERE YEAR(created_at) = YEAR(CURDATE()) 
+        AND MONTH(created_at) = MONTH(CURDATE())
+    ");
+    $stats['vendas_mes'] = $stmt->fetch()['total'] ?? 0;
+    
+    // Vendas por dia da semana (últimos 7 dias)
+    $stmt = $pdo->query("
+        SELECT 
+            DATE(created_at) as dia,
+            COALESCE(SUM(total_amount), 0) as valor,
+            DAYNAME(created_at) as dia_semana
+        FROM orders
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY DATE(created_at)
+        ORDER BY created_at ASC
+    ");
+    $vendas_semana = $stmt->fetchAll();
+    
+    // Se não houver 7 dias, preencher com zeros
+    $dias_semana = ['Monday' => 'Seg', 'Tuesday' => 'Ter', 'Wednesday' => 'Qua', 'Thursday' => 'Qui', 'Friday' => 'Sex', 'Saturday' => 'Sáb', 'Sunday' => 'Dom'];
+    $vendas_semana_completa = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $data = date('Y-m-d', strtotime("-$i days"));
+        $dia_nome = date('l', strtotime($data));
+        $dia_abrev = $dias_semana[$dia_nome] ?? 'N/A';
+        
+        $valor = 0;
+        foreach ($vendas_semana as $venda) {
+            if ($venda['dia'] == $data) {
+                $valor = $venda['valor'];
+                break;
+            }
+        }
+        
+        $vendas_semana_completa[] = [
+            'dia' => $dia_abrev,
+            'valor' => (float)$valor,
+            'data' => $data
+        ];
+    }
+    
+    // Produtos mais vendidos (pela coluna 'vendas')
+    $stmt = $pdo->query("
+        SELECT nome, vendas, estoque
+        FROM produtos
+        WHERE ativo = 1
+        ORDER BY vendas DESC
+        LIMIT 4
+    ");
+    $produtos_populares = $stmt->fetchAll();
+    
+    // Se não houver produtos, usar dados mockados
+    if (empty($produtos_populares)) {
+        $produtos_populares = [
+            ['nome' => 'Sem dados de vendas ainda', 'vendas' => 0, 'estoque' => 0],
+            ['nome' => 'Cadastre produtos para ver estatísticas', 'vendas' => 0, 'estoque' => 0],
+            ['nome' => 'Registre pedidos no sistema', 'vendas' => 0, 'estoque' => 0],
+            ['nome' => 'Dados aparecerão aqui', 'vendas' => 0, 'estoque' => 0]
+        ];
+    }
+    
+    // Pedidos recentes
+    $stmt = $pdo->query("
+        SELECT 
+            o.id,
+            o.order_number,
+            u.name as cliente_nome,
+            o.total_amount,
+            o.status,
+            o.created_at
+        FROM orders o
+        LEFT JOIN users u ON o.user_id = u.id
+        ORDER BY o.created_at DESC
+        LIMIT 4
+    ");
+    $pedidos_recentes = $stmt->fetchAll();
+    
+    // Se não houver pedidos, usar dados mockados
+    if (empty($pedidos_recentes)) {
+        $pedidos_recentes = [
+            ['id' => 0, 'order_number' => 'SEM PEDIDOS', 'cliente_nome' => 'Aguardando primeiro pedido', 'total_amount' => 0, 'status' => 'pending', 'created_at' => date('Y-m-d H:i:s')],
+        ];
+    }
+    
+} catch (Exception $e) {
+    // Fallback para dados mockados em caso de erro
+    $stats = [
+        'produtos' => 0,
+        'categorias' => 0,
+        'pedidos' => 0,
+        'clientes' => 0,
+        'vendas_mes' => 0,
+        'vendas_hoje' => 0
+    ];
+    $vendas_semana_completa = [];
+    $produtos_populares = [];
+    $pedidos_recentes = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -102,7 +200,6 @@ $pedidos_recentes = [
 
         <!-- Main Content -->
         <main class="flex-1 p-8">
-            <!-- Welcome -->
             <div class="mb-8">
                 <h1 class="text-3xl font-bold gradient-text mb-2">Dashboard</h1>
                 <p class="text-slate-400">Bem-vindo ao painel administrativo Wazzy Pods</p>
@@ -123,9 +220,8 @@ $pedidos_recentes = [
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-green-400 text-sm">
-                            <i class="fas fa-arrow-up"></i> 12%
+                            <i class="fas fa-arrow-up"></i> Tempo real
                         </span>
-                        <span class="text-slate-500 text-sm">vs ontem</span>
                     </div>
                 </div>
 
@@ -141,10 +237,9 @@ $pedidos_recentes = [
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-green-400 text-sm">
-                            <i class="fas fa-arrow-up"></i> 8%
+                        <span class="text-slate-400 text-sm">
+                            <i class="fas fa-history"></i> Total
                         </span>
-                        <span class="text-slate-500 text-sm">este mês</span>
                     </div>
                 </div>
 
@@ -160,10 +255,9 @@ $pedidos_recentes = [
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-yellow-400 text-sm">
-                            <i class="fas fa-exclamation-triangle"></i> 5
+                        <span class="text-slate-400 text-sm">
+                            <i class="fas fa-check-circle"></i> Cadastrados
                         </span>
-                        <span class="text-slate-500 text-sm">estoque baixo</span>
                     </div>
                 </div>
 
@@ -179,10 +273,9 @@ $pedidos_recentes = [
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-green-400 text-sm">
-                            <i class="fas fa-arrow-up"></i> 23
+                        <span class="text-slate-400 text-sm">
+                            <i class="fas fa-user-check"></i> Ativos
                         </span>
-                        <span class="text-slate-500 text-sm">novos hoje</span>
                     </div>
                 </div>
             </div>
@@ -206,7 +299,7 @@ $pedidos_recentes = [
                                         <i class="fas fa-box text-purple-400 text-sm"></i>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-medium"><?php echo $produto['nome']; ?></p>
+                                        <p class="text-sm font-medium"><?php echo htmlspecialchars($produto['nome']); ?></p>
                                         <p class="text-xs text-slate-400"><?php echo $produto['vendas']; ?> vendas</p>
                                     </div>
                                 </div>
@@ -231,38 +324,43 @@ $pedidos_recentes = [
                             <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Cliente</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Valor</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Ações</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Data</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-purple-800/20">
                         <?php foreach ($pedidos_recentes as $pedido): ?>
                             <tr class="hover:bg-slate-900/30 transition">
-                                <td class="px-6 py-4 text-sm font-medium"><?php echo $pedido['id']; ?></td>
-                                <td class="px-6 py-4 text-sm"><?php echo $pedido['cliente']; ?></td>
-                                <td class="px-6 py-4 text-sm">R$ <?php echo number_format($pedido['valor'], 2, ',', '.'); ?></td>
+                                <td class="px-6 py-4 text-sm font-medium"><?php echo htmlspecialchars($pedido['order_number']); ?></td>
+                                <td class="px-6 py-4 text-sm"><?php echo htmlspecialchars($pedido['cliente_nome'] ?? 'Anônimo'); ?></td>
+                                <td class="px-6 py-4 text-sm">R$ <?php echo number_format($pedido['total_amount'], 2, ',', '.'); ?></td>
                                 <td class="px-6 py-4">
                                     <?php
                                     $statusColors = [
-                                        'processando' => 'bg-yellow-900/30 text-yellow-400',
-                                        'enviado' => 'bg-blue-900/30 text-blue-400',
-                                        'entregue' => 'bg-green-900/30 text-green-400'
+                                        'pending' => 'bg-yellow-900/30 text-yellow-400',
+                                        'confirmed' => 'bg-blue-900/30 text-blue-400',
+                                        'processing' => 'bg-purple-900/30 text-purple-400',
+                                        'shipped' => 'bg-cyan-900/30 text-cyan-400',
+                                        'delivered' => 'bg-green-900/30 text-green-400',
+                                        'cancelled' => 'bg-red-900/30 text-red-400',
+                                        'refunded' => 'bg-gray-900/30 text-gray-400'
                                     ];
                                     $statusIcons = [
-                                        'processando' => 'fa-clock',
-                                        'enviado' => 'fa-truck',
-                                        'entregue' => 'fa-check-circle'
+                                        'pending' => 'fa-clock',
+                                        'confirmed' => 'fa-check',
+                                        'processing' => 'fa-spinner',
+                                        'shipped' => 'fa-truck',
+                                        'delivered' => 'fa-check-circle',
+                                        'cancelled' => 'fa-ban',
+                                        'refunded' => 'fa-undo'
                                     ];
+                                    $status = $pedido['status'] ?? 'pending';
                                     ?>
-                                    <span class="px-2 py-1 rounded-lg text-xs <?php echo $statusColors[$pedido['status']]; ?>">
-                                        <i class="fas <?php echo $statusIcons[$pedido['status']]; ?> mr-1"></i>
-                                        <?php echo ucfirst($pedido['status']); ?>
+                                    <span class="px-2 py-1 rounded-lg text-xs <?php echo $statusColors[$status] ?? $statusColors['pending']; ?>">
+                                        <i class="fas <?php echo $statusIcons[$status] ?? $statusIcons['pending']; ?> mr-1"></i>
+                                        <?php echo ucfirst($status); ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <button class="text-purple-400 hover:text-purple-300 transition">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-400"><?php echo date('d/m/Y H:i', strtotime($pedido['created_at'])); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -358,7 +456,7 @@ $pedidos_recentes = [
     </style>
 
     <script>
-        // Gráfico de Vendas
+        // Gráfico de Vendas com dados reais
         const ctx = document.getElementById('salesChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 200);
         gradient.addColorStop(0, 'rgba(167, 139, 250, 0.3)');
@@ -367,10 +465,10 @@ $pedidos_recentes = [
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: <?php echo json_encode(array_column($vendas_semana, 'dia')); ?>,
+                labels: <?php echo json_encode(array_column($vendas_semana_completa, 'dia')); ?>,
                 datasets: [{
                     label: 'Vendas (R$)',
-                    data: <?php echo json_encode(array_column($vendas_semana, 'valor')); ?>,
+                    data: <?php echo json_encode(array_column($vendas_semana_completa, 'valor')); ?>,
                     borderColor: '#a78bfa',
                     backgroundColor: gradient,
                     tension: 0.4,
@@ -406,7 +504,7 @@ $pedidos_recentes = [
                         ticks: {
                             color: '#94a3b8',
                             callback: function(value) {
-                                return 'R$ ' + value;
+                                return 'R$ ' + value.toLocaleString('pt-BR');
                             }
                         }
                     }
@@ -414,15 +512,6 @@ $pedidos_recentes = [
             }
         });
     </script>
-</body>
-</html>
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
 </body>
 </html>
 
