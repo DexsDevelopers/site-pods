@@ -6,6 +6,12 @@ ini_set('log_errors', 1);
 ob_start();
 session_start();
 
+// Valores padrão
+$site_name = 'Wazzy Pods';
+$site_phone = '(11) 9999-9999';
+$site_email = 'contato@wazzypods.com';
+$site_address = 'São Paulo, SP';
+
 try {
     if (!file_exists('includes/config.php')) {
         throw new Exception('Arquivo config.php não encontrado');
@@ -20,6 +26,22 @@ try {
     error_log('ERRO na home: ' . $e->getMessage());
     $categorias = [];
     $produtos = [];
+}
+
+// Buscar configurações do banco
+if (isset($pdo)) {
+    try {
+        $stmt = $pdo->prepare("SELECT chave, valor FROM configuracoes WHERE chave IN ('site_name', 'site_phone', 'site_email', 'site_address') LIMIT 4");
+        $stmt->execute();
+        $configs = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        
+        if (!empty($configs['site_name'])) $site_name = $configs['site_name'];
+        if (!empty($configs['site_phone'])) $site_phone = $configs['site_phone'];
+        if (!empty($configs['site_email'])) $site_email = $configs['site_email'];
+        if (!empty($configs['site_address'])) $site_address = $configs['site_address'];
+    } catch (Exception $e) {
+        error_log('Erro ao buscar configurações na home: ' . $e->getMessage());
+    }
 }
 
 try {
@@ -367,8 +389,7 @@ $avaliacoes = [
                         <i class="fas fa-skull-crossbones text-white text-lg"></i>
                     </div>
                     <div>
-                        <div class="font-black text-lg gradient-text group-hover:drop-shadow-lg transition">WAZZY</div>
-                        <div class="text-xs font-bold text-slate-400 leading-none">PODS</div>
+                        <div class="font-black text-lg gradient-text group-hover:drop-shadow-lg transition"><?php echo htmlspecialchars(strtoupper($site_name)); ?></div>
                     </div>
                 </a>
 
@@ -825,7 +846,7 @@ $avaliacoes = [
                 <div>
                     <div class="text-2xl font-black mb-6 gradient-text flex items-center gap-2">
                         <i class="fas fa-skull-crossbones"></i>
-                        <span>WAZZY PODS</span>
+                        <span><?php echo htmlspecialchars($site_name); ?></span>
                     </div>
                     <p class="text-slate-400 mb-6 leading-relaxed">Sua loja premium de pods com qualidade garantida e atendimento excepcional.</p>
                     <div class="flex gap-4">
@@ -849,7 +870,7 @@ $avaliacoes = [
                 <div>
                     <h4 class="text-lg font-bold mb-6 text-slate-200">Suporte</h4>
                     <ul class="space-y-3 text-slate-400">
-                        <li><a href="#" class="hover:gradient-text transition">WhatsApp: (11) 9999-9999</a></li>
+                        <li><a href="tel:<?php echo urlencode($site_phone); ?>" class="hover:gradient-text transition">WhatsApp: <?php echo htmlspecialchars($site_phone); ?></a></li>
                         <li><a href="#" class="hover:gradient-text transition">FAQ & Dúvidas</a></li>
                         <li><a href="#" class="hover:gradient-text transition">Rastrear Pedido</a></li>
                         <li><a href="#" class="hover:gradient-text transition">Trocas e Devoluções</a></li>
@@ -868,7 +889,7 @@ $avaliacoes = [
             </div>
 
             <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-slate-400 text-center md:text-left">© 2024 Wazzy Pods. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
+                <p class="text-slate-400 text-center md:text-left">© <?php echo date('Y'); ?> <?php echo htmlspecialchars($site_name); ?>. Todos os direitos reservados. | ⚠️ Contém Nicotina</p>
                 <div class="flex gap-6">
                     <i class="fab fa-cc-visa text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>
                     <i class="fab fa-cc-mastercard text-2xl text-slate-400 hover:gradient-text transition cursor-pointer"></i>
