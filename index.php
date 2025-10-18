@@ -534,17 +534,8 @@ $avaliacoes = [
             }
         });
 
-        // Atualizar carrinho
-        function updateCartBadge() {
-            const count = JSON.parse(localStorage.getItem('cart') || '[]').length;
-            document.getElementById('cart-count').textContent = count;
-            document.getElementById('cart-count-mobile').textContent = count;
-        }
-
-        updateCartBadge();
-
         function toggleCart() {
-            alert('Carrinho não implementado ainda!');
+            window.location.href = '/pages/cart.php';
         }
     </script>
 
@@ -935,6 +926,48 @@ $avaliacoes = [
             opacity: 0,
             ease: 'power3.out'
         });
+
+        // ========== CLASSE CART ==========
+        class Cart {
+            constructor() {
+                this.items = this.loadFromStorage();
+            }
+
+            loadFromStorage() {
+                try {
+                    const data = localStorage.getItem('cart');
+                    return data ? JSON.parse(data) : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            saveToStorage() {
+                localStorage.setItem('cart', JSON.stringify(this.items));
+                this.updateBadge();
+            }
+
+            add(product) {
+                const existing = this.items.find(i => i.id === product.id);
+                if (existing) {
+                    existing.quantity += product.quantity || 1;
+                } else {
+                    product.quantity = product.quantity || 1;
+                    this.items.push(product);
+                }
+                this.saveToStorage();
+            }
+
+            updateBadge() {
+                const count = this.items.reduce((sum, item) => sum + item.quantity, 0);
+                const badges = document.querySelectorAll('#cart-count, #cart-count-mobile');
+                badges.forEach(b => b.textContent = count);
+            }
+        }
+
+        // Inicializar carrinho
+        const cart = new Cart();
+        cart.updateBadge();
 
         function addToCart(id, nome, preco) {
             const item = {
