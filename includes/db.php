@@ -162,3 +162,12 @@ class Database {
         }
     }
 }
+
+// Compatibilidade com código legado que espera $pdo
+// Criar uma instância global para uso direto
+try {
+    $pdo = Database::getConnection();
+} catch (Exception $e) {
+    // Se falhar, $pdo permanece indefinido
+    $pdo = null;
+}
