@@ -23,17 +23,19 @@ try {
 }
 
 try {
-    if (isset($db)) {
-        $db = Database::getInstance();
-        
-        $stmt = $db->getConnection()->prepare("SELECT * FROM categories ORDER BY nome LIMIT 6");
+    if (isset($pdo)) {
+        // Buscar categorias ativas
+        $stmt = $pdo->prepare("SELECT * FROM categorias WHERE ativo = 1 ORDER BY ordem, nome LIMIT 6");
         $stmt->execute();
         $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        $stmt = $db->getConnection()->prepare(
-            "SELECT p.*, c.nome as categoria_nome FROM products p 
-             LEFT JOIN categories c ON p.categoria_id = c.id 
-             ORDER BY p.criado_em DESC LIMIT 8"
+        // Buscar produtos destaque ou ativos
+        $stmt = $pdo->prepare(
+            "SELECT p.*, c.nome as categoria_nome 
+             FROM produtos p 
+             LEFT JOIN categorias c ON p.categoria_id = c.id 
+             WHERE p.ativo = 1
+             ORDER BY p.destaque DESC, p.created_at DESC LIMIT 8"
         );
         $stmt->execute();
         $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -42,7 +44,7 @@ try {
         $produtos = [];
     }
 } catch (Exception $e) {
-    error_log('ERRO ao buscar dados BD na home: ' . $e->getMessage());
+    error_log('ERRO ao buscar dados do banco na home: ' . $e->getMessage());
     $categorias = [];
     $produtos = [];
 }
@@ -352,24 +354,35 @@ $avaliacoes = [
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-800/50" data-aos="zoom-in">
-                    <div class="text-5xl mb-4">📱</div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-100">Pods Descartáveis</h3>
-                    <p class="text-slate-400 mb-4">Pronto para usar, máxima praticidade</p>
-                    <p class="text-sm font-bold gradient-text">24+ Produtos</p>
+                <?php 
+                if (empty($categorias)): 
+                    echo '<p class="col-span-full text-center text-slate-400">Nenhuma categoria disponível</p>';
+                else:
+                    foreach ($categorias as $i => $cat):
+                        // Contar produtos por categoria
+                        try {
+                            $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM produtos WHERE categoria_id = ? AND ativo = 1");
+                            $stmt->execute([$cat['id']]);
+                            $totalProd = $stmt->fetch()['total'] ?? 0;
+                        } catch (Exception $e) {
+                            $totalProd = 0;
+                        }
+                ?>
+                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-800/50" 
+                     data-aos="zoom-in" data-aos-delay="<?php echo $i * 100; ?>"
+                     style="border-color: <?php echo htmlspecialchars($cat['cor'] ?? '#8B5CF6'); ?>40; cursor: pointer;"
+                     onclick="window.location.href='produtos.php?categoria=<?php echo urlencode($cat['slug'] ?? ''); ?>'">
+                    <div class="text-5xl mb-4">
+                        <i class="<?php echo htmlspecialchars($cat['icone'] ?? 'fas fa-box'); ?>" style="color: <?php echo htmlspecialchars($cat['cor'] ?? '#8B5CF6'); ?>"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-100"><?php echo htmlspecialchars($cat['nome']); ?></h3>
+                    <p class="text-slate-400 mb-4"><?php echo htmlspecialchars($cat['descricao'] ?? 'Confira nossa seleção'); ?></p>
+                    <p class="text-sm font-bold gradient-text"><?php echo $totalProd; ?>+ Produtos</p>
                 </div>
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-800/50" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="text-5xl mb-4">🔄</div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-100">Pods Recarregáveis</h3>
-                    <p class="text-slate-400 mb-4">Sustentável e econômico</p>
-                    <p class="text-sm font-bold gradient-text">18+ Produtos</p>
-                </div>
-                <div class="group glass rounded-2xl p-8 text-center hover:shadow-xl transition cursor-pointer border border-purple-800/50" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="text-5xl mb-4">🎁</div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-100">Acessórios</h3>
-                    <p class="text-slate-400 mb-4">Tudo que você precisa</p>
-                    <p class="text-sm font-bold gradient-text">31+ Produtos</p>
-                </div>
+                <?php 
+                    endforeach;
+                endif;
+                ?>
             </div>
         </div>
     </section>
@@ -388,38 +401,65 @@ $avaliacoes = [
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <?php foreach (array_slice($produtos, 0, 8) as $i => $produto): ?>
+                <?php foreach (array_slice($produtos, 0, 8) as $i => $produto): 
+                    $precoOriginal = $produto['preco'];
+                    $precoFinal = $produto['preco_promocional'] ?? $precoOriginal;
+                    $desconto = $precoOriginal > 0 ? round((($precoOriginal - $precoFinal) / $precoOriginal) * 100) : 0;
+                    $avaliacao = $produto['avaliacao_media'] ?? 0;
+                    $estoque = $produto['estoque'] ?? 0;
+                ?>
                 <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-800/50" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
+                    <?php if ($desconto > 0): ?>
                     <div class="absolute top-4 right-4 badge badge-primary z-10">
-                        -30%
+                        -<?php echo $desconto; ?>%
                     </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($produto['destaque']): ?>
+                    <div class="absolute top-4 left-4 badge bg-yellow-600/80 text-yellow-200 z-10">
+                        <i class="fas fa-star mr-1"></i> Destaque
+                    </div>
+                    <?php else: ?>
+                    <div class="absolute top-4 left-4 badge badge-primary">
+                        <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
+                    </div>
+                    <?php endif; ?>
 
                     <div class="relative h-56 overflow-hidden bg-slate-800">
                         <img src="<?php echo htmlspecialchars($produto['imagem'] ?? 'https://via.placeholder.com/400x300?text=' . urlencode($produto['nome'])); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=Produto'">
-                        <div class="absolute top-4 left-4 badge badge-primary">
-                            <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
-                        </div>
                     </div>
 
                     <div class="p-5">
                         <h3 class="text-lg font-bold text-slate-100 line-clamp-2 mb-3"><?php echo htmlspecialchars($produto['nome']); ?></h3>
-                        <p class="text-slate-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars(substr($produto['descricao'] ?? '', 0, 80)); ?>...</p>
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars(substr($produto['descricao_curta'] ?? $produto['descricao'] ?? '', 0, 80)); ?>...</p>
                         
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex gap-0.5">
                                 <?php for($j = 0; $j < 5; $j++): ?>
-                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-star <?php echo $j < round($avaliacao) ? 'text-yellow-400' : 'text-slate-600'; ?> text-xs"></i>
                                 <?php endfor; ?>
                             </div>
-                            <span class="text-yellow-400 text-xs font-bold">5.0</span>
+                            <span class="text-yellow-400 text-xs font-bold"><?php echo number_format($avaliacao, 1, '.', ''); ?></span>
                         </div>
 
                         <div class="mb-5 pb-5 border-b border-slate-700">
-                            <span class="text-2xl font-black gradient-text">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></span>
-                            <span class="text-slate-500 line-through ml-2 text-sm">R$ <?php echo number_format($produto['preco'] * 1.43, 2, ',', '.'); ?></span>
+                            <span class="text-2xl font-black gradient-text">R$ <?php echo number_format($precoFinal, 2, ',', '.'); ?></span>
+                            <?php if ($desconto > 0): ?>
+                            <span class="text-slate-500 line-through ml-2 text-sm">R$ <?php echo number_format($precoOriginal, 2, ',', '.'); ?></span>
+                            <?php endif; ?>
                         </div>
 
-                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $produto['preco']; ?>)" class="w-full py-3 btn-primary rounded-lg font-bold text-sm transition">
+                        <div class="mb-4 text-xs text-slate-400">
+                            <?php if ($estoque > 0): ?>
+                                <span class="text-green-400"><i class="fas fa-check-circle mr-1"></i><?php echo $estoque; ?> em estoque</span>
+                            <?php else: ?>
+                                <span class="text-red-400"><i class="fas fa-times-circle mr-1"></i>Fora de estoque</span>
+                            <?php endif; ?>
+                        </div>
+
+                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $precoFinal; ?>)" 
+                                class="w-full py-3 btn-primary rounded-lg font-bold text-sm transition <?php echo $estoque <= 0 ? 'opacity-50 cursor-not-allowed' : ''; ?>"
+                                <?php echo $estoque <= 0 ? 'disabled' : ''; ?>>
                             <i class="fas fa-cart-plus mr-2"></i>
                             Adicionar
                         </button>
