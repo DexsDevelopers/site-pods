@@ -152,188 +152,196 @@ try {
 <body class="bg-slate-900 text-slate-100">
     <!-- Header -->
     <header class="bg-slate-950 border-b border-purple-800/30 sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="text-2xl font-black gradient-text flex items-center gap-2">
+        <div class="px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2 md:gap-4">
+                <button id="sidebarToggle" class="md:hidden text-xl text-slate-400 hover:text-purple-400 transition">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="text-lg md:text-2xl font-black gradient-text flex items-center gap-2">
                     <i class="fas fa-skull-crossbones"></i>
-                    <span>Wazzy Pods</span>
+                    <span class="hidden sm:inline">Wazzy Pods</span>
                 </div>
-                <span class="text-slate-400">Admin Panel</span>
+                <span class="text-xs md:text-sm text-slate-400 hidden sm:inline">Admin Panel</span>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500"></div>
-                    <span class="text-slate-300"><?php echo $_SESSION['admin_nome']; ?></span>
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="flex items-center gap-2 text-xs md:text-sm">
+                    <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500"></div>
+                    <span class="text-slate-300 hidden sm:inline"><?php echo $_SESSION['admin_nome']; ?></span>
                 </div>
-                <a href="logout.php" class="btn-danger">
-                    <i class="fas fa-sign-out-alt"></i> Sair
+                <a href="logout.php" class="btn-danger text-xs md:text-sm px-2 py-1 md:px-4 md:py-2">
+                    <i class="fas fa-sign-out-alt"></i> <span class="hidden sm:inline">Sair</span>
                 </a>
             </div>
         </div>
     </header>
 
-    <div class="flex">
+    <div class="flex relative">
+        <!-- Overlay para mobile -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 hidden md:hidden z-30"></div>
+
         <!-- Sidebar -->
-        <aside class="w-64 min-h-screen bg-slate-950 border-r border-purple-800/30">
-            <nav class="p-4">
+        <aside id="sidebar" class="fixed md:relative w-64 h-screen md:h-auto min-h-screen bg-slate-950 border-r border-purple-800/30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40">
+            <nav class="p-4 space-y-2">
                 <a href="/admin" class="nav-item active">
-                    <i class="fas fa-dashboard"></i> Dashboard
+                    <i class="fas fa-dashboard w-5"></i> <span>Dashboard</span>
                 </a>
                 <a href="produtos.php" class="nav-item">
-                    <i class="fas fa-box"></i> Produtos
+                    <i class="fas fa-box w-5"></i> <span>Produtos</span>
                 </a>
                 <a href="categorias.php" class="nav-item">
-                    <i class="fas fa-tags"></i> Categorias
+                    <i class="fas fa-tags w-5"></i> <span>Categorias</span>
                 </a>
                 <a href="pedidos.php" class="nav-item">
-                    <i class="fas fa-shopping-cart"></i> Pedidos
+                    <i class="fas fa-shopping-cart w-5"></i> <span>Pedidos</span>
                 </a>
                 <a href="clientes.php" class="nav-item">
-                    <i class="fas fa-users"></i> Clientes
+                    <i class="fas fa-users w-5"></i> <span>Clientes</span>
                 </a>
                 <a href="integracao.php" class="nav-item">
-                    <i class="fas fa-plug"></i> Integrações
+                    <i class="fas fa-plug w-5"></i> <span>Integrações</span>
                 </a>
                 <a href="configuracoes.php" class="nav-item">
-                    <i class="fas fa-cog"></i> Configurações
-            </a>
-        </nav>
+                    <i class="fas fa-cog w-5"></i> <span>Configurações</span>
+                </a>
+            </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-8">
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold gradient-text mb-2">Dashboard</h1>
-                <p class="text-slate-400">Bem-vindo ao painel administrativo Wazzy Pods</p>
+        <main class="flex-1 w-full md:w-auto p-4 md:p-8 overflow-x-hidden">
+            <div class="mb-6 md:mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold gradient-text mb-2">Dashboard</h1>
+                <p class="text-xs md:text-sm text-slate-400">Bem-vindo ao painel administrativo Wazzy Pods</p>
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
                 <!-- Vendas Hoje -->
-                <div class="bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-xl p-6 border border-purple-800/30">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg md:rounded-xl p-4 md:p-6 border border-purple-800/30">
+                    <div class="flex justify-between items-start mb-3 md:mb-4">
                         <div>
-                            <p class="text-slate-400 text-sm">Vendas Hoje</p>
-                            <p class="text-2xl font-bold mt-1">R$ <?php echo number_format($stats['vendas_hoje'], 2, ',', '.'); ?></p>
+                            <p class="text-xs md:text-sm text-slate-400">Vendas Hoje</p>
+                            <p class="text-xl md:text-2xl font-bold mt-1">R$ <?php echo number_format($stats['vendas_hoje'], 2, ',', '.'); ?></p>
                         </div>
-                        <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-dollar-sign text-purple-400"></i>
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-purple-600/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-dollar-sign text-purple-400 text-sm md:text-base"></i>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-green-400 text-sm">
+                        <span class="text-green-400 text-xs">
                             <i class="fas fa-arrow-up"></i> Tempo real
                         </span>
                     </div>
                 </div>
 
                 <!-- Pedidos -->
-                <div class="bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-xl p-6 border border-blue-800/30">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg md:rounded-xl p-4 md:p-6 border border-blue-800/30">
+                    <div class="flex justify-between items-start mb-3 md:mb-4">
                         <div>
-                            <p class="text-slate-400 text-sm">Pedidos</p>
-                            <p class="text-2xl font-bold mt-1"><?php echo $stats['pedidos']; ?></p>
+                            <p class="text-xs md:text-sm text-slate-400">Pedidos</p>
+                            <p class="text-xl md:text-2xl font-bold mt-1"><?php echo $stats['pedidos']; ?></p>
                         </div>
-                        <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-shopping-cart text-blue-400"></i>
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-600/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-shopping-cart text-blue-400 text-sm md:text-base"></i>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-slate-400 text-sm">
+                        <span class="text-slate-400 text-xs">
                             <i class="fas fa-history"></i> Total
                         </span>
                     </div>
-    </div>
+                </div>
 
                 <!-- Produtos -->
-                <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-xl p-6 border border-green-800/30">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg md:rounded-xl p-4 md:p-6 border border-green-800/30">
+                    <div class="flex justify-between items-start mb-3 md:mb-4">
                         <div>
-                            <p class="text-slate-400 text-sm">Produtos Ativos</p>
-                            <p class="text-2xl font-bold mt-1"><?php echo $stats['produtos']; ?></p>
+                            <p class="text-xs md:text-sm text-slate-400">Produtos Ativos</p>
+                            <p class="text-xl md:text-2xl font-bold mt-1"><?php echo $stats['produtos']; ?></p>
                         </div>
-                        <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-box text-green-400"></i>
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-green-600/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-box text-green-400 text-sm md:text-base"></i>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-slate-400 text-sm">
+                        <span class="text-slate-400 text-xs">
                             <i class="fas fa-check-circle"></i> Cadastrados
                         </span>
                     </div>
                 </div>
 
                 <!-- Clientes -->
-                <div class="bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-xl p-6 border border-orange-800/30">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg md:rounded-xl p-4 md:p-6 border border-orange-800/30">
+                    <div class="flex justify-between items-start mb-3 md:mb-4">
                         <div>
-                            <p class="text-slate-400 text-sm">Total Clientes</p>
-                            <p class="text-2xl font-bold mt-1"><?php echo number_format($stats['clientes'], 0, ',', '.'); ?></p>
+                            <p class="text-xs md:text-sm text-slate-400">Total Clientes</p>
+                            <p class="text-xl md:text-2xl font-bold mt-1"><?php echo number_format($stats['clientes'], 0, ',', '.'); ?></p>
                         </div>
-                        <div class="w-12 h-12 bg-orange-600/20 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-users text-orange-400"></i>
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-orange-600/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-orange-400 text-sm md:text-base"></i>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-slate-400 text-sm">
+                        <span class="text-slate-400 text-xs">
                             <i class="fas fa-user-check"></i> Ativos
                         </span>
+                    </div>
                 </div>
             </div>
-        </div>
 
             <!-- Charts Row -->
-            <div class="grid lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
                 <!-- Vendas da Semana -->
-                <div class="bg-slate-800/50 rounded-xl p-6 backdrop-blur-sm border border-purple-800/30">
-                    <h2 class="text-xl font-bold mb-4 gradient-text">Vendas da Semana</h2>
+                <div class="bg-slate-800/50 rounded-lg md:rounded-xl p-4 md:p-6 backdrop-blur-sm border border-purple-800/30 overflow-x-auto">
+                    <h2 class="text-lg md:text-xl font-bold mb-4 gradient-text">Vendas da Semana</h2>
                     <div class="flex flex-col gap-4">
                         <?php 
                         $maxValor = max(array_column($vendas_semana_completa, 'valor'));
                         if ($maxValor == 0) $maxValor = 1;
                         ?>
-                        <svg width="100%" height="150" viewBox="0 0 500 150" class="border border-purple-800/20 rounded-lg">
-                            <!-- Grid -->
-                            <line x1="40" y1="10" x2="40" y2="130" stroke="#8b5cf6" stroke-width="2"/>
-                            <line x1="40" y1="130" x2="500" y2="130" stroke="#8b5cf6" stroke-width="2"/>
-                            
-                            <!-- Barras -->
-            <?php
-                            $totalDias = count($vendas_semana_completa);
-                            $espacamento = (500 - 60) / $totalDias;
-                            
-                            foreach ($vendas_semana_completa as $idx => $dia):
-                                $valor = floatval($dia['valor']);
-                                $altura = ($valor / $maxValor) * 100;
-                                $x = 50 + ($idx * $espacamento);
-                                $y = 130 - $altura;
-                            ?>
-                                <!-- Barra -->
-                                <rect x="<?php echo $x; ?>" y="<?php echo $y; ?>" width="<?php echo $espacamento * 0.6; ?>" height="<?php echo $altura; ?>" fill="url(#gradientBarra)" opacity="0.8" rx="4">
-                                    <title><?php echo $dia['dia']; ?>: R$ <?php echo number_format($valor, 2, ',', '.'); ?></title>
-                                </rect>
+                        <div class="overflow-x-auto">
+                            <svg width="100%" height="120" viewBox="0 0 500 120" class="border border-purple-800/20 rounded-lg min-w-full" style="min-width: 300px;">
+                                <!-- Grid -->
+                                <line x1="40" y1="10" x2="40" y2="100" stroke="#8b5cf6" stroke-width="2"/>
+                                <line x1="40" y1="100" x2="500" y2="100" stroke="#8b5cf6" stroke-width="2"/>
                                 
-                                <!-- Label X -->
-                                <text x="<?php echo $x + ($espacamento * 0.3); ?>" y="145" text-anchor="middle" font-size="11" fill="#94a3b8" font-weight="500">
-                                    <?php echo $dia['dia']; ?>
-                                </text>
-                            <?php endforeach; ?>
-                            
-                            <!-- Gradiente -->
-                            <defs>
-                                <linearGradient id="gradientBarra" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
+                                <!-- Barras -->
+                    <?php
+                                $totalDias = count($vendas_semana_completa);
+                                $espacamento = (500 - 60) / $totalDias;
+                                
+                                foreach ($vendas_semana_completa as $idx => $dia):
+                                    $valor = floatval($dia['valor']);
+                                    $altura = ($valor / $maxValor) * 70;
+                                    $x = 50 + ($idx * $espacamento);
+                                    $y = 100 - $altura;
+                                ?>
+                                    <!-- Barra -->
+                                    <rect x="<?php echo $x; ?>" y="<?php echo $y; ?>" width="<?php echo $espacamento * 0.6; ?>" height="<?php echo $altura; ?>" fill="url(#gradientBarra)" opacity="0.8" rx="4">
+                                        <title><?php echo $dia['dia']; ?>: R$ <?php echo number_format($valor, 2, ',', '.'); ?></title>
+                                    </rect>
+                                    
+                                    <!-- Label X -->
+                                    <text x="<?php echo $x + ($espacamento * 0.3); ?>" y="115" text-anchor="middle" font-size="10" fill="#94a3b8" font-weight="500">
+                                        <?php echo $dia['dia']; ?>
+                                    </text>
+                                <?php endforeach; ?>
+                                
+                                <!-- Gradiente -->
+                                <defs>
+                                    <linearGradient id="gradientBarra" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
                         
                         <!-- Legenda com valores -->
-                        <div class="grid grid-cols-3 gap-2 text-xs">
+                        <div class="grid grid-cols-3 md:grid-cols-7 gap-2 text-xs">
                             <?php foreach ($vendas_semana_completa as $dia): ?>
                                 <div class="p-2 bg-slate-900/50 rounded text-center border border-purple-800/20">
                                     <p class="font-bold text-purple-400"><?php echo $dia['dia']; ?></p>
-                                    <p class="text-slate-400">R$ <?php echo number_format(floatval($dia['valor']), 2, ',', '.'); ?></p>
+                                    <p class="text-slate-400 text-xs">R$ <?php echo number_format(floatval($dia['valor']), 2, ',', '.'); ?></p>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -341,105 +349,107 @@ try {
                 </div>
 
                 <!-- Produtos Populares -->
-                <div class="bg-slate-800/50 rounded-xl p-6 backdrop-blur-sm border border-purple-800/30">
-                    <h2 class="text-xl font-bold mb-4 gradient-text">Produtos Mais Vendidos</h2>
-                    <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg md:rounded-xl p-4 md:p-6 backdrop-blur-sm border border-purple-800/30">
+                    <h2 class="text-lg md:text-xl font-bold mb-4 gradient-text">Produtos Mais Vendidos</h2>
+                    <div class="space-y-3 md:space-y-4 max-h-64 overflow-y-auto">
                         <?php foreach ($produtos_populares as $produto): ?>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-purple-900/30 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-box text-purple-400 text-sm"></i>
+                            <div class="flex items-center justify-between gap-2 p-2 rounded bg-slate-900/30 hover:bg-slate-900/50 transition">
+                                <div class="flex items-center gap-2 md:gap-3 min-w-0">
+                                    <div class="w-8 h-8 md:w-10 md:h-10 bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-box text-purple-400 text-xs md:text-sm"></i>
                                     </div>
-                                    <div>
-                                        <p class="text-sm font-medium"><?php echo htmlspecialchars($produto['nome']); ?></p>
+                                    <div class="min-w-0">
+                                        <p class="text-xs md:text-sm font-medium truncate"><?php echo htmlspecialchars($produto['nome']); ?></p>
                                         <p class="text-xs text-slate-400"><?php echo $produto['vendas']; ?> vendas</p>
                                     </div>
                                 </div>
-                                <span class="px-2 py-1 text-xs rounded-lg <?php echo $produto['estoque'] < 10 ? 'bg-red-900/30 text-red-400' : 'bg-green-900/30 text-green-400'; ?>">
-                                    <?php echo $produto['estoque']; ?> em estoque
+                                <span class="px-2 py-1 text-xs rounded-lg flex-shrink-0 <?php echo $produto['estoque'] < 10 ? 'bg-red-900/30 text-red-400' : 'bg-green-900/30 text-green-400'; ?>">
+                                    <?php echo $produto['estoque']; ?>
                                 </span>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
-        </div>
+            </div>
 
             <!-- Pedidos Recentes -->
-            <div class="bg-slate-800/50 rounded-xl overflow-hidden backdrop-blur-sm border border-purple-800/30">
-                <div class="p-6 border-b border-purple-800/20">
-                    <h2 class="text-xl font-bold gradient-text">Pedidos Recentes</h2>
+            <div class="bg-slate-800/50 rounded-lg md:rounded-xl overflow-hidden backdrop-blur-sm border border-purple-800/30 mb-6 md:mb-8">
+                <div class="p-4 md:p-6 border-b border-purple-800/20">
+                    <h2 class="text-lg md:text-xl font-bold gradient-text">Pedidos Recentes</h2>
                 </div>
-                <table class="w-full">
-                    <thead class="bg-slate-900/50 border-b border-purple-800/20">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Pedido</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Cliente</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Valor</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-purple-400 uppercase">Data</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-purple-800/20">
-                        <?php foreach ($pedidos_recentes as $pedido): ?>
-                            <tr class="hover:bg-slate-900/30 transition">
-                                <td class="px-6 py-4 text-sm font-medium"><?php echo htmlspecialchars($pedido['order_number']); ?></td>
-                                <td class="px-6 py-4 text-sm"><?php echo htmlspecialchars($pedido['cliente_nome'] ?? 'Anônimo'); ?></td>
-                                <td class="px-6 py-4 text-sm">R$ <?php echo number_format($pedido['total_amount'], 2, ',', '.'); ?></td>
-                                <td class="px-6 py-4">
-                                    <?php
-                                    $statusColors = [
-                                        'pending' => 'bg-yellow-900/30 text-yellow-400',
-                                        'confirmed' => 'bg-blue-900/30 text-blue-400',
-                                        'processing' => 'bg-purple-900/30 text-purple-400',
-                                        'shipped' => 'bg-cyan-900/30 text-cyan-400',
-                                        'delivered' => 'bg-green-900/30 text-green-400',
-                                        'cancelled' => 'bg-red-900/30 text-red-400',
-                                        'refunded' => 'bg-gray-900/30 text-gray-400'
-                                    ];
-                                    $statusIcons = [
-                                        'pending' => 'fa-clock',
-                                        'confirmed' => 'fa-check',
-                                        'processing' => 'fa-spinner',
-                                        'shipped' => 'fa-truck',
-                                        'delivered' => 'fa-check-circle',
-                                        'cancelled' => 'fa-ban',
-                                        'refunded' => 'fa-undo'
-                                    ];
-                                    $status = $pedido['status'] ?? 'pending';
-                                    ?>
-                                    <span class="px-2 py-1 rounded-lg text-xs <?php echo $statusColors[$status] ?? $statusColors['pending']; ?>">
-                                        <i class="fas <?php echo $statusIcons[$status] ?? $statusIcons['pending']; ?> mr-1"></i>
-                                        <?php echo ucfirst($status); ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-slate-400"><?php echo date('d/m/Y H:i', strtotime($pedido['created_at'])); ?></td>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs md:text-sm">
+                        <thead class="bg-slate-900/50 border-b border-purple-800/20">
+                            <tr>
+                                <th class="px-3 md:px-6 py-2 md:py-3 text-left font-medium text-purple-400 uppercase">Pedido</th>
+                                <th class="px-3 md:px-6 py-2 md:py-3 text-left font-medium text-purple-400 uppercase hidden sm:table-cell">Cliente</th>
+                                <th class="px-3 md:px-6 py-2 md:py-3 text-left font-medium text-purple-400 uppercase">Valor</th>
+                                <th class="px-3 md:px-6 py-2 md:py-3 text-left font-medium text-purple-400 uppercase hidden md:table-cell">Status</th>
+                                <th class="px-3 md:px-6 py-2 md:py-3 text-left font-medium text-purple-400 uppercase hidden lg:table-cell">Data</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-    </div>
+                        </thead>
+                        <tbody class="divide-y divide-purple-800/20">
+                            <?php foreach ($pedidos_recentes as $pedido): ?>
+                                <tr class="hover:bg-slate-900/30 transition">
+                                    <td class="px-3 md:px-6 py-2 md:py-4 font-medium text-xs md:text-sm"><?php echo htmlspecialchars($pedido['order_number']); ?></td>
+                                    <td class="px-3 md:px-6 py-2 md:py-4 text-xs md:text-sm hidden sm:table-cell"><?php echo htmlspecialchars($pedido['cliente_nome'] ?? 'Anônimo'); ?></td>
+                                    <td class="px-3 md:px-6 py-2 md:py-4 text-xs md:text-sm">R$ <?php echo number_format($pedido['total_amount'], 2, ',', '.'); ?></td>
+                                    <td class="px-3 md:px-6 py-2 md:py-4 hidden md:table-cell">
+                                        <?php
+                                        $statusColors = [
+                                            'pending' => 'bg-yellow-900/30 text-yellow-400',
+                                            'confirmed' => 'bg-blue-900/30 text-blue-400',
+                                            'processing' => 'bg-purple-900/30 text-purple-400',
+                                            'shipped' => 'bg-cyan-900/30 text-cyan-400',
+                                            'delivered' => 'bg-green-900/30 text-green-400',
+                                            'cancelled' => 'bg-red-900/30 text-red-400',
+                                            'refunded' => 'bg-gray-900/30 text-gray-400'
+                                        ];
+                                        $statusIcons = [
+                                            'pending' => 'fa-clock',
+                                            'confirmed' => 'fa-check',
+                                            'processing' => 'fa-spinner',
+                                            'shipped' => 'fa-truck',
+                                            'delivered' => 'fa-check-circle',
+                                            'cancelled' => 'fa-ban',
+                                            'refunded' => 'fa-undo'
+                                        ];
+                                        $status = $pedido['status'] ?? 'pending';
+                                        ?>
+                                        <span class="px-2 py-1 rounded-lg text-xs <?php echo $statusColors[$status] ?? $statusColors['pending']; ?>">
+                                            <i class="fas <?php echo $statusIcons[$status] ?? $statusIcons['pending']; ?> mr-1"></i>
+                                            <?php echo ucfirst($status); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-3 md:px-6 py-2 md:py-4 text-xs md:text-sm text-slate-400 hidden lg:table-cell"><?php echo date('d/m/Y H:i', strtotime($pedido['created_at'])); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <!-- Quick Actions -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6 md:mt-8">
                 <a href="produtos.php" class="quick-action">
-                    <i class="fas fa-plus text-2xl mb-2"></i>
-                    <span>Novo Produto</span>
+                    <i class="fas fa-plus text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <span class="text-xs md:text-sm">Novo Produto</span>
                 </a>
                 <a href="categorias.php" class="quick-action">
-                    <i class="fas fa-tags text-2xl mb-2"></i>
-                    <span>Gerenciar Categorias</span>
+                    <i class="fas fa-tags text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <span class="text-xs md:text-sm">Gerenciar Categorias</span>
                 </a>
                 <a href="pedidos.php" class="quick-action">
-                    <i class="fas fa-list text-2xl mb-2"></i>
-                    <span>Ver Pedidos</span>
+                    <i class="fas fa-list text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <span class="text-xs md:text-sm">Ver Pedidos</span>
                 </a>
                 <a href="configuracoes.php" class="quick-action">
-                    <i class="fas fa-cog text-2xl mb-2"></i>
-                    <span>Configurações</span>
+                    <i class="fas fa-cog text-xl md:text-2xl mb-1 md:mb-2"></i>
+                    <span class="text-xs md:text-sm">Configurações</span>
                 </a>
             </div>
         </main>
-</div>
+    </div>
 
     <style>
         .gradient-text {
@@ -454,10 +464,11 @@ try {
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             border-radius: 0.5rem;
             color: #94a3b8;
             transition: all 0.3s;
+            text-decoration: none;
         }
         
         .nav-item:hover {
@@ -474,12 +485,12 @@ try {
         .btn-danger {
             background: #ef4444;
             color: white;
-            padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
         
         .btn-danger:hover {
@@ -489,7 +500,7 @@ try {
         .quick-action {
             background: rgba(139, 92, 246, 0.1);
             border: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 1.5rem;
+            padding: 1rem md:1.5rem;
             border-radius: 0.75rem;
             text-align: center;
             color: #a78bfa;
@@ -498,6 +509,7 @@ try {
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            text-decoration: none;
         }
         
         .quick-action:hover {
@@ -507,10 +519,49 @@ try {
         }
     </style>
 
-    <!-- Gráfico SVG renderizado do lado do servidor -->
-    
-    <!-- Limpar cache e forçar recarregamento se necessário -->
     <script>
+        // Menu mobile toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+        }
+
+        sidebarToggle.addEventListener('click', () => {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        });
+
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Fechar sidebar ao clicar em um link
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 768) {
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Fechar sidebar ao redimensionar para desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+            }
+        });
+
         // Versão do gráfico para invalidar cache
         const chartVersion = '<?php echo md5(json_encode($vendas_semana_completa)); ?>';
         const storageKey = 'wazzy_chart_version';
