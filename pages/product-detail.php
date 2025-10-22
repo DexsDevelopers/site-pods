@@ -70,7 +70,7 @@ $reviews = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $product['nome']; ?> - Loja de Pods</title>
-    <!-- CSS Puro para garantir que funcione -->
+    <!-- CSS Moderno e Profissional -->
     <style>
         * {
             margin: 0;
@@ -79,97 +79,268 @@ $reviews = [
         }
         
         body {
-            font-family: Arial, sans-serif;
-            background: #1e293b;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             color: white;
+            line-height: 1.6;
         }
         
         .product-container {
             display: flex;
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1200px;
+            gap: 3rem;
+            padding: 3rem 2rem;
+            max-width: 1400px;
             margin: 0 auto;
+            min-height: 80vh;
         }
         
         .product-image-container {
             flex: 1;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
-            padding: 16px;
-            height: 500px;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border-radius: 20px;
+            padding: 2rem;
+            height: 600px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border: 2px solid #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
             position: relative;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
         
         .product-image {
             width: 100% !important;
             height: 100% !important;
             object-fit: cover !important;
-            border-radius: 8px !important;
+            border-radius: 16px !important;
             display: block !important;
             max-width: 100% !important;
             max-height: 100% !important;
             visibility: visible !important;
             opacity: 1 !important;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.02);
         }
         
         .product-info {
             flex: 1;
             padding: 2rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
         
         .product-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            color: #8b5cf6;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
         }
         
         .product-price {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 2.5rem;
+            font-weight: 800;
             color: #10b981;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
         
         .product-description {
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1.2rem;
+            line-height: 1.8;
             margin-bottom: 2rem;
+            color: #cbd5e1;
         }
         
         .btn {
-            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
-            padding: 12px 24px;
+            padding: 16px 32px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
             margin-right: 1rem;
             margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
         }
         
         .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .feature-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .star {
+            color: #fbbf24;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        
+        .stock-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .stock-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .tabs-container {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 3rem;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab-btn.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .related-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .related-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .related-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
         @media (max-width: 768px) {
             .product-container {
                 flex-direction: column;
                 padding: 1rem;
+                gap: 2rem;
             }
             
             .product-image-container {
-                height: 300px;
+                height: 400px;
+            }
+            
+            .product-title {
+                font-size: 2rem;
+            }
+            
+            .product-price {
+                font-size: 2rem;
             }
         }
     </style>
@@ -276,46 +447,46 @@ $reviews = [
                     </div>
 
                     <!-- Garantia & Frete -->
-                    <div class="glass rounded-lg p-6 mb-6 space-y-3">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-shield-alt text-green-400 text-xl"></i>
+                    <div class="feature-card">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <i class="fas fa-shield-alt" style="color: #10b981; font-size: 1.5rem;"></i>
                             <div>
-                                <p class="font-bold">Garantia</p>
-                                <p class="text-slate-400 text-sm">12 meses garantidos</p>
+                                <p style="font-weight: 700; margin-bottom: 0.25rem;">Garantia</p>
+                                <p style="color: #94a3b8; font-size: 0.9rem;">12 meses garantidos</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-truck text-blue-400 text-xl"></i>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <i class="fas fa-truck" style="color: #3b82f6; font-size: 1.5rem;"></i>
                             <div>
-                                <p class="font-bold">Frete Grátis</p>
-                                <p class="text-slate-400 text-sm">Acima de R$ 100</p>
+                                <p style="font-weight: 700; margin-bottom: 0.25rem;">Frete Grátis</p>
+                                <p style="color: #94a3b8; font-size: 0.9rem;">Acima de R$ 100</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-check-circle text-purple-400 text-xl"></i>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 1.5rem;"></i>
                             <div>
-                                <p class="font-bold">100% Autentico</p>
-                                <p class="text-slate-400 text-sm">Produto Original Lacrado</p>
+                                <p style="font-weight: 700; margin-bottom: 0.25rem;">100% Autentico</p>
+                                <p style="color: #94a3b8; font-size: 0.9rem;">Produto Original Lacrado</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Estoque -->
-                    <div class="mb-6">
-                        <p class="text-sm text-slate-400 mb-2">Disponibilidade</p>
+                    <div class="feature-card">
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">Disponibilidade</p>
                         <?php 
                         $estoque = $product['estoque'] ?? 0;
                         $percentual = min(($estoque / 50) * 100, 100);
                         ?>
-                        <div class="w-full bg-slate-700 rounded-full h-2 mb-2">
-                            <div class="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full" style="width: <?php echo $percentual; ?>%;"></div>
+                        <div class="stock-bar">
+                            <div class="stock-fill" style="width: <?php echo $percentual; ?>%;"></div>
                         </div>
-                        <p class="text-sm">
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
                             <?php if ($estoque > 0): ?>
-                                <span class="text-green-400 font-bold"><?php echo $estoque; ?></span> 
-                                <span class="text-slate-400">unidades em estoque</span>
+                                <span style="color: #10b981; font-weight: 700;"><?php echo $estoque; ?></span> 
+                                <span style="color: #94a3b8;">unidades em estoque</span>
                             <?php else: ?>
-                                <span class="text-red-400 font-bold">Fora de estoque</span>
+                                <span style="color: #ef4444; font-weight: 700;">Fora de estoque</span>
                             <?php endif; ?>
                         </p>
                     </div>
@@ -325,7 +496,7 @@ $reviews = [
                         <button onclick="addToCart()" class="btn" style="flex: 1;">
                             <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>Adicionar ao Carrinho
                         </button>
-                        <button onclick="toggleWishlist()" class="btn" style="flex: 1; background: rgba(255,255,255,0.1);" id="wishlistBtn2">
+                        <button onclick="toggleWishlist()" class="btn btn-secondary" style="flex: 1;" id="wishlistBtn2">
                             <i class="far fa-heart" style="margin-right: 0.5rem;"></i>Favoritar
                         </button>
                     </div>
@@ -333,105 +504,109 @@ $reviews = [
             </div>
 
             <!-- Abas de Informação -->
-            <div class="mb-16">
-                <div class="flex gap-4 mb-8 border-b border-slate-700">
-                    <button onclick="showTab('especificacoes')" class="px-6 py-3 font-bold border-b-2 border-purple-600 text-purple-400">
+            <div class="tabs-container">
+                <div class="tab-buttons">
+                    <button onclick="showTab('especificacoes')" class="tab-btn active" id="tab-especificacoes">
                         Especificações
                     </button>
-                    <button onclick="showTab('ingredientes')" class="px-6 py-3 font-bold text-slate-400 hover:text-white transition">
+                    <button onclick="showTab('ingredientes')" class="tab-btn" id="tab-ingredientes">
                         Composição
                     </button>
-                    <button onclick="showTab('incluso')" class="px-6 py-3 font-bold text-slate-400 hover:text-white transition">
+                    <button onclick="showTab('incluso')" class="tab-btn" id="tab-incluso">
                         O que Inclui
                     </button>
                 </div>
 
-                <div id="especificacoes" class="grid md:grid-cols-2 gap-4">
+                <div id="especificacoes" class="tab-content active" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
                     <?php if (!empty($product['caracteristicas'])): ?>
                         <?php foreach ($product['caracteristicas'] as $spec => $valor): ?>
-                            <div class="glass p-4 rounded-lg">
-                                <p class="text-slate-400 text-sm"><?php echo htmlspecialchars(ucfirst($spec)); ?></p>
-                                <p class="font-bold text-lg"><?php echo htmlspecialchars($valor); ?></p>
+                            <div class="feature-card">
+                                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;"><?php echo htmlspecialchars(ucfirst($spec)); ?></p>
+                                <p style="font-weight: 700; font-size: 1.1rem; color: #cbd5e1;"><?php echo htmlspecialchars($valor); ?></p>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <div class="col-span-2 glass p-8 rounded-lg text-center">
-                            <i class="fas fa-info-circle text-4xl text-slate-500 mb-4"></i>
-                            <p class="text-slate-400">Especificações não disponíveis</p>
+                        <div class="feature-card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                            <i class="fas fa-info-circle" style="font-size: 3rem; color: #64748b; margin-bottom: 1rem;"></i>
+                            <p style="color: #94a3b8;">Especificações não disponíveis</p>
                         </div>
                     <?php endif; ?>
                 </div>
 
-                <div id="ingredientes" class="hidden">
-                    <div class="glass p-8 rounded-lg">
-                        <h3 class="text-xl font-bold mb-4">Descrição do Produto</h3>
-                        <p class="text-slate-300 leading-relaxed">
+                <div id="ingredientes" class="tab-content">
+                    <div class="feature-card">
+                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: #8b5cf6;">Descrição do Produto</h3>
+                        <p style="color: #cbd5e1; line-height: 1.8;">
                             <?php echo nl2br(htmlspecialchars($product['descricao'] ?? 'Descrição não disponível')); ?>
                         </p>
                     </div>
                 </div>
 
-                <div id="incluso" class="hidden space-y-3">
-                    <div class="glass p-4 rounded-lg flex items-center gap-3">
-                        <i class="fas fa-check-circle text-green-400"></i>
-                        <span>Produto original lacrado</span>
-                    </div>
-                    <div class="glass p-4 rounded-lg flex items-center gap-3">
-                        <i class="fas fa-check-circle text-green-400"></i>
-                        <span>Garantia de 12 meses</span>
-                    </div>
-                    <div class="glass p-4 rounded-lg flex items-center gap-3">
-                        <i class="fas fa-check-circle text-green-400"></i>
-                        <span>Frete grátis acima de R$ 100</span>
-                    </div>
-                    <div class="glass p-4 rounded-lg flex items-center gap-3">
-                        <i class="fas fa-check-circle text-green-400"></i>
-                        <span>Suporte técnico especializado</span>
+                <div id="incluso" class="tab-content">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="feature-card" style="display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;"></i>
+                            <span style="color: #cbd5e1; font-weight: 500;">Produto original lacrado</span>
+                        </div>
+                        <div class="feature-card" style="display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;"></i>
+                            <span style="color: #cbd5e1; font-weight: 500;">Garantia de 12 meses</span>
+                        </div>
+                        <div class="feature-card" style="display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;"></i>
+                            <span style="color: #cbd5e1; font-weight: 500;">Frete grátis acima de R$ 100</span>
+                        </div>
+                        <div class="feature-card" style="display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;"></i>
+                            <span style="color: #cbd5e1; font-weight: 500;">Suporte técnico especializado</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Avaliações -->
-            <div class="mb-16">
-                <h2 class="text-3xl font-black mb-8">Avaliações de Clientes</h2>
-                <div class="space-y-6">
+            <div class="tabs-container">
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Avaliações de Clientes</h2>
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                     <?php foreach ($reviews as $review): ?>
-                        <div class="glass p-6 rounded-lg">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-user text-white"></i>
+                        <div class="feature-card">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                        <i class="fas fa-user"></i>
                                     </div>
                                     <div>
-                                        <p class="font-bold"><?php echo $review['nome']; ?></p>
+                                        <p style="font-weight: 700; color: #cbd5e1;"><?php echo $review['nome']; ?></p>
                                         <?php if ($review['verificado']): ?>
-                                            <p class="text-xs text-green-400"><i class="fas fa-check-circle mr-1"></i>Comprador Verificado</p>
+                                            <p style="color: #10b981; font-size: 0.8rem;"><i class="fas fa-check-circle" style="margin-right: 0.25rem;"></i>Comprador Verificado</p>
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                <div class="flex gap-1">
+                                <div class="rating-stars">
                                     <?php for($i = 0; $i < 5; $i++): ?>
-                                        <i class="fas fa-star <?php echo $i < $review['rating'] ? 'text-yellow-400' : 'text-slate-600'; ?>"></i>
+                                        <i class="fas fa-star star" style="<?php echo $i < $review['rating'] ? 'color: #fbbf24;' : 'color: #64748b;'; ?>"></i>
                                     <?php endfor; ?>
                                 </div>
                             </div>
-                            <p class="text-slate-300"><?php echo $review['texto']; ?></p>
+                            <p style="color: #cbd5e1; line-height: 1.6;"><?php echo $review['texto']; ?></p>
                         </div>
                     <?php endforeach; ?>
                 </div>
             </div>
 
             <!-- Produtos Relacionados -->
-            <div>
-                <h2 class="text-3xl font-black mb-8">Você Também Pode Gostar</h2>
-                <div class="grid md:grid-cols-3 gap-8">
+            <div class="tabs-container">
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Você Também Pode Gostar</h2>
+                <div class="related-products">
                     <?php foreach ($relacionados as $prod): ?>
-                        <div class="glass rounded-lg overflow-hidden card-hover">
-                            <div class="h-48 bg-slate-700"></div>
-                            <div class="p-6">
-                                <h3 class="font-bold mb-2"><?php echo $prod['nome']; ?></h3>
-                                <p class="text-2xl gradient-text font-black mb-4">R$ <?php echo number_format($prod['preco'], 2, ',', '.'); ?></p>
-                                <a href="product-detail.php?id=<?php echo $prod['id']; ?>" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-bold text-center block hover:shadow-lg transition">
+                        <div class="related-card">
+                            <div style="height: 12rem; background: linear-gradient(135deg, #1e293b, #334155); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-box" style="font-size: 3rem; color: #64748b;"></i>
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3 style="font-weight: 700; margin-bottom: 0.5rem; color: #cbd5e1;"><?php echo $prod['nome']; ?></h3>
+                                <p style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin-bottom: 1rem;">R$ <?php echo number_format($prod['preco'], 2, ',', '.'); ?></p>
+                                <a href="product-detail.php?id=<?php echo $prod['id']; ?>" class="btn" style="width: 100%; text-align: center; display: block;">
                                     Ver Detalhes
                                 </a>
                             </div>
@@ -444,14 +619,28 @@ $reviews = [
 
     <script>
         function showTab(tabName) {
-            document.querySelectorAll('[id="especificacoes"], [id="ingredientes"], [id="incluso"]').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabName).classList.remove('hidden');
-            document.querySelectorAll('button').forEach(btn => {
-                btn.classList.remove('border-purple-600', 'text-purple-400');
-                btn.classList.add('text-slate-400');
+            // Esconder todas as abas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+                tab.style.display = 'none';
             });
-            event.target.classList.remove('text-slate-400');
-            event.target.classList.add('border-b-2', 'border-purple-600', 'text-purple-400');
+            
+            // Mostrar a aba selecionada
+            const activeTab = document.getElementById(tabName);
+            if (activeTab) {
+                activeTab.classList.add('active');
+                activeTab.style.display = 'block';
+            }
+            
+            // Atualizar botões
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
         }
 
         function addToCart() {
