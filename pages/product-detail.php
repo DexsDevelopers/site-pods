@@ -324,6 +324,38 @@ $reviews = [
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
+        /* Menu Responsivo */
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none !important;
+            }
+            
+            .mobile-menu {
+                display: block !important;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .desktop-menu {
+                display: flex !important;
+            }
+            
+            .mobile-menu {
+                display: none !important;
+            }
+        }
+        
+        /* Hover Effects para Menu */
+        .desktop-menu a:hover,
+        .desktop-menu button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+        
+        .mobile-menu button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
         @media (max-width: 768px) {
             .product-container {
                 flex-direction: column;
@@ -342,6 +374,40 @@ $reviews = [
             .product-price {
                 font-size: 2rem;
             }
+            
+            .product-info {
+                padding: 1rem;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .product-container {
+                padding: 0.5rem;
+                gap: 1.5rem;
+            }
+            
+            .product-image-container {
+                height: 300px;
+                padding: 1rem;
+            }
+            
+            .product-title {
+                font-size: 1.5rem;
+            }
+            
+            .product-price {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -356,20 +422,55 @@ $reviews = [
 <body class="text-slate-100">
 
     <!-- Header Simples -->
-    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md bg-black/80 py-4 border-b border-purple-900/30">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
-            <a href="../index.php" class="text-2xl font-bold gradient-text">
-                <i class="fas fa-cloud mr-2"></i>Loja de Pods
+    <!-- Menu Moderno e Responsivo -->
+    <header style="position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(139, 92, 246, 0.3); padding: 1rem 0;">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 1rem; display: flex; align-items: center; justify-content: space-between;">
+            <!-- Logo -->
+            <a href="../index.php" style="display: flex; align-items: center; text-decoration: none; color: white;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #8b5cf6, #ec4899); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                    <i class="fas fa-cloud" style="color: white; font-size: 1.2rem;"></i>
+                </div>
+                <span style="font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Wazzy Pods</span>
             </a>
-            <div class="flex gap-4">
-                <a href="javascript:history.back()" class="px-4 py-2 glass rounded-lg hover:bg-white/10 transition">
-                    <i class="fas fa-arrow-left mr-2"></i>Voltar
+
+            <!-- Menu Desktop -->
+            <nav class="desktop-menu" style="display: flex; align-items: center; gap: 1rem;">
+                <a href="javascript:history.back()" style="display: flex; align-items: center; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.1); border-radius: 10px; text-decoration: none; color: white; transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
+                    <span>Voltar</span>
                 </a>
-                <button onclick="toggleWishlist()" class="px-4 py-2 glass rounded-lg hover:bg-white/10 transition" id="wishlistBtn">
-                    <i class="far fa-heart mr-2"></i>Favoritar
+                <button onclick="toggleWishlist()" id="wishlistBtn" style="display: flex; align-items: center; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease;">
+                    <i class="far fa-heart" style="margin-right: 0.5rem;"></i>
+                    <span>Favoritar</span>
                 </button>
-                <button onclick="addToCart()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg hover:shadow-lg transition font-bold">
-                    <i class="fas fa-shopping-cart mr-2"></i>Comprar
+                <button onclick="addToCart()" style="display: flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+                    <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>
+                    <span>Comprar</span>
+                </button>
+            </nav>
+
+            <!-- Menu Mobile -->
+            <div class="mobile-menu" style="display: none;">
+                <button id="mobileMenuBtn" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0.5rem;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu Mobile Dropdown -->
+        <div id="mobileMenuDropdown" style="display: none; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(139, 92, 246, 0.3); padding: 1rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <a href="javascript:history.back()" style="display: flex; align-items: center; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 10px; text-decoration: none; color: white; border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <i class="fas fa-arrow-left" style="margin-right: 0.75rem; width: 20px;"></i>
+                    <span>Voltar</span>
+                </a>
+                <button onclick="toggleWishlist()" id="wishlistBtnMobile" style="display: flex; align-items: center; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; color: white; cursor: pointer; text-align: left; width: 100%;">
+                    <i class="far fa-heart" style="margin-right: 0.75rem; width: 20px;"></i>
+                    <span>Favoritar</span>
+                </button>
+                <button onclick="addToCart()" style="display: flex; align-items: center; padding: 1rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: 700; text-align: left; width: 100%;">
+                    <i class="fas fa-shopping-cart" style="margin-right: 0.75rem; width: 20px;"></i>
+                    <span>Comprar</span>
                 </button>
             </div>
         </div>
@@ -446,15 +547,8 @@ $reviews = [
                         <?php endif; ?>
                     </div>
 
-                    <!-- Garantia & Frete -->
+                    <!-- Frete & Autenticidade -->
                     <div class="feature-card">
-                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <i class="fas fa-shield-alt" style="color: #10b981; font-size: 1.5rem;"></i>
-                            <div>
-                                <p style="font-weight: 700; margin-bottom: 0.25rem;">Garantia</p>
-                                <p style="color: #94a3b8; font-size: 0.9rem;">12 meses garantidos</p>
-                            </div>
-                        </div>
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                             <i class="fas fa-truck" style="color: #3b82f6; font-size: 1.5rem;"></i>
                             <div>
@@ -669,8 +763,24 @@ $reviews = [
             localStorage.setItem('wishlist', JSON.stringify(wishlist));
         }
         
-        // Forçar exibição da imagem
+        // Menu Mobile
         document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenuDropdown = document.getElementById('mobileMenuDropdown');
+            
+            if (mobileMenuBtn && mobileMenuDropdown) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    if (mobileMenuDropdown.style.display === 'none' || mobileMenuDropdown.style.display === '') {
+                        mobileMenuDropdown.style.display = 'block';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    } else {
+                        mobileMenuDropdown.style.display = 'none';
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                });
+            }
+            
+            // Forçar exibição da imagem
             const mainImage = document.getElementById('mainImage');
             if (mainImage) {
                 console.log('Forçando exibição da imagem...');
