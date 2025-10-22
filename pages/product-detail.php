@@ -108,7 +108,7 @@ $reviews = [
             <div class="grid md:grid-cols-2 gap-12 mb-16">
                 <!-- Imagens -->
                 <div data-aos="fade-right">
-                    <div class="bg-slate-800/50 rounded-lg p-4 mb-4 aspect-square flex items-center justify-center overflow-hidden">
+                    <div class="bg-slate-800/50 rounded-lg p-4 mb-4 aspect-square flex items-center justify-center overflow-hidden" style="position: relative; min-height: 400px;">
                         <?php 
                         // Debug temporário
                         echo "<!-- DEBUG: Imagem do produto = '" . htmlspecialchars($product['imagem'] ?? 'VAZIO') . "' -->";
@@ -125,17 +125,12 @@ $reviews = [
                         echo "<!-- DEBUG: URL final = '" . htmlspecialchars($imagemUrl) . "' -->";
                         ?>
                         
-                        <!-- Imagem de teste direta -->
+                        <!-- Imagem principal com CSS corrigido -->
                         <img id="mainImage" src="<?php echo htmlspecialchars($imagemUrl); ?>" 
-                             class="max-w-full max-h-full object-cover rounded" 
+                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;"
                              alt="<?php echo htmlspecialchars($product['nome']); ?>"
                              onerror="console.log('Erro ao carregar imagem:', this.src); this.src='<?php echo $imagemFallback; ?>'"
                              onload="console.log('Imagem carregada com sucesso:', this.src)">
-                             
-                        <!-- Imagem de teste alternativa -->
-                        <img src="https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=600&h=600&fit=crop&auto=format" 
-                             style="position: absolute; top: 10px; right: 10px; width: 100px; height: 100px; border: 2px solid red; z-index: 1000;"
-                             alt="Teste">
                     </div>
                     <?php if (!empty($product['galeria']) && count($product['galeria']) > 1): ?>
                     <div class="flex gap-2">
