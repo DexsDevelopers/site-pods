@@ -70,7 +70,109 @@ $reviews = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $product['nome']; ?> - Loja de Pods</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CSS Puro para garantir que funcione -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e293b;
+            color: white;
+        }
+        
+        .product-container {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .product-image-container {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            padding: 16px;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid #8b5cf6;
+            position: relative;
+        }
+        
+        .product-image {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            border-radius: 8px !important;
+            display: block !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .product-info {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .product-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #8b5cf6;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+        
+        .product-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .product-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .product-image-container {
+                height: 300px;
+            }
+        }
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -103,56 +205,29 @@ $reviews = [
     </header>
 
     <!-- Conteúdo Principal -->
-    <main class="pt-24 pb-20 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-12 mb-16">
+    <main style="padding: 6rem 1rem 5rem; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%); min-height: 100vh;">
+        <div class="product-container">
                 <!-- Imagens -->
-                <div data-aos="fade-right">
-                    <!-- Container simples sem classes conflitantes -->
-                    <div style="background: rgba(30, 41, 59, 0.5); border-radius: 12px; padding: 16px; margin-bottom: 16px; width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #8b5cf6;">
-                        <?php 
+                    <!-- Container de imagem simplificado -->
+                    <div class="product-image-container">
+                        <?php
                         // Sistema simplificado de imagens
                         $imagemUrl = $product['imagem'] ?? '';
                         $imagemFallback = 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=600&h=600&fit=crop&auto=format';
-                        
+
                         // Se não há imagem ou é vazia, usar fallback
                         if (empty($imagemUrl)) {
                             $imagemUrl = $imagemFallback;
                         }
                         ?>
-                        
-                        <!-- Imagem com JavaScript para forçar exibição -->
+
+                        <!-- Imagem principal com CSS puro -->
                         <img id="mainImage" 
+                             class="product-image"
                              src="<?php echo htmlspecialchars($imagemUrl); ?>" 
                              alt="<?php echo htmlspecialchars($product['nome']); ?>"
-                             style="
-                                width: 100% !important; 
-                                height: 100% !important; 
-                                object-fit: cover !important; 
-                                border-radius: 8px !important; 
-                                display: block !important;
-                                max-width: 100% !important;
-                                max-height: 100% !important;
-                                visibility: visible !important;
-                                opacity: 1 !important;
-                             "
                              onerror="console.log('Erro ao carregar imagem:', this.src); this.src='<?php echo $imagemFallback; ?>'"
-                             onload="console.log('Imagem carregada com sucesso:', this.src); this.style.visibility='visible'; this.style.display='block';">
-                        
-                        <!-- Imagem de backup visível -->
-                        <img src="<?php echo htmlspecialchars($imagemUrl); ?>" 
-                             style="
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: 100%;
-                                height: 100%;
-                                object-fit: cover;
-                                border-radius: 8px;
-                                z-index: 10;
-                                border: 2px solid red;
-                             "
-                             alt="Backup Image">
+                             onload="console.log('Imagem carregada com sucesso:', this.src);">
                     </div>
                     <?php if (!empty($product['galeria']) && count($product['galeria']) > 1): ?>
                     <div class="flex gap-2">
@@ -164,12 +239,12 @@ $reviews = [
                 </div>
 
                 <!-- Detalhes -->
-                <div data-aos="fade-left">
-                    <div class="mb-4">
-                        <span class="px-3 py-1 bg-purple-600 text-white text-sm rounded-full"><?php echo htmlspecialchars($product['categoria_nome'] ?? 'Produto'); ?></span>
+                <div class="product-info">
+                    <div style="margin-bottom: 1rem;">
+                        <span style="background: #8b5cf6; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;"><?php echo htmlspecialchars($product['categoria_nome'] ?? 'Produto'); ?></span>
                     </div>
 
-                    <h1 class="text-4xl font-black mb-4"><?php echo htmlspecialchars($product['nome']); ?></h1>
+                    <h1 class="product-title"><?php echo htmlspecialchars($product['nome']); ?></h1>
 
                     <!-- Rating -->
                     <div class="flex items-center gap-3 mb-6">
@@ -185,17 +260,17 @@ $reviews = [
                     </div>
 
                     <!-- Preço -->
-                    <div class="mb-6">
+                    <div style="margin-bottom: 2rem;">
                         <?php 
                         $precoOriginal = $product['preco'];
                         $precoFinal = $product['preco_promocional'] ?? $precoOriginal;
                         $desconto = $precoOriginal > 0 ? round((($precoOriginal - $precoFinal) / $precoOriginal) * 100) : 0;
                         ?>
-                        <div class="text-4xl font-black gradient-text mb-2">R$ <?php echo number_format($precoFinal, 2, ',', '.'); ?></div>
+                        <div class="product-price">R$ <?php echo number_format($precoFinal, 2, ',', '.'); ?></div>
                         <?php if ($desconto > 0): ?>
-                        <div class="text-slate-400 line-through">R$ <?php echo number_format($precoOriginal, 2, ',', '.'); ?></div>
-                        <div class="text-green-400 font-bold mt-2">
-                            <i class="fas fa-tag mr-2"></i><?php echo $desconto; ?>% OFF
+                        <div style="color: #94a3b8; text-decoration: line-through;">R$ <?php echo number_format($precoOriginal, 2, ',', '.'); ?></div>
+                        <div style="color: #10b981; font-weight: bold; margin-top: 0.5rem;">
+                            <i class="fas fa-tag" style="margin-right: 0.5rem;"></i><?php echo $desconto; ?>% OFF
                         </div>
                         <?php endif; ?>
                     </div>
@@ -246,12 +321,12 @@ $reviews = [
                     </div>
 
                     <!-- Botões -->
-                    <div class="flex gap-4">
-                        <button onclick="addToCart()" class="flex-1 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-bold hover:shadow-lg transition">
-                            <i class="fas fa-shopping-cart mr-2"></i>Adicionar ao Carrinho
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button onclick="addToCart()" class="btn" style="flex: 1;">
+                            <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>Adicionar ao Carrinho
                         </button>
-                        <button onclick="toggleWishlist()" class="flex-1 py-4 glass rounded-lg font-bold hover:bg-white/20 transition" id="wishlistBtn2">
-                            <i class="far fa-heart mr-2"></i>Favoritar
+                        <button onclick="toggleWishlist()" class="btn" style="flex: 1; background: rgba(255,255,255,0.1);" id="wishlistBtn2">
+                            <i class="far fa-heart" style="margin-right: 0.5rem;"></i>Favoritar
                         </button>
                     </div>
                 </div>
