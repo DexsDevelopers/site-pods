@@ -8,8 +8,8 @@ echo "<h2>Instalação Wazzy Pods - Banco de Dados</h2>";
 
 $host = 'localhost';
 $db   = 'u853242961_loja_pods';
-$user = 'u853242961_pods_saluc';
-$pass = 'Lucastav8012@';     // ALTERE para sua senha MySQL
+$user = 'u853242961_pods_salu';
+$pass = 'Lucastav8012@';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

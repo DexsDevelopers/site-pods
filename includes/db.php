@@ -8,7 +8,7 @@
  * segura, com suporte a prepared statements.
  */
 
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/config_hostinger.php';
 require_once __DIR__ . '/helpers.php';
 
 class Database {
