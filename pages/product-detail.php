@@ -109,41 +109,59 @@ $reviews = [
                 <!-- Imagens -->
                 <div data-aos="fade-right">
                     <div class="bg-slate-800/50 rounded-lg p-4 mb-4 aspect-square flex items-center justify-center overflow-hidden">
-                        <img id="mainImage" src="<?php echo $product['imagem']; ?>" class="max-w-full max-h-full object-cover rounded" alt="<?php echo $product['nome']; ?>">
+                        <?php if (!empty($product['imagem'])): ?>
+                            <img id="mainImage" src="<?php echo htmlspecialchars($product['imagem']); ?>" class="max-w-full max-h-full object-cover rounded" alt="<?php echo htmlspecialchars($product['nome']); ?>">
+                        <?php else: ?>
+                            <div class="text-slate-500 text-center">
+                                <i class="fas fa-image text-6xl mb-4"></i>
+                                <p>Imagem não disponível</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
+                    <?php if (!empty($product['galeria']) && count($product['galeria']) > 1): ?>
                     <div class="flex gap-2">
-                        <?php foreach ($product['imagens'] as $img): ?>
-                            <img src="<?php echo $img; ?>" onclick="document.getElementById('mainImage').src='<?php echo $img; ?>'" class="w-20 h-20 rounded cursor-pointer border border-purple-600 hover:border-pink-600 transition" alt="">
+                        <?php foreach ($product['galeria'] as $img): ?>
+                            <img src="<?php echo htmlspecialchars($img); ?>" onclick="document.getElementById('mainImage').src='<?php echo htmlspecialchars($img); ?>'" class="w-20 h-20 rounded cursor-pointer border border-purple-600 hover:border-pink-600 transition" alt="">
                         <?php endforeach; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Detalhes -->
                 <div data-aos="fade-left">
                     <div class="mb-4">
-                        <span class="px-3 py-1 bg-purple-600 text-white text-sm rounded-full"><?php echo $product['categoria']; ?></span>
+                        <span class="px-3 py-1 bg-purple-600 text-white text-sm rounded-full"><?php echo htmlspecialchars($product['categoria_nome'] ?? 'Produto'); ?></span>
                     </div>
 
-                    <h1 class="text-4xl font-black mb-4"><?php echo $product['nome']; ?></h1>
+                    <h1 class="text-4xl font-black mb-4"><?php echo htmlspecialchars($product['nome']); ?></h1>
 
                     <!-- Rating -->
                     <div class="flex items-center gap-3 mb-6">
                         <div class="flex gap-1">
-                            <?php for($i = 0; $i < 5; $i++): ?>
-                                <i class="fas fa-star <?php echo $i < $product['rating'] ? 'text-yellow-400' : 'text-slate-600'; ?>"></i>
+                            <?php 
+                            $rating = $product['avaliacao_media'] ?? 4.5;
+                            for($i = 0; $i < 5; $i++): ?>
+                                <i class="fas fa-star <?php echo $i < round($rating) ? 'text-yellow-400' : 'text-slate-600'; ?>"></i>
                             <?php endfor; ?>
                         </div>
-                        <span class="text-yellow-400 font-bold"><?php echo $product['rating']; ?></span>
-                        <span class="text-slate-400">(<?php echo $product['reviews_count']; ?> avaliações)</span>
+                        <span class="text-yellow-400 font-bold"><?php echo number_format($rating, 1); ?></span>
+                        <span class="text-slate-400">(<?php echo $product['total_avaliacoes'] ?? 0; ?> avaliações)</span>
                     </div>
 
                     <!-- Preço -->
                     <div class="mb-6">
-                        <div class="text-4xl font-black gradient-text mb-2">R$ <?php echo number_format($product['preco'], 2, ',', '.'); ?></div>
-                        <div class="text-slate-400 line-through">R$ <?php echo number_format($product['preco_original'], 2, ',', '.'); ?></div>
+                        <?php 
+                        $precoOriginal = $product['preco'];
+                        $precoFinal = $product['preco_promocional'] ?? $precoOriginal;
+                        $desconto = $precoOriginal > 0 ? round((($precoOriginal - $precoFinal) / $precoOriginal) * 100) : 0;
+                        ?>
+                        <div class="text-4xl font-black gradient-text mb-2">R$ <?php echo number_format($precoFinal, 2, ',', '.'); ?></div>
+                        <?php if ($desconto > 0): ?>
+                        <div class="text-slate-400 line-through">R$ <?php echo number_format($precoOriginal, 2, ',', '.'); ?></div>
                         <div class="text-green-400 font-bold mt-2">
-                            <i class="fas fa-tag mr-2"></i><?php echo round((1 - $product['preco']/$product['preco_original']) * 100); ?>% OFF
+                            <i class="fas fa-tag mr-2"></i><?php echo $desconto; ?>% OFF
                         </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Garantia & Frete -->
@@ -152,14 +170,14 @@ $reviews = [
                             <i class="fas fa-shield-alt text-green-400 text-xl"></i>
                             <div>
                                 <p class="font-bold">Garantia</p>
-                                <p class="text-slate-400 text-sm"><?php echo $product['garantia']; ?> Garantidos</p>
+                                <p class="text-slate-400 text-sm">12 meses garantidos</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
                             <i class="fas fa-truck text-blue-400 text-xl"></i>
                             <div>
                                 <p class="font-bold">Frete Grátis</p>
-                                <p class="text-slate-400 text-sm"><?php echo $product['frete']; ?></p>
+                                <p class="text-slate-400 text-sm">Acima de R$ 100</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
@@ -174,12 +192,20 @@ $reviews = [
                     <!-- Estoque -->
                     <div class="mb-6">
                         <p class="text-sm text-slate-400 mb-2">Disponibilidade</p>
+                        <?php 
+                        $estoque = $product['estoque'] ?? 0;
+                        $percentual = min(($estoque / 50) * 100, 100);
+                        ?>
                         <div class="w-full bg-slate-700 rounded-full h-2 mb-2">
-                            <div class="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full" style="width: <?php echo ($product['estoque'] / 50) * 100; ?>%;"></div>
+                            <div class="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full" style="width: <?php echo $percentual; ?>%;"></div>
                         </div>
                         <p class="text-sm">
-                            <span class="text-green-400 font-bold"><?php echo $product['estoque']; ?></span> 
-                            <span class="text-slate-400">unidades em estoque</span>
+                            <?php if ($estoque > 0): ?>
+                                <span class="text-green-400 font-bold"><?php echo $estoque; ?></span> 
+                                <span class="text-slate-400">unidades em estoque</span>
+                            <?php else: ?>
+                                <span class="text-red-400 font-bold">Fora de estoque</span>
+                            <?php endif; ?>
                         </p>
                     </div>
 
@@ -210,30 +236,47 @@ $reviews = [
                 </div>
 
                 <div id="especificacoes" class="grid md:grid-cols-2 gap-4">
-                    <?php foreach ($product['especificacoes'] as $spec => $valor): ?>
-                        <div class="glass p-4 rounded-lg">
-                            <p class="text-slate-400 text-sm"><?php echo $spec; ?></p>
-                            <p class="font-bold text-lg"><?php echo $valor; ?></p>
+                    <?php if (!empty($product['caracteristicas'])): ?>
+                        <?php foreach ($product['caracteristicas'] as $spec => $valor): ?>
+                            <div class="glass p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm"><?php echo htmlspecialchars(ucfirst($spec)); ?></p>
+                                <p class="font-bold text-lg"><?php echo htmlspecialchars($valor); ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="col-span-2 glass p-8 rounded-lg text-center">
+                            <i class="fas fa-info-circle text-4xl text-slate-500 mb-4"></i>
+                            <p class="text-slate-400">Especificações não disponíveis</p>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
 
-                <div id="ingredientes" class="hidden grid md:grid-cols-2 gap-4">
-                    <?php foreach ($product['ingredientes'] as $ing): ?>
-                        <div class="glass p-4 rounded-lg">
-                            <p class="text-slate-400 text-sm"><?php echo $ing['nome']; ?></p>
-                            <p class="font-bold text-lg"><?php echo $ing['valor']; ?></p>
-                        </div>
-                    <?php endforeach; ?>
+                <div id="ingredientes" class="hidden">
+                    <div class="glass p-8 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Descrição do Produto</h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            <?php echo nl2br(htmlspecialchars($product['descricao'] ?? 'Descrição não disponível')); ?>
+                        </p>
+                    </div>
                 </div>
 
                 <div id="incluso" class="hidden space-y-3">
-                    <?php foreach ($product['incluso'] as $item): ?>
-                        <div class="glass p-4 rounded-lg flex items-center gap-3">
-                            <i class="fas fa-check-circle text-green-400"></i>
-                            <span><?php echo $item; ?></span>
-                        </div>
-                    <?php endforeach; ?>
+                    <div class="glass p-4 rounded-lg flex items-center gap-3">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Produto original lacrado</span>
+                    </div>
+                    <div class="glass p-4 rounded-lg flex items-center gap-3">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Garantia de 12 meses</span>
+                    </div>
+                    <div class="glass p-4 rounded-lg flex items-center gap-3">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Frete grátis acima de R$ 100</span>
+                    </div>
+                    <div class="glass p-4 rounded-lg flex items-center gap-3">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Suporte técnico especializado</span>
+                    </div>
                 </div>
             </div>
 
