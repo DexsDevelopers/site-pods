@@ -305,8 +305,8 @@ $avaliacoes = [
         }
 
         .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
+                opacity: 0;
+            }
 
         .hamburger.active span:nth-child(3) {
             transform: rotate(-45deg);
@@ -390,7 +390,7 @@ $avaliacoes = [
                     </div>
                     <div>
                         <div class="font-black text-lg gradient-text group-hover:drop-shadow-lg transition"><?php echo htmlspecialchars(strtoupper($site_name)); ?></div>
-                    </div>
+                </div>
                 </a>
 
                 <!-- Menu Desktop -->
@@ -412,8 +412,8 @@ $avaliacoes = [
                             <a href="#"><i class="fas fa-fire mr-2 text-red-400"></i>Promoções</a>
                             <a href="#"><i class="fas fa-box mr-2 text-blue-400"></i>Todos os Produtos</a>
                         </div>
-                    </div>
-                    
+                </div>
+
                     <a href="#avaliacoes" class="text-slate-300 hover:text-purple-300 transition font-medium relative group">
                         Avaliações
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 group-hover:w-full transition-all duration-300"></span>
@@ -609,8 +609,8 @@ $avaliacoes = [
                 <div data-aos="fade-left" data-aos-duration="1000" class="relative h-96 md:h-full min-h-96">
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl blur-2xl opacity-40"></div>
                     <div class="relative h-full glass rounded-3xl p-8 flex items-center justify-center text-center border-2 border-purple-800/50" style="background-image: url('WhatsApp Image 2025-10-17 at 16.17.27.jpeg'); background-size: cover; background-position: center;">
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
     </section>
@@ -721,14 +721,14 @@ $avaliacoes = [
                     </div>
                     <?php else: ?>
                     <div class="absolute top-4 left-4 badge badge-primary">
-                        <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
-                    </div>
+                            <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Novo'); ?>
+                        </div>
                     <?php endif; ?>
 
                     <div class="relative h-56 overflow-hidden bg-slate-800">
                         <img src="<?php echo htmlspecialchars($produto['imagem'] ?? 'https://via.placeholder.com/400x300?text=' . urlencode($produto['nome'])); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=Produto'">
-                    </div>
-
+                        </div>
+                        
                     <div class="p-5">
                         <h3 class="text-lg font-bold text-slate-100 line-clamp-2 mb-3"><?php echo htmlspecialchars($produto['nome']); ?></h3>
                         <p class="text-slate-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars(substr($produto['descricao_curta'] ?? $produto['descricao'] ?? '', 0, 80)); ?>...</p>
@@ -772,7 +772,7 @@ $avaliacoes = [
                 <button class="px-10 py-4 glass rounded-lg font-bold text-lg gradient-text hover:shadow-lg transition border border-purple-800/50">
                     <i class="fas fa-box mr-2"></i>
                     Ver Todos os Produtos
-                </button>
+                        </button>
             </div>
         </div>
     </section>
@@ -810,7 +810,7 @@ $avaliacoes = [
                             <p class="text-slate-500 text-sm"><i class="fas fa-check-circle text-green-500 mr-1"></i>Comprador Verificado</p>
                         </div>
                     </div>
-                </div>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -836,7 +836,7 @@ $avaliacoes = [
                 </div>
                 <p class="text-slate-400 text-sm mt-6">📧 Sem spam, apenas promoções!</p>
             </div>
-        </div>
+            </div>
     </section>
 
     <!-- Footer -->

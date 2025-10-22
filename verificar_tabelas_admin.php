@@ -275,3 +275,4 @@ function contarRegistros($pdo, $nomeTabela) {
 </body>
 </html>
 
+

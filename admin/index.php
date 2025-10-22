@@ -202,8 +202,8 @@ try {
                 </a>
                 <a href="configuracoes.php" class="nav-item">
                     <i class="fas fa-cog w-5"></i> <span>Configurações</span>
-                </a>
-            </nav>
+            </a>
+        </nav>
         </aside>
 
         <!-- Main Content -->
@@ -249,7 +249,7 @@ try {
                             <i class="fas fa-history"></i> Total
                         </span>
                     </div>
-                </div>
+    </div>
 
                 <!-- Produtos -->
                 <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg md:rounded-xl p-4 md:p-6 border border-green-800/30">
@@ -284,9 +284,9 @@ try {
                         <span class="text-slate-400 text-xs">
                             <i class="fas fa-user-check"></i> Ativos
                         </span>
-                    </div>
                 </div>
             </div>
+        </div>
 
             <!-- Charts Row -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
@@ -305,7 +305,7 @@ try {
                                 <line x1="40" y1="100" x2="500" y2="100" stroke="#8b5cf6" stroke-width="2"/>
                                 
                                 <!-- Barras -->
-                    <?php
+            <?php
                                 $totalDias = count($vendas_semana_completa);
                                 $espacamento = (500 - 60) / $totalDias;
                                 
@@ -370,7 +370,7 @@ try {
                         <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
+        </div>
 
             <!-- Pedidos Recentes -->
             <div class="bg-slate-800/50 rounded-lg md:rounded-xl overflow-hidden backdrop-blur-sm border border-purple-800/30 mb-6 md:mb-8">
@@ -427,7 +427,7 @@ try {
                         </tbody>
                     </table>
                 </div>
-            </div>
+    </div>
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6 md:mt-8">
@@ -449,7 +449,7 @@ try {
                 </a>
             </div>
         </main>
-    </div>
+</div>
 
     <style>
         .gradient-text {

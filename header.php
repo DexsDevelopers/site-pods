@@ -162,7 +162,7 @@ if (isset($pdo)) {
 
                 <a href="/" class="text-slate-400 hover:text-purple-400 transition">Contato</a>
                 <a href="/pages/profile.php" class="text-slate-400 hover:text-purple-400 transition">Meu Perfil</a>
-            </nav>
+        </nav>
 
             <!-- Mobile Controls -->
             <div class="lg:hidden flex items-center gap-4">
