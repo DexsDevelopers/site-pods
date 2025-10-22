@@ -10,7 +10,7 @@ echo "<p><strong>Data:</strong> " . date('d/m/Y H:i:s') . "</p>";
 // Configurações da Hostinger
 $host = 'localhost';
 $db = 'u853242961_loja_pods';
-$user = 'u853242961_pods_salu';
+$user = 'u853242961_pods_saluc';
 $pass = 'Lucastav8012@';
 
 try {

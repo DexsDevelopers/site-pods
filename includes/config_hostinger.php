@@ -16,7 +16,7 @@ define('PROJECT_ROOT', dirname(dirname(__FILE__)));
 define('DB_HOST', 'localhost');
 define('DB_PORT', 3306);
 define('DB_NAME', 'u853242961_loja_pods');
-define('DB_USER', 'u853242961_pods_salu');
+define('DB_USER', 'u853242961_pods_saluc');
 define('DB_PASSWORD', 'Lucastav8012@');
 define('DB_CHARSET', 'utf8mb4');
 
