@@ -121,7 +121,7 @@ $reviews = [
                         }
                         ?>
                         
-                        <!-- Imagem com CSS inline completo -->
+                        <!-- Imagem com JavaScript para forçar exibição -->
                         <img id="mainImage" 
                              src="<?php echo htmlspecialchars($imagemUrl); ?>" 
                              alt="<?php echo htmlspecialchars($product['nome']); ?>"
@@ -133,9 +133,26 @@ $reviews = [
                                 display: block !important;
                                 max-width: 100% !important;
                                 max-height: 100% !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
                              "
                              onerror="console.log('Erro ao carregar imagem:', this.src); this.src='<?php echo $imagemFallback; ?>'"
-                             onload="console.log('Imagem carregada com sucesso:', this.src)">
+                             onload="console.log('Imagem carregada com sucesso:', this.src); this.style.visibility='visible'; this.style.display='block';">
+                        
+                        <!-- Imagem de backup visível -->
+                        <img src="<?php echo htmlspecialchars($imagemUrl); ?>" 
+                             style="
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                border-radius: 8px;
+                                z-index: 10;
+                                border: 2px solid red;
+                             "
+                             alt="Backup Image">
                     </div>
                     <?php if (!empty($product['galeria']) && count($product['galeria']) > 1): ?>
                     <div class="flex gap-2">
@@ -387,6 +404,30 @@ $reviews = [
             }
             localStorage.setItem('wishlist', JSON.stringify(wishlist));
         }
+        
+        // Forçar exibição da imagem
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainImage = document.getElementById('mainImage');
+            if (mainImage) {
+                console.log('Forçando exibição da imagem...');
+                mainImage.style.display = 'block';
+                mainImage.style.visibility = 'visible';
+                mainImage.style.opacity = '1';
+                mainImage.style.width = '100%';
+                mainImage.style.height = '100%';
+                mainImage.style.objectFit = 'cover';
+                
+                // Se a imagem não carregou, tentar novamente
+                if (!mainImage.complete || mainImage.naturalHeight === 0) {
+                    console.log('Imagem não carregou, tentando novamente...');
+                    const newSrc = mainImage.src;
+                    mainImage.src = '';
+                    setTimeout(() => {
+                        mainImage.src = newSrc;
+                    }, 100);
+                }
+            }
+        });
     </script>
 
 </body>
