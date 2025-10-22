@@ -113,6 +113,17 @@ try {
                 $slug .= '-' . time();
             }
             
+            // Verificar SKU único se fornecido
+            if (!empty($data['sku'])) {
+                $stmt = $pdo->prepare("SELECT COUNT(*) FROM produtos WHERE sku = ?");
+                $stmt->execute([$data['sku']]);
+                if ($stmt->fetchColumn() > 0) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'SKU já existe. Escolha outro SKU.']);
+                    exit;
+                }
+            }
+            
             // Preparar dados
             $caracteristicas = isset($data['caracteristicas']) ? json_encode($data['caracteristicas']) : null;
             
@@ -167,6 +178,17 @@ try {
                 $stmt->execute([$slug, $data['id']]);
                 if ($stmt->fetchColumn() > 0) {
                     $slug .= '-' . time();
+                }
+            }
+            
+            // Verificar SKU único se fornecido (exceto para o próprio produto)
+            if (!empty($data['sku'])) {
+                $stmt = $pdo->prepare("SELECT COUNT(*) FROM produtos WHERE sku = ? AND id != ?");
+                $stmt->execute([$data['sku'], $data['id']]);
+                if ($stmt->fetchColumn() > 0) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'SKU já existe. Escolha outro SKU.']);
+                    exit;
                 }
             }
             
