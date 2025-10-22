@@ -109,13 +109,41 @@ $reviews = [
                 <!-- Imagens -->
                 <div data-aos="fade-right">
                     <div class="bg-slate-800/50 rounded-lg p-4 mb-4 aspect-square flex items-center justify-center overflow-hidden">
-                        <?php if (!empty($product['imagem'])): ?>
-                            <img id="mainImage" src="<?php echo htmlspecialchars($product['imagem']); ?>" class="max-w-full max-h-full object-cover rounded" alt="<?php echo htmlspecialchars($product['nome']); ?>">
-                        <?php else: ?>
-                            <div class="text-slate-500 text-center">
+                        <?php 
+                        // Verificar se a imagem existe e tem um caminho válido
+                        $imagemUrl = $product['imagem'] ?? '';
+                        $imagemValida = false;
+                        
+                        if (!empty($imagemUrl)) {
+                            // Se é uma URL completa, usar diretamente
+                            if (strpos($imagemUrl, 'http') === 0) {
+                                $imagemValida = true;
+                            }
+                            // Se é um caminho relativo, verificar se o arquivo existe
+                            elseif (file_exists('../' . $imagemUrl)) {
+                                $imagemUrl = '../' . $imagemUrl;
+                                $imagemValida = true;
+                            }
+                            // Se é um caminho absoluto do servidor
+                            elseif (file_exists($imagemUrl)) {
+                                $imagemValida = true;
+                            }
+                        }
+                        
+                        if ($imagemValida): ?>
+                            <img id="mainImage" src="<?php echo htmlspecialchars($imagemUrl); ?>" 
+                                 class="max-w-full max-h-full object-cover rounded" 
+                                 alt="<?php echo htmlspecialchars($product['nome']); ?>"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="text-slate-500 text-center" style="display: none;">
                                 <i class="fas fa-image text-6xl mb-4"></i>
-                                <p>Imagem não disponível</p>
+                                <p>Imagem não carregou</p>
                             </div>
+                        <?php else: ?>
+                            <!-- Imagem padrão usando Unsplash -->
+                            <img id="mainImage" src="https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=600&h=600&fit=crop&auto=format" 
+                                 class="max-w-full max-h-full object-cover rounded" 
+                                 alt="<?php echo htmlspecialchars($product['nome']); ?>">
                         <?php endif; ?>
                     </div>
                     <?php if (!empty($product['galeria']) && count($product['galeria']) > 1): ?>
