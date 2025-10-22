@@ -143,7 +143,12 @@ $reviews = [
                             <!-- Imagem padrão usando Unsplash -->
                             <img id="mainImage" src="https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=600&h=600&fit=crop&auto=format" 
                                  class="max-w-full max-h-full object-cover rounded" 
-                                 alt="<?php echo htmlspecialchars($product['nome']); ?>">
+                                 alt="<?php echo htmlspecialchars($product['nome']); ?>"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="text-slate-500 text-center" style="display: none;">
+                                <i class="fas fa-image text-6xl mb-4"></i>
+                                <p>Imagem não carregou</p>
+                            </div>
                         <?php endif; ?>
                     </div>
                     <?php if (!empty($product['galeria']) && count($product['galeria']) > 1): ?>

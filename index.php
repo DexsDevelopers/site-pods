@@ -726,8 +726,19 @@ $avaliacoes = [
                     <?php endif; ?>
 
                     <div class="relative h-56 overflow-hidden bg-slate-800">
-                        <img src="<?php echo htmlspecialchars($produto['imagem'] ?? 'https://via.placeholder.com/400x300?text=' . urlencode($produto['nome'])); ?>" alt="<?php echo htmlspecialchars($produto['nome']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=Produto'">
-                        </div>
+                        <?php 
+                        $imagemProduto = $produto['imagem'] ?? '';
+                        $imagemFallback = 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=400&h=300&fit=crop&auto=format';
+                        
+                        if (empty($imagemProduto)) {
+                            $imagemProduto = $imagemFallback;
+                        }
+                        ?>
+                        <img src="<?php echo htmlspecialchars($imagemProduto); ?>" 
+                             alt="<?php echo htmlspecialchars($produto['nome']); ?>" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
+                             onerror="this.src='<?php echo $imagemFallback; ?>'">
+                    </div>
                         
                     <div class="p-5">
                         <h3 class="text-lg font-bold text-slate-100 line-clamp-2 mb-3"><?php echo htmlspecialchars($produto['nome']); ?></h3>
