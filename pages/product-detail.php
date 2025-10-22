@@ -108,11 +108,9 @@ $reviews = [
             <div class="grid md:grid-cols-2 gap-12 mb-16">
                 <!-- Imagens -->
                 <div data-aos="fade-right">
-                    <div class="bg-slate-800/50 rounded-lg p-4 mb-4 aspect-square flex items-center justify-center overflow-hidden" style="position: relative; min-height: 400px;">
+                    <!-- Container simples sem classes conflitantes -->
+                    <div style="background: rgba(30, 41, 59, 0.5); border-radius: 12px; padding: 16px; margin-bottom: 16px; width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #8b5cf6;">
                         <?php 
-                        // Debug temporário
-                        echo "<!-- DEBUG: Imagem do produto = '" . htmlspecialchars($product['imagem'] ?? 'VAZIO') . "' -->";
-                        
                         // Sistema simplificado de imagens
                         $imagemUrl = $product['imagem'] ?? '';
                         $imagemFallback = 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=600&h=600&fit=crop&auto=format';
@@ -121,14 +119,21 @@ $reviews = [
                         if (empty($imagemUrl)) {
                             $imagemUrl = $imagemFallback;
                         }
-                        
-                        echo "<!-- DEBUG: URL final = '" . htmlspecialchars($imagemUrl) . "' -->";
                         ?>
                         
-                        <!-- Imagem principal com CSS corrigido -->
-                        <img id="mainImage" src="<?php echo htmlspecialchars($imagemUrl); ?>" 
-                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;"
+                        <!-- Imagem com CSS inline completo -->
+                        <img id="mainImage" 
+                             src="<?php echo htmlspecialchars($imagemUrl); ?>" 
                              alt="<?php echo htmlspecialchars($product['nome']); ?>"
+                             style="
+                                width: 100% !important; 
+                                height: 100% !important; 
+                                object-fit: cover !important; 
+                                border-radius: 8px !important; 
+                                display: block !important;
+                                max-width: 100% !important;
+                                max-height: 100% !important;
+                             "
                              onerror="console.log('Erro ao carregar imagem:', this.src); this.src='<?php echo $imagemFallback; ?>'"
                              onload="console.log('Imagem carregada com sucesso:', this.src)">
                     </div>
