@@ -708,7 +708,7 @@ $avaliacoes = [
                     $avaliacao = $produto['avaliacao_media'] ?? 0;
                     $estoque = $produto['estoque'] ?? 0;
                 ?>
-                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-800/50" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
+                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-800/50 cursor-pointer" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>" onclick="window.location.href='pages/product-detail.php?id=<?php echo $produto['id']; ?>'">
                     <?php if ($desconto > 0): ?>
                     <div class="absolute top-4 right-4 badge badge-primary z-10">
                         -<?php echo $desconto; ?>%
@@ -769,10 +769,10 @@ $avaliacoes = [
             </div>
 
             <div class="text-center mt-12">
-                <button class="px-10 py-4 glass rounded-lg font-bold text-lg gradient-text hover:shadow-lg transition border border-purple-800/50">
+                <a href="pages/produtos.php" class="inline-block px-10 py-4 glass rounded-lg font-bold text-lg gradient-text hover:shadow-lg transition border border-purple-800/50">
                     <i class="fas fa-box mr-2"></i>
                     Ver Todos os Produtos
-                        </button>
+                </a>
             </div>
         </div>
     </section>

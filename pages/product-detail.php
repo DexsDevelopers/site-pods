@@ -1,63 +1,67 @@
 <?php
-require_once '../includes/config.php';
+require_once '../includes/config_hostinger.php';
 require_once '../includes/db.php';
 require_once '../includes/helpers.php';
 
-// Simular produto detalhado (em produção, viria do BD)
-$product_id = $_GET['id'] ?? 1;
+// Buscar produto do banco de dados
+$product_id = $_GET['id'] ?? null;
 
-$product = [
-    'id' => 1,
-    'nome' => 'Pod Descartável X-01',
-    'categoria' => 'Pods Descartáveis',
-    'preco' => 299.90,
-    'preco_original' => 429.90,
-    'rating' => 4.8,
-    'reviews_count' => 147,
-    'imagem' => 'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=600&h=600&fit=crop',
-    'imagens' => [
-        'https://images.unsplash.com/photo-1587829191301-a06d4f10f5bb?w=600&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1600856062241-98e5dba7214d?w=600&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1617638924702-92d37d439220?w=600&h=600&fit=crop',
-    ],
-    'descricao_curta' => 'Pod descartável de última geração com excelente autonomia e sabor',
-    'descricao_completa' => 'O Pod Descartável X-01 entrega praticidade e performance com sabores intensos. Autonomia estendida, design elegante e experiência premium para o dia a dia.',
-    'estoque' => 12,
-    'garantia' => '12 meses',
-    'frete' => 'Frete grátis acima de R$ 100',
-    'especificacoes' => [
-        'Bateria' => '5000mAh Integrada',
-        'Potência' => '200W Máximo',
-        'Bobina' => 'Mesh Dual',
-        'Peso' => '185g',
-        'Dimensões' => '120 x 60 x 50mm',
-        'Compatibilidade' => 'Universal',
-    ],
-    'ingredientes' => [
-        ['nome' => 'Sabor', 'valor' => 'Frutas Tropicais'],
-        ['nome' => 'Nicotina', 'valor' => '3mg/mL'],
-        ['nome' => 'VG/PG', 'valor' => '70/30'],
-        ['nome' => 'Capacidade', 'valor' => '5mL'],
-    ],
-    'incluso' => [
-        'Vaporizador',
-        'Carregador USB-C',
-        'Bobina de Reposição',
-        'Manual em PT-BR',
-        'Estojo de Proteção',
-    ]
-];
+if (!$product_id) {
+    header('Location: /');
+    exit;
+}
 
+try {
+    $stmt = $pdo->prepare("
+        SELECT p.*, c.nome as categoria_nome 
+        FROM produtos p 
+        LEFT JOIN categorias c ON p.categoria_id = c.id 
+        WHERE p.id = ? AND p.ativo = 1
+    ");
+    $stmt->execute([$product_id]);
+    $product = $stmt->fetch();
+    
+    if (!$product) {
+        header('Location: /');
+        exit;
+    }
+    
+    // Decodificar JSON fields
+    $product['caracteristicas'] = json_decode($product['caracteristicas'] ?? '{}', true);
+    $product['galeria'] = json_decode($product['galeria'] ?? '[]', true);
+    
+    // Se não há galeria, usar a imagem principal
+    if (empty($product['galeria']) && !empty($product['imagem'])) {
+        $product['galeria'] = [$product['imagem']];
+    }
+    
+} catch (Exception $e) {
+    error_log('Erro ao buscar produto: ' . $e->getMessage());
+    header('Location: /');
+    exit;
+}
+
+// Buscar produtos relacionados da mesma categoria
+try {
+    $stmt = $pdo->prepare("
+        SELECT p.*, c.nome as categoria_nome 
+        FROM produtos p 
+        LEFT JOIN categorias c ON p.categoria_id = c.id 
+        WHERE p.categoria_id = ? AND p.id != ? AND p.ativo = 1 
+        ORDER BY p.destaque DESC, p.created_at DESC 
+        LIMIT 3
+    ");
+    $stmt->execute([$product['categoria_id'], $product['id']]);
+    $relacionados = $stmt->fetchAll();
+} catch (Exception $e) {
+    $relacionados = [];
+}
+
+// Reviews simulados (em produção, viria do banco)
 $reviews = [
     ['nome' => 'João Silva', 'rating' => 5, 'texto' => 'Produto excepcional! Chegou rápido e bem embalado.', 'verificado' => true],
     ['nome' => 'Maria Santos', 'rating' => 4, 'texto' => 'Muito bom, recomendo!', 'verificado' => true],
     ['nome' => 'Pedro Costa', 'rating' => 5, 'texto' => 'Melhor vaper que já tive!', 'verificado' => true],
-];
-
-$relacionados = [
-    ['id' => 2, 'nome' => 'Aero Compact 2024', 'preco' => 199.90],
-    ['id' => 4, 'nome' => 'Caso Ultra Slim', 'preco' => 89.90],
-    ['id' => 5, 'nome' => 'Kit Limpeza Premium', 'preco' => 49.90],
 ];
 ?>
 <!DOCTYPE html>
