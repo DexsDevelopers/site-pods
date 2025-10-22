@@ -22,8 +22,28 @@ try {
     $product = $stmt->fetch();
     
     if (!$product) {
-        header('Location: /');
-        exit;
+        // Debug: verificar se o produto existe mas está inativo
+        $stmt = $pdo->prepare("SELECT * FROM produtos WHERE id = ?");
+        $stmt->execute([$product_id]);
+        $produtoInativo = $stmt->fetch();
+        
+        if ($produtoInativo) {
+            // Produto existe mas está inativo
+            echo "<div style='padding: 20px; text-align: center; color: #ef4444;'>";
+            echo "<h2>Produto Indisponível</h2>";
+            echo "<p>Este produto não está mais disponível.</p>";
+            echo "<a href='../index.php' style='color: #8b5cf6;'>Voltar à página inicial</a>";
+            echo "</div>";
+            exit;
+        } else {
+            // Produto não existe
+            echo "<div style='padding: 20px; text-align: center; color: #ef4444;'>";
+            echo "<h2>Produto Não Encontrado</h2>";
+            echo "<p>O produto solicitado não existe.</p>";
+            echo "<a href='../index.php' style='color: #8b5cf6;'>Voltar à página inicial</a>";
+            echo "</div>";
+            exit;
+        }
     }
     
     // Decodificar JSON fields
@@ -37,7 +57,34 @@ try {
     
 } catch (Exception $e) {
     error_log('Erro ao buscar produto: ' . $e->getMessage());
-    header('Location: /');
+    
+    // Debug: mostrar erro detalhado
+    echo "<div style='padding: 20px; text-align: center; color: #ef4444;'>";
+    echo "<h2>Erro ao Carregar Produto</h2>";
+    echo "<p>Erro: " . htmlspecialchars($e->getMessage()) . "</p>";
+    echo "<p>ID solicitado: " . htmlspecialchars($product_id) . "</p>";
+    
+    // Verificar se há produtos no banco
+    try {
+        $stmt = $pdo->query("SELECT COUNT(*) as total FROM produtos");
+        $total = $stmt->fetch()['total'];
+        echo "<p>Total de produtos no banco: " . $total . "</p>";
+        
+        if ($total > 0) {
+            $stmt = $pdo->query("SELECT id, nome FROM produtos LIMIT 5");
+            $produtos = $stmt->fetchAll();
+            echo "<p>Primeiros produtos:</p><ul>";
+            foreach ($produtos as $p) {
+                echo "<li>ID: {$p['id']} - {$p['nome']}</li>";
+            }
+            echo "</ul>";
+        }
+    } catch (Exception $e2) {
+        echo "<p>Erro ao verificar banco: " . htmlspecialchars($e2->getMessage()) . "</p>";
+    }
+    
+    echo "<a href='../index.php' style='color: #8b5cf6;'>Voltar à página inicial</a>";
+    echo "</div>";
     exit;
 }
 
