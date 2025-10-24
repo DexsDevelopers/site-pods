@@ -40,7 +40,7 @@ try {
     foreach ($data['items'] as $item) {
         $items[] = [
             'title' => $item['nome'],
-            'quantity' => $item['qty'] ?? $item['quantity'] ?? 1,
+            'quantity' => $item['quantity'] ?? 1, // Priorizar quantity, fallback para 1
             'unit_price' => floatval($item['preco'] ?? $item['preco_final'] ?? 0),
             'currency_id' => 'BRL'
         ];
