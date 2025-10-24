@@ -390,7 +390,7 @@ $statuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded',
         }
 
         function updateOrderStatus(id, newStatus) {
-            fetch('../api/orders.php', {
+            fetch('../api/orders_simples.php', {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({id: id, status: newStatus})
@@ -420,7 +420,7 @@ $statuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch('../api/orders.php?id=' + id, {
+                    fetch('../api/orders_simples.php?id=' + id, {
                         method: 'DELETE',
                         headers: {'Content-Type': 'application/json'}
                     })
