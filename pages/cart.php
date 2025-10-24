@@ -191,7 +191,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
             }
 
             getSubtotal() {
-                return this.items.reduce((total, item) => total + (item.preco_final * item.quantity), 0);
+                return this.items.reduce((total, item) => total + ((item.preco || item.preco_final || 0) * (item.quantity || item.qty || 0)), 0);
             }
 
             getTax() {
@@ -262,8 +262,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
 
                             <div class="text-right flex flex-col justify-between">
                                 <div>
-                                    <p class="text-2xl font-bold gradient-text">R$ ${(item.preco_final * item.quantity).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
-                                    <p class="text-xs text-slate-500">Un: R$ ${item.preco_final.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                                    <p class="text-2xl font-bold gradient-text">R$ ${((item.preco || item.preco_final || 0) * (item.quantity || item.qty || 0)).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                    <p class="text-xs text-slate-500">Un: R$ ${(item.preco || item.preco_final || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
                                 </div>
                                 <button onclick="cart.remove(${item.id})" 
                                         class="px-4 py-2 bg-red-600/20 border border-red-600/50 rounded text-red-400 hover:bg-red-600/30 transition text-sm font-medium">
@@ -295,7 +295,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
             const item = {
                 id: id,
                 nome: nome,
-                preco_final: parseFloat(preco),
+                preco: parseFloat(preco),
+                preco_final: parseFloat(preco), // Mantém compatibilidade
                 quantity: 1,
                 imagem: 'https://via.placeholder.com/100',
                 categoria_nome: 'Pods'
