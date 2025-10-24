@@ -597,6 +597,12 @@ $reviews = [
                     
                     <!-- Botões de Debug (temporários) -->
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                        <button onclick="console.log('🧪 Teste simples funcionando!'); alert('JavaScript está funcionando!');" style="padding: 0.5rem 1rem; background: #f59e0b; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                            🧪 Teste JS
+                        </button>
+                        <button onclick="addToCart(event); return false;" style="padding: 0.5rem 1rem; background: #8b5cf6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                            🛒 Teste AddCart
+                        </button>
                         <button onclick="testCart()" style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
                             🧪 Testar Carrinho
                         </button>
@@ -646,7 +652,7 @@ $reviews = [
                         <p style="color: #cbd5e1; line-height: 1.8;">
                             <?php echo nl2br(htmlspecialchars($product['descricao'] ?? 'Descrição não disponível')); ?>
                         </p>
-                    </div>
+                        </div>
                 </div>
 
                 <div id="incluso" class="tab-content">
@@ -751,55 +757,68 @@ $reviews = [
         }
 
         function addToCart(event) {
+            console.log('🚀 FUNÇÃO addToCart CHAMADA!');
+            console.log('📧 Evento recebido:', event);
+            
             // Prevenir qualquer comportamento padrão
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
+                console.log('🛑 Evento prevenido');
             }
             
             console.log('🛒 Iniciando addToCart...');
             
+            try {
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const productId = <?php echo json_encode($product['id']); ?>;
-            
-            console.log('📦 ID do produto:', productId);
-            console.log('🛒 Carrinho atual:', cart);
-            
-            // Verificar se o produto já está no carrinho
-            const existingItem = cart.find(item => item.id === productId);
-            
-            if (existingItem) {
-                // Se já existe, aumentar a quantidade
-                existingItem.qty = (existingItem.qty || 0) + 1;
-                console.log('➕ Quantidade aumentada para:', existingItem.qty);
-            } else {
-                // Se não existe, adicionar novo item
-                const item = {
-                    id: productId,
-                    nome: <?php echo json_encode($product['nome']); ?>,
-                    preco: <?php echo json_encode($product['preco']); ?>,
-                    qty: 1,
-                    imagem: <?php echo json_encode($product['imagem']); ?>
-                };
-                cart.push(item);
-                console.log('🆕 Novo item adicionado:', item);
-            }
-            
-            console.log('💾 Salvando carrinho:', cart);
+                const productId = <?php echo json_encode($product['id']); ?>;
+                
+                console.log('📦 ID do produto:', productId);
+                console.log('🛒 Carrinho atual:', cart);
+                
+                // Verificar se o produto já está no carrinho
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    // Se já existe, aumentar a quantidade
+                    existingItem.qty = (existingItem.qty || 0) + 1;
+                    console.log('➕ Quantidade aumentada para:', existingItem.qty);
+                } else {
+                    // Se não existe, adicionar novo item
+            const item = {
+                        id: productId,
+                        nome: <?php echo json_encode($product['nome']); ?>,
+                        preco: <?php echo json_encode($product['preco']); ?>,
+                qty: 1,
+                        imagem: <?php echo json_encode($product['imagem']); ?>
+            };
+            cart.push(item);
+                    console.log('🆕 Novo item adicionado:', item);
+                }
+                
+                console.log('💾 Salvando carrinho:', cart);
             localStorage.setItem('cart', JSON.stringify(cart));
-            
-            // Verificar se foi salvo
-            const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
-            console.log('✅ Carrinho salvo:', savedCart);
-            
-            // Mostrar notificação moderna
-            showNotification('✅ Produto adicionado ao carrinho!', 'success');
-            
-            // Atualizar contador do carrinho se existir
-            updateCartBadge();
-            
-            // Debug: Mostrar carrinho no console
-            console.log('🔍 Carrinho final no localStorage:', localStorage.getItem('cart'));
+                
+                // Verificar se foi salvo
+                const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+                console.log('✅ Carrinho salvo:', savedCart);
+                
+                // Mostrar notificação moderna
+                showNotification('✅ Produto adicionado ao carrinho!', 'success');
+                
+                // Atualizar contador do carrinho se existir
+                updateCartBadge();
+                
+                // Debug: Mostrar carrinho no console
+                console.log('🔍 Carrinho final no localStorage:', localStorage.getItem('cart'));
+                
+                // Testar imediatamente
+                testCart();
+                
+            } catch (error) {
+                console.error('❌ ERRO no addToCart:', error);
+                showNotification('❌ Erro ao adicionar ao carrinho!', 'error');
+            }
             
             // Retornar false para prevenir qualquer redirecionamento
             return false;
