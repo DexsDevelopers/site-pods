@@ -856,32 +856,6 @@ $reviews = [
             }
         }
         
-        // Função para testar o carrinho
-        function testCart() {
-            console.log('🧪 TESTANDO CARRINHO:');
-            console.log('📦 localStorage.getItem("cart"):', localStorage.getItem('cart'));
-            
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            console.log('🛒 Carrinho parseado:', cart);
-            console.log('📊 Total de itens:', cart.length);
-            console.log('🔢 Total de quantidades:', cart.reduce((sum, item) => sum + item.qty, 0));
-            
-            if (cart.length > 0) {
-                console.log('✅ CARRINHO TEM ITENS:');
-                cart.forEach((item, index) => {
-                    console.log(`  ${index + 1}. ${item.nome} - R$ ${item.preco} - Qty: ${item.qty}`);
-                });
-            } else {
-                console.log('❌ CARRINHO VAZIO');
-            }
-        }
-        
-        // Função para limpar o carrinho (debug)
-        function clearCart() {
-            localStorage.removeItem('cart');
-            console.log('🗑️ Carrinho limpo!');
-            updateCartBadge();
-        }
 
         function toggleWishlist() {
             let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
@@ -959,6 +933,32 @@ $reviews = [
                 }
             }
         });
+        
+        // Funções de debug (escopo global)
+        function testCart() {
+            console.log('🧪 TESTANDO CARRINHO:');
+            console.log('📦 localStorage.getItem("cart"):', localStorage.getItem('cart'));
+            
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            console.log('🛒 Carrinho parseado:', cart);
+            console.log('📊 Total de itens:', cart.length);
+            console.log('🔢 Total de quantidades:', cart.reduce((sum, item) => sum + item.qty, 0));
+            
+            if (cart.length > 0) {
+                console.log('✅ CARRINHO TEM ITENS:');
+                cart.forEach((item, index) => {
+                    console.log(`  ${index + 1}. ${item.nome} - R$ ${item.preco} - Qty: ${item.qty}`);
+                });
+            } else {
+                console.log('❌ CARRINHO VAZIO');
+            }
+        }
+        
+        function clearCart() {
+            localStorage.removeItem('cart');
+            console.log('🗑️ Carrinho limpo!');
+            updateCartBadge();
+        }
     </script>
 
 </body>
