@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../includes/config.php';
+require_once '../includes/config_hostinger.php';
 require_once '../includes/db.php';
 
 // Verificar se está logado
@@ -19,8 +19,15 @@ $offset = ($page - 1) * $limit;
 $where = ['1=1'];
 $params = [];
 
+// Verificar se a tabela orders existe
+try {
+    $pdo->query("SELECT 1 FROM orders LIMIT 1");
+} catch (Exception $e) {
+    die("Erro: Tabela 'orders' não existe. Execute o script de correção primeiro.");
+}
+
 if ($search) {
-    $where[] = '(o.order_number LIKE ? OR u.name LIKE ? OR u.email LIKE ?)';
+    $where[] = '(o.nome LIKE ? OR o.email LIKE ? OR o.telefone LIKE ?)';
     $searchParam = "%$search%";
     $params[] = $searchParam;
     $params[] = $searchParam;
@@ -35,16 +42,15 @@ if ($status) {
 $whereClause = implode(' AND ', $where);
 
 // Contar total
-$countSql = "SELECT COUNT(*) as total FROM orders o LEFT JOIN users u ON o.user_id = u.id WHERE $whereClause";
+$countSql = "SELECT COUNT(*) as total FROM orders o WHERE $whereClause";
 $stmt = $pdo->prepare($countSql);
 $stmt->execute($params);
 $total = $stmt->fetch()['total'];
 $totalPages = ceil($total / $limit);
 
 // Buscar pedidos
-$sql = "SELECT o.*, u.name, u.email, COUNT(oi.id) as total_items
+$sql = "SELECT o.*, COUNT(oi.id) as total_items
         FROM orders o
-        LEFT JOIN users u ON o.user_id = u.id
         LEFT JOIN order_items oi ON o.id = oi.order_id
         WHERE $whereClause
         GROUP BY o.id
