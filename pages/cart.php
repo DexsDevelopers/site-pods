@@ -195,11 +195,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
             }
 
             getTax() {
-                return this.getSubtotal() * 0.08;
+                return 0; // Remover taxa automática
             }
 
             getTotal() {
-                return this.getSubtotal() + this.getTax();
+                return this.getSubtotal(); // Total = subtotal (sem taxa)
             }
 
             clear() {
