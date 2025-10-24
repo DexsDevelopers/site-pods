@@ -1,28 +1,27 @@
 <?php
 require_once 'includes/config_hostinger.php';
 require_once 'includes/db.php';
-?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificar Tabelas de Pedidos - Wazzy Pods</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #1e293b; color: #e2e8f0; }
-        h2, h3 { color: #8b5cf6; }
-        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-        th, td { border: 1px solid #475569; padding: 8px; text-align: left; }
-        th { background: #334155; color: #8b5cf6; }
-        .success { color: #10b981; }
-        .error { color: #ef4444; }
-        .info { color: #3b82f6; }
-    </style>
-</head>
-<body>
-<h2>🔍 Verificando Tabelas de Pedidos</h2>
 
-<?php
+echo "<!DOCTYPE html>";
+echo "<html lang='pt-BR'>";
+echo "<head>";
+echo "<meta charset='UTF-8'>";
+echo "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+echo "<title>Verificar Tabelas de Pedidos - Wazzy Pods</title>";
+echo "<style>";
+echo "body { font-family: Arial, sans-serif; margin: 20px; background: #1e293b; color: #e2e8f0; }";
+echo "h2, h3 { color: #8b5cf6; }";
+echo "table { border-collapse: collapse; width: 100%; margin: 10px 0; }";
+echo "th, td { border: 1px solid #475569; padding: 8px; text-align: left; }";
+echo "th { background: #334155; color: #8b5cf6; }";
+echo ".success { color: #10b981; }";
+echo ".error { color: #ef4444; }";
+echo ".info { color: #3b82f6; }";
+echo "</style>";
+echo "</head>";
+echo "<body>";
+echo "<h2>🔍 Verificando Tabelas de Pedidos</h2>";
+
 try {
     $pdo = Database::getInstance()->getConnection();
     
@@ -114,6 +113,7 @@ try {
 } catch (Exception $e) {
     echo "<p class='error'>❌ Erro: " . $e->getMessage() . "</p>";
 }
+
+echo "</body>";
+echo "</html>";
 ?>
-</body>
-</html>
