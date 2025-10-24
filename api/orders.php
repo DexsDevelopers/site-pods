@@ -9,6 +9,12 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     $pdo = Database::getInstance()->getConnection();
     
+    // Debug: Verificar se a tabela orders existe
+    $stmt = $pdo->query("SHOW TABLES LIKE 'orders'");
+    if ($stmt->rowCount() == 0) {
+        throw new Exception('Tabela orders não existe. Execute o script de correção primeiro.');
+    }
+    
     if ($method === 'GET') {
         // Buscar pedidos
         $search = $_GET['search'] ?? '';
