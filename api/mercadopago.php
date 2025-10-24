@@ -97,6 +97,9 @@ try {
         throw new Exception('Resposta inválida do Mercado Pago');
     }
     
+    // Log da resposta para debug
+    error_log('Mercado Pago Response: ' . $response);
+    
     // Salvar ID da preferência no pedido
     $stmt = $pdo->prepare("UPDATE orders SET mercado_pago_preference_id = ? WHERE id = ?");
     $stmt->execute([$preference['id'], $order['id']]);

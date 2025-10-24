@@ -473,7 +473,12 @@ $total = $subtotal + $taxa;
                     console.log('✅ Preferência criada com sucesso:', result.preference_id);
                     return result.preference_id;
                 } else {
-                    throw new Error(result.message);
+                    // Se a resposta contém um ID de preferência, é sucesso mesmo sem success: true
+                    if (result.preference_id) {
+                        console.log('✅ Preferência criada (ID encontrado):', result.preference_id);
+                        return result.preference_id;
+                    }
+                    throw new Error(result.message || 'Erro desconhecido na criação da preferência');
                 }
             } catch (error) {
                 console.error('❌ Erro ao criar preferência:', error);
