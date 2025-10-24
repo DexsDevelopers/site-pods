@@ -1,88 +1,37 @@
 <?php
-session_start();
-require_once '../includes/config.php';
+require_once '../includes/config_hostinger.php';
 require_once '../includes/db.php';
 
-// Verificar se cliente está logado
-if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
-    header('Location: /pages/login-cliente.php?redirect=checkout');
+// Verificar se há itens no carrinho
+$cartItems = json_decode($_COOKIE['cart'] ?? '[]', true);
+if (empty($cartItems)) {
+    header('Location: cart.php');
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
-$error = '';
-
-// Buscar carrinho da sessão/localStorage
-$carrinho = json_decode($_POST['carrinho'] ?? '[]', true);
-if (empty($carrinho)) {
-    header('Location: /pages/cart.php');
-    exit;
+// Buscar configurações do Mercado Pago
+try {
+    $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'mercado_pago_public_key'");
+    $stmt->execute();
+    $publicKey = $stmt->fetchColumn();
+    
+    $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'mercado_pago_access_token'");
+    $stmt->execute();
+    $accessToken = $stmt->fetchColumn();
+} catch (Exception $e) {
+    $publicKey = '';
+    $accessToken = '';
 }
-
-// Buscar endereços do cliente
-$stmt = $pdo->prepare("SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC");
-$stmt->execute([$user_id]);
-$enderecos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if (empty($enderecos)) {
-    $error = 'Você precisa cadastrar um endereço de entrega antes de continuar!';
-}
-
-// Buscar configurações de pagamento
-$stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave IN ('mercado_pago_public_key', 'pagamento_ativo', 'shipping_fee', 'tax_rate')");
-$stmt->execute();
-$configs = array_column($stmt->fetchAll(PDO::FETCH_KEY_PAIR), 1, 0);
-
-$pagamento_ativo = ($configs['pagamento_ativo'] ?? 'false') === 'true';
-$taxa_envio = floatval($configs['shipping_fee'] ?? 10);
-$taxa_imposto = floatval($configs['tax_rate'] ?? 15);
 
 // Calcular totais
 $subtotal = 0;
-foreach ($carrinho as $item) {
-    $subtotal += floatval($item['preco_final']) * intval($item['quantity']);
+foreach ($cartItems as $item) {
+    $preco = $item['preco'] ?? $item['preco_final'] ?? 0;
+    $qty = $item['qty'] ?? $item['quantity'] ?? 0;
+    $subtotal += $preco * $qty;
 }
-
-$imposto = ($subtotal * $taxa_imposto) / 100;
-$total = $subtotal + $imposto + $taxa_envio;
-
-// Processar checkout (criar pedido)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'finalizar') {
-    $endereco_id = $_POST['endereco_id'] ?? 0;
-    
-    if (empty($endereco_id)) {
-        $error = 'Selecione um endereço de entrega!';
-    } else {
-        try {
-            // Criar pedido
-            $order_number = 'ORD-' . date('YmdHis') . '-' . random_int(1000, 9999);
-            
-            $stmt = $pdo->prepare("
-                INSERT INTO orders (order_number, user_id, address_id, subtotal, shipping, tax, total_amount, status, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
-            ");
-            $stmt->execute([$order_number, $user_id, $endereco_id, $subtotal, $taxa_envio, $imposto, $total]);
-            
-            $order_id = $pdo->lastInsertId();
-            
-            // Adicionar itens do pedido
-            foreach ($carrinho as $item) {
-                $stmt = $pdo->prepare("
-                    INSERT INTO order_items (order_id, product_id, quantity, price) 
-                    VALUES (?, ?, ?, ?)
-                ");
-                $stmt->execute([$order_id, $item['id'], $item['quantity'], $item['preco_final']]);
-            }
-            
-            // Redirecionar para pagamento
-            $_SESSION['order_id'] = $order_id;
-            header('Location: /pages/pagamento.php?order_id=' . $order_id);
-            exit;
-        } catch (Exception $e) {
-            $error = 'Erro ao criar pedido: ' . $e->getMessage();
-        }
-    }
-}
+$taxa = $subtotal * 0.08; // 8% de taxa
+$total = $subtotal + $taxa;
 ?>
 
 <!DOCTYPE html>
@@ -91,151 +40,389 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Wazzy Pods</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .checkout-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 1rem;
         }
-
-        .glass {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(16px);
+        
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+        }
+        
+        .checkout-form {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .order-summary {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+        }
+        
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #8b5cf6;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .summary-total {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #10b981;
+        }
+        
+        .payment-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .payment-button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+        
+        .payment-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkout-title {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100" style="background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);">
-    <?php include '../header.php'; ?>
-
-    <div class="pt-32 pb-20 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h1 class="text-5xl font-black mb-2"><span class="gradient-text">Checkout</span></h1>
-            <p class="text-slate-400 mb-8">Finalize sua compra</p>
-
-            <!-- Erro -->
-            <?php if ($error): ?>
-                <div class="mb-6 p-4 bg-red-900/20 border border-red-600 rounded-xl text-red-400">
-                    <i class="fas fa-exclamation-circle mr-2"></i><?php echo $error; ?>
+<body>
+    <div class="container">
+        <a href="cart.php" class="back-button">
+            <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
+            Voltar ao Carrinho
+        </a>
+        
+        <div class="checkout-header">
+            <h1 class="checkout-title">Finalizar Compra</h1>
+            <p style="color: #94a3b8;">Complete seus dados para finalizar o pedido</p>
+        </div>
+        
+        <div class="checkout-grid">
+            <!-- Formulário de Checkout -->
+            <div class="checkout-form">
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; color: #8b5cf6;">Dados de Entrega</h2>
+                
+                <form id="checkoutForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nome Completo *</label>
+                            <input type="text" name="nome" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telefone *</label>
+                            <input type="tel" name="telefone" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">E-mail *</label>
+                        <input type="email" name="email" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">CEP *</label>
+                        <input type="text" name="cep" class="form-input" required maxlength="9">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / 3;">
+                            <label class="form-label">Endereço *</label>
+                            <input type="text" name="endereco" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Número *</label>
+                            <input type="text" name="numero" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Complemento</label>
+                            <input type="text" name="complemento" class="form-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Bairro *</label>
+                            <input type="text" name="bairro" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cidade *</label>
+                            <input type="text" name="cidade" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Estado *</label>
+                        <select name="estado" class="form-input" required>
+                            <option value="">Selecione o estado</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Resumo do Pedido -->
+            <div class="order-summary">
+                <h3 class="summary-title">Resumo do Pedido</h3>
+                
+                <?php foreach ($cartItems as $item): ?>
+                <div class="summary-item">
+                    <div>
+                        <p style="font-weight: 600; margin-bottom: 0.25rem;"><?php echo htmlspecialchars($item['nome']); ?></p>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">Qty: <?php echo $item['qty'] ?? $item['quantity']; ?></p>
+                    </div>
+                    <p style="font-weight: 600;">R$ <?php echo number_format(($item['preco'] ?? $item['preco_final'] ?? 0) * ($item['qty'] ?? $item['quantity'] ?? 0), 2, ',', '.'); ?></p>
                 </div>
-            <?php endif; ?>
-
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Formulário Checkout -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Seleção de Endereço -->
-                    <div class="glass rounded-xl p-6 border border-purple-800/30">
-                        <h2 class="text-2xl font-bold mb-4 gradient-text">
-                            <i class="fas fa-map-marker-alt mr-2"></i> Endereço de Entrega
-                        </h2>
-
-                        <form method="POST" id="checkoutForm" class="space-y-4">
-                            <input type="hidden" name="action" value="finalizar">
-                            <input type="hidden" name="carrinho" value="<?php echo htmlspecialchars(json_encode($carrinho)); ?>">
-
-                            <?php if (empty($enderecos)): ?>
-                                <div class="p-4 bg-yellow-900/20 border border-yellow-600 rounded-lg text-yellow-400">
-                                    <i class="fas fa-info-circle mr-2"></i>
-                                    <a href="/pages/enderecoscliente.php" class="underline hover:no-underline">
-                                        Clique aqui para cadastrar um endereço
-                                    </a>
-                                </div>
-                            <?php else: ?>
-                                <div class="space-y-3">
-                                    <?php foreach ($enderecos as $endereco): ?>
-                                        <label class="flex items-start gap-3 p-4 border border-purple-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition" style="border-color: <?php echo $endereco['is_default'] ? '#a78bfa' : '#475569'; ?>;">
-                                            <input type="radio" name="endereco_id" value="<?php echo $endereco['id']; ?>" 
-                                                   <?php echo $endereco['is_default'] ? 'checked' : ''; ?> 
-                                                   class="mt-1" required>
-                                            <div class="flex-1">
-                                                <p class="font-bold text-lg">
-                                                    <?php echo htmlspecialchars($endereco['street'] . ', ' . $endereco['number']); ?>
-                                                    <?php if ($endereco['is_default']): ?>
-                                                        <span class="text-xs bg-purple-900/30 text-purple-400 px-2 py-1 rounded-full ml-2">⭐</span>
-                                                    <?php endif; ?>
-                                                </p>
-                                                <p class="text-slate-400"><?php echo htmlspecialchars($endereco['neighborhood'] . ', ' . $endereco['city'] . ' - ' . $endereco['state']); ?></p>
-                                                <p class="text-slate-500 text-sm">CEP: <?php echo htmlspecialchars($endereco['cep']); ?></p>
-                                            </div>
-                                        </label>
-                                    <?php endforeach; ?>
-                                </div>
-
-                                <a href="/pages/enderecoscliente.php" class="inline-block text-purple-400 hover:text-purple-300 text-sm">
-                                    <i class="fas fa-plus mr-1"></i> Adicionar outro endereço
-                                </a>
-                            <?php endif; ?>
-                        </form>
-                    </div>
-
-                    <!-- Revisão de Produtos -->
-                    <div class="glass rounded-xl p-6 border border-purple-800/30">
-                        <h2 class="text-2xl font-bold mb-4 gradient-text">
-                            <i class="fas fa-boxes mr-2"></i> Itens do Pedido
-                        </h2>
-
-                        <div class="space-y-3">
-                            <?php foreach ($carrinho as $item): ?>
-                                <div class="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
-                                    <div>
-                                        <p class="font-bold"><?php echo htmlspecialchars($item['nome']); ?></p>
-                                        <p class="text-sm text-slate-400">Qtd: <?php echo intval($item['quantity']); ?></p>
-                                    </div>
-                                    <p class="font-bold">R$ <?php echo number_format(floatval($item['preco_final']) * intval($item['quantity']), 2, ',', '.'); ?></p>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
+                <?php endforeach; ?>
+                
+                <div class="summary-item">
+                    <span>Subtotal:</span>
+                    <span>R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></span>
                 </div>
-
-                <!-- Resumo de Pagamento -->
-                <div>
-                    <div class="glass rounded-xl p-6 border border-purple-800/30 sticky top-32 space-y-4">
-                        <h2 class="text-xl font-bold gradient-text">Resumo do Pedido</h2>
-
-                        <div class="space-y-2 border-t border-purple-800/20 pt-4">
-                            <div class="flex justify-between">
-                                <span>Subtotal:</span>
-                                <span>R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Frete:</span>
-                                <span>R$ <?php echo number_format($taxa_envio, 2, ',', '.'); ?></span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Impostos:</span>
-                                <span>R$ <?php echo number_format($imposto, 2, ',', '.'); ?></span>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-purple-800/20 pt-4">
-                            <div class="flex justify-between text-xl font-bold">
-                                <span>Total:</span>
-                                <span class="gradient-text">R$ <?php echo number_format($total, 2, ',', '.'); ?></span>
-                            </div>
-                        </div>
-
-                        <?php if (!empty($enderecos)): ?>
-                            <button type="submit" form="checkoutForm" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-bold hover:shadow-lg transition">
-                                <i class="fas fa-credit-card mr-2"></i> Ir para Pagamento
-                            </button>
-                        <?php else: ?>
-                            <button disabled class="w-full py-3 bg-slate-700 rounded-lg font-bold cursor-not-allowed opacity-50">
-                                Cadastre um endereço primeiro
-                            </button>
-                        <?php endif; ?>
-
-                        <a href="/pages/cart.php" class="block text-center py-2 text-slate-400 hover:text-slate-300 transition">
-                            ← Voltar ao Carrinho
-                        </a>
-                    </div>
+                
+                <div class="summary-item">
+                    <span>Taxa (8%):</span>
+                    <span>R$ <?php echo number_format($taxa, 2, ',', '.'); ?></span>
+                </div>
+                
+                <div class="summary-item summary-total">
+                    <span>Total:</span>
+                    <span>R$ <?php echo number_format($total, 2, ',', '.'); ?></span>
+                </div>
+                
+                <div class="payment-section">
+                    <h4 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; color: #8b5cf6;">Pagamento</h4>
+                    
+                    <?php if (!empty($publicKey) && !empty($accessToken)): ?>
+                    <div id="mercadopago-button"></div>
+                    <?php else: ?>
+                    <p style="color: #ef4444; text-align: center; padding: 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                        <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                        Configuração do Mercado Pago não encontrada. Configure as chaves no painel administrativo.
+                    </p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 
-    <?php include '../footer.php'; ?>
+    <script>
+        // Configuração do Mercado Pago
+        const mp = new MercadoPago('<?php echo $publicKey; ?>', {
+            locale: 'pt-BR'
+        });
+
+        // Função para processar o pagamento
+        function processPayment() {
+            const form = document.getElementById('checkoutForm');
+            const formData = new FormData(form);
+            
+            // Validar formulário
+            if (!form.checkValidity()) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            // Coletar dados do formulário
+            const orderData = {
+                nome: formData.get('nome'),
+                telefone: formData.get('telefone'),
+                email: formData.get('email'),
+                cep: formData.get('cep'),
+                endereco: formData.get('endereco'),
+                numero: formData.get('numero'),
+                complemento: formData.get('complemento'),
+                bairro: formData.get('bairro'),
+                cidade: formData.get('cidade'),
+                estado: formData.get('estado'),
+                items: <?php echo json_encode($cartItems); ?>,
+                total: <?php echo $total; ?>
+            };
+            
+            console.log('Dados do pedido:', orderData);
+            
+            // Aqui você implementaria a criação do pedido no banco de dados
+            // e a integração com o Mercado Pago
+            
+            alert('Pedido processado com sucesso! (Implementação em desenvolvimento)');
+        }
+        
+        // Máscara para CEP
+        document.querySelector('input[name="cep"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+        
+        // Máscara para telefone
+        document.querySelector('input[name="telefone"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            e.target.value = value;
+        });
+    </script>
 </body>
 </html>

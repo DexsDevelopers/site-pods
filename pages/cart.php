@@ -330,7 +330,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
                 alert('Seu carrinho está vazio!');
                 return;
             }
-            alert('Sistema de checkout em desenvolvimento!\n\nTotal: R$ ' + cart.getTotal().toLocaleString('pt-BR', {minimumFractionDigits: 2}));
+            // Salvar carrinho em cookie para o checkout
+            document.cookie = 'cart=' + JSON.stringify(cart.items) + '; path=/';
+            window.location.href = 'checkout.php';
         }
 
         function continueShopping() {
