@@ -595,24 +595,6 @@ $reviews = [
                         </button>
                     </div>
                     
-                    <!-- Botões de Debug (temporários) -->
-                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
-                        <button onclick="console.log('🧪 Teste simples funcionando!'); alert('JavaScript está funcionando!');" style="padding: 0.5rem 1rem; background: #f59e0b; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
-                            🧪 Teste JS
-                        </button>
-                        <button onclick="addToCart(event); return false;" style="padding: 0.5rem 1rem; background: #8b5cf6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
-                            🛒 Teste AddCart
-                        </button>
-                        <button onclick="testCart()" style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
-                            🧪 Testar Carrinho
-                        </button>
-                        <button onclick="clearCart()" style="padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
-                            🗑️ Limpar Carrinho
-                        </button>
-                        <button onclick="window.location.href='cart.php'" style="padding: 0.5rem 1rem; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
-                            🛒 Ver Carrinho
-                        </button>
-                    </div>
                 </div>
             </div>
 
