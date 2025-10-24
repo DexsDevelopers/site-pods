@@ -87,11 +87,21 @@ try {
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     
+    // Debug: Log da resposta
+    error_log("Mercado Pago HTTP Code: $httpCode");
+    error_log("Mercado Pago Response: $response");
+    
+    // Verificar se a resposta contém erro
+    $preference = json_decode($response, true);
+    
     if ($httpCode !== 200) {
         throw new Exception('Erro na API do Mercado Pago: ' . $response);
     }
     
-    $preference = json_decode($response, true);
+    // Verificar se a resposta contém erro do Mercado Pago
+    if (isset($preference['error']) || isset($preference['message'])) {
+        throw new Exception('Erro na API do Mercado Pago: ' . $response);
+    }
     
     if (!$preference || !isset($preference['id'])) {
         throw new Exception('Resposta inválida do Mercado Pago');
