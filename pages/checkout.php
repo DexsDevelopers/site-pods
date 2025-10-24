@@ -27,7 +27,7 @@ try {
 $subtotal = 0;
 foreach ($cartItems as $item) {
     $preco = $item['preco'] ?? $item['preco_final'] ?? 0;
-    $qty = $item['qty'] ?? $item['quantity'] ?? 0;
+    $qty = $item['quantity'] ?? 1; // Priorizar quantity, fallback para 1
     $subtotal += $preco * $qty;
 }
 // Remover taxa automática - usar apenas o subtotal
@@ -334,7 +334,7 @@ $total = $subtotal;
                         <p style="font-weight: 600; margin-bottom: 0.25rem;"><?php echo htmlspecialchars($item['nome']); ?></p>
                         <p style="color: #94a3b8; font-size: 0.9rem;">Qty: <?php echo $item['qty'] ?? $item['quantity']; ?></p>
                     </div>
-                    <p style="font-weight: 600;">R$ <?php echo number_format(($item['preco'] ?? $item['preco_final'] ?? 0) * ($item['qty'] ?? $item['quantity'] ?? 0), 2, ',', '.'); ?></p>
+                    <p style="font-weight: 600;">R$ <?php echo number_format(($item['preco'] ?? $item['preco_final'] ?? 0) * ($item['quantity'] ?? 1), 2, ',', '.'); ?></p>
                 </div>
                 <?php endforeach; ?>
                 

@@ -191,7 +191,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
             }
 
             getSubtotal() {
-                return this.items.reduce((total, item) => total + ((item.preco || item.preco_final || 0) * (item.quantity || item.qty || 0)), 0);
+                return this.items.reduce((total, item) => total + ((item.preco || item.preco_final || 0) * (item.quantity || 1)), 0);
             }
 
             getTax() {
@@ -262,7 +262,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
 
                             <div class="text-right flex flex-col justify-between">
                                 <div>
-                                    <p class="text-2xl font-bold gradient-text">R$ ${((item.preco || item.preco_final || 0) * (item.quantity || item.qty || 0)).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                    <p class="text-2xl font-bold gradient-text">R$ ${((item.preco || item.preco_final || 0) * (item.quantity || 1)).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                                     <p class="text-xs text-slate-500">Un: R$ ${(item.preco || item.preco_final || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
                                 </div>
                                 <button onclick="cart.remove(${item.id})" 
