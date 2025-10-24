@@ -768,12 +768,20 @@ $avaliacoes = [
                             <?php endif; ?>
                         </div>
 
-                        <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $precoFinal; ?>)" 
-                                class="w-full py-3 btn-primary rounded-lg font-bold text-sm transition <?php echo $estoque <= 0 ? 'opacity-50 cursor-not-allowed' : ''; ?>"
-                                <?php echo $estoque <= 0 ? 'disabled' : ''; ?>>
-                            <i class="fas fa-cart-plus mr-2"></i>
-                            Adicionar
-                        </button>
+                        <div class="flex gap-2">
+                            <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $precoFinal; ?>)" 
+                                    class="flex-1 py-3 bg-slate-800/50 border border-purple-800/30 rounded-lg font-bold text-sm transition hover:bg-slate-700/50 hover:border-purple-600/50 <?php echo $estoque <= 0 ? 'opacity-50 cursor-not-allowed' : ''; ?>"
+                                    <?php echo $estoque <= 0 ? 'disabled' : ''; ?>>
+                                <i class="fas fa-cart-plus mr-2"></i>
+                                Carrinho
+                            </button>
+                            <button onclick="window.location.href='pages/product-detail.php?id=<?php echo $produto['id']; ?>'" 
+                                    class="flex-1 py-3 btn-primary rounded-lg font-bold text-sm transition <?php echo $estoque <= 0 ? 'opacity-50 cursor-not-allowed' : ''; ?>"
+                                    <?php echo $estoque <= 0 ? 'disabled' : ''; ?>>
+                                <i class="fas fa-shopping-bag mr-2"></i>
+                                Comprar
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <?php endforeach; ?>
