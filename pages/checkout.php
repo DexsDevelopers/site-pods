@@ -380,11 +380,14 @@ $total = $subtotal + $taxa;
 
         // Função para criar pedido no banco
         async function createOrder() {
+            console.log('📝 Iniciando criação do pedido...');
+            
             const form = document.getElementById('checkoutForm');
             const formData = new FormData(form);
             
             // Validar formulário
             if (!form.checkValidity()) {
+                console.error('❌ Formulário inválido');
                 alert('Por favor, preencha todos os campos obrigatórios.');
                 return null;
             }
@@ -405,7 +408,10 @@ $total = $subtotal + $taxa;
                 total: <?php echo $total; ?>
             };
             
+            console.log('📦 Dados do pedido:', orderData);
+            
             try {
+                console.log('🌐 Enviando requisição para api/pedidos.php...');
                 const response = await fetch('../api/pedidos.php', {
                     method: 'POST',
                     headers: {
@@ -414,15 +420,19 @@ $total = $subtotal + $taxa;
                     body: JSON.stringify(orderData)
                 });
                 
+                console.log('📡 Resposta recebida:', response.status);
+                
                 const result = await response.json();
+                console.log('📄 Resultado:', result);
                 
                 if (result.success) {
+                    console.log('✅ Pedido criado com sucesso:', result.order_id);
                     return result.order_id;
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
-                console.error('Erro ao criar pedido:', error);
+                console.error('❌ Erro ao criar pedido:', error);
                 alert('Erro ao criar pedido: ' + error.message);
                 return null;
             }
@@ -430,28 +440,39 @@ $total = $subtotal + $taxa;
 
         // Função para criar preferência do Mercado Pago
         async function createPreference(orderId) {
+            console.log('💳 Iniciando criação da preferência...');
+            
             try {
+                const preferenceData = {
+                    order_id: orderId,
+                    items: <?php echo json_encode($cartItems); ?>,
+                    total: <?php echo $total; ?>
+                };
+                
+                console.log('📦 Dados da preferência:', preferenceData);
+                
+                console.log('🌐 Enviando requisição para api/mercadopago.php...');
                 const response = await fetch('../api/mercadopago.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        order_id: orderId,
-                        items: <?php echo json_encode($cartItems); ?>,
-                        total: <?php echo $total; ?>
-                    })
+                    body: JSON.stringify(preferenceData)
                 });
                 
+                console.log('📡 Resposta recebida:', response.status);
+                
                 const result = await response.json();
+                console.log('📄 Resultado da preferência:', result);
                 
                 if (result.success) {
+                    console.log('✅ Preferência criada com sucesso:', result.preference_id);
                     return result.preference_id;
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
-                console.error('Erro ao criar preferência:', error);
+                console.error('❌ Erro ao criar preferência:', error);
                 alert('Erro ao configurar pagamento: ' + error.message);
                 return null;
             }
@@ -460,36 +481,50 @@ $total = $subtotal + $taxa;
         // Função para processar o pagamento
         async function processPayment() {
             try {
+                console.log('🚀 Iniciando processamento do pagamento...');
+                
                 // Mostrar loading
                 showPaymentStatus('Processando pedido...', 'loading');
                 
                 // Criar pedido no banco
+                console.log('📝 Criando pedido no banco...');
                 orderId = await createOrder();
-                if (!orderId) return;
+                if (!orderId) {
+                    console.error('❌ Falha ao criar pedido');
+                    return;
+                }
+                console.log('✅ Pedido criado com ID:', orderId);
                 
                 // Criar preferência do Mercado Pago
+                console.log('💳 Criando preferência do Mercado Pago...');
                 const preferenceId = await createPreference(orderId);
-                if (!preferenceId) return;
+                if (!preferenceId) {
+                    console.error('❌ Falha ao criar preferência');
+                    return;
+                }
+                console.log('✅ Preferência criada:', preferenceId);
                 
                 // Configurar botão do Mercado Pago
+                console.log('🔘 Configurando botão do Mercado Pago...');
                 mp.bricks().create("wallet", "mercadopago-button", {
                     initialization: {
                         preferenceId: preferenceId
                     },
                     callbacks: {
                         onReady: () => {
+                            console.log('✅ Botão do Mercado Pago pronto');
                             showPaymentStatus('Pagamento configurado! Clique no botão para pagar.', 'success');
                         },
                         onError: (error) => {
-                            console.error('Erro no Mercado Pago:', error);
+                            console.error('❌ Erro no Mercado Pago:', error);
                             showPaymentStatus('Erro ao configurar pagamento. Tente novamente.', 'error');
                         }
                     }
                 });
                 
             } catch (error) {
-                console.error('Erro no processamento:', error);
-                showPaymentStatus('Erro no processamento. Tente novamente.', 'error');
+                console.error('❌ Erro no processamento:', error);
+                showPaymentStatus('Erro no processamento: ' + error.message, 'error');
             }
         }
 
