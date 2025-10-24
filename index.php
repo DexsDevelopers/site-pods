@@ -708,7 +708,7 @@ $avaliacoes = [
                     $avaliacao = $produto['avaliacao_media'] ?? 0;
                     $estoque = $produto['estoque'] ?? 0;
                 ?>
-                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-800/50 cursor-pointer" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>" onclick="window.location.href='pages/product-detail.php?id=<?php echo $produto['id']; ?>'">
+                <div class="glass rounded-2xl overflow-hidden card-hover group relative border border-purple-800/50" data-aos="flip-left" data-aos-delay="<?php echo $i * 100; ?>">
                     <?php if ($desconto > 0): ?>
                     <div class="absolute top-4 right-4 badge badge-primary z-10">
                         -<?php echo $desconto; ?>%
@@ -769,7 +769,7 @@ $avaliacoes = [
                         </div>
 
                         <div class="flex gap-2">
-                            <button onclick="addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $precoFinal; ?>)" 
+                            <button onclick="event.stopPropagation(); addToCart(<?php echo $produto['id']; ?>, '<?php echo htmlspecialchars($produto['nome']); ?>', <?php echo $precoFinal; ?>); return false;" 
                                     class="flex-1 py-3 bg-slate-800/50 border border-purple-800/30 rounded-lg font-bold text-sm transition hover:bg-slate-700/50 hover:border-purple-600/50 <?php echo $estoque <= 0 ? 'opacity-50 cursor-not-allowed' : ''; ?>"
                                     <?php echo $estoque <= 0 ? 'disabled' : ''; ?>>
                                 <i class="fas fa-cart-plus mr-2"></i>
