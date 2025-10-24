@@ -91,11 +91,17 @@ try {
     error_log("Mercado Pago HTTP Code: $httpCode");
     error_log("Mercado Pago Response: $response");
     
+    // Debug: Mostrar HTTP code no teste
+    if (isset($_GET['debug'])) {
+        echo "<p>HTTP Code: $httpCode</p>";
+        echo "<p>Response: " . htmlspecialchars($response) . "</p>";
+    }
+    
     // Decodificar resposta
     $preference = json_decode($response, true);
     
-    // Verificar se houve erro HTTP
-    if ($httpCode !== 200) {
+    // Verificar se houve erro HTTP (aceitar 200 e 201)
+    if ($httpCode !== 200 && $httpCode !== 201) {
         throw new Exception('Erro HTTP na API do Mercado Pago: ' . $response);
     }
     
