@@ -760,7 +760,7 @@ $reviews = [
             console.log('🛒 Iniciando addToCart...');
             
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const productId = <?php echo $product['id']; ?>;
+            const productId = <?php echo json_encode($product['id']); ?>;
             
             console.log('📦 ID do produto:', productId);
             console.log('🛒 Carrinho atual:', cart);
@@ -770,16 +770,16 @@ $reviews = [
             
             if (existingItem) {
                 // Se já existe, aumentar a quantidade
-                existingItem.qty += 1;
+                existingItem.qty = (existingItem.qty || 0) + 1;
                 console.log('➕ Quantidade aumentada para:', existingItem.qty);
             } else {
                 // Se não existe, adicionar novo item
                 const item = {
                     id: productId,
-                    nome: '<?php echo addslashes($product["nome"]); ?>',
-                    preco: <?php echo $product['preco']; ?>,
+                    nome: <?php echo json_encode($product['nome']); ?>,
+                    preco: <?php echo json_encode($product['preco']); ?>,
                     qty: 1,
-                    imagem: '<?php echo addslashes($product["imagem"]); ?>'
+                    imagem: <?php echo json_encode($product['imagem']); ?>
                 };
                 cart.push(item);
                 console.log('🆕 Novo item adicionado:', item);
@@ -846,7 +846,10 @@ $reviews = [
         
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalItems = cart.reduce((sum, item) => {
+                const qty = item.qty || item.quantity || 0;
+                return sum + (isNaN(qty) ? 0 : qty);
+            }, 0);
             
             // Atualizar badge se existir
             const badge = document.querySelector('.cart-badge');
@@ -859,7 +862,7 @@ $reviews = [
 
         function toggleWishlist() {
             let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-            const productId = <?php echo $product['id']; ?>;
+            const productId = <?php echo json_encode($product['id']); ?>;
             
             if (wishlist.includes(productId)) {
                 wishlist = wishlist.filter(id => id !== productId);
@@ -944,12 +947,21 @@ $reviews = [
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
             console.log('🛒 Carrinho parseado:', cart);
             console.log('📊 Total de itens:', cart.length);
-            console.log('🔢 Total de quantidades:', cart.reduce((sum, item) => sum + item.qty, 0));
+            
+            // Calcular total de quantidades (lidando com dados inconsistentes)
+            const totalQuantities = cart.reduce((sum, item) => {
+                const qty = item.qty || item.quantity || 0;
+                return sum + (isNaN(qty) ? 0 : qty);
+            }, 0);
+            console.log('🔢 Total de quantidades:', totalQuantities);
             
             if (cart.length > 0) {
                 console.log('✅ CARRINHO TEM ITENS:');
                 cart.forEach((item, index) => {
-                    console.log(`  ${index + 1}. ${item.nome} - R$ ${item.preco} - Qty: ${item.qty}`);
+                    const nome = item.nome || 'Nome não disponível';
+                    const preco = item.preco || item.preco_final || 0;
+                    const qty = item.qty || item.quantity || 0;
+                    console.log(`  ${index + 1}. ${nome} - R$ ${preco} - Qty: ${qty}`);
                 });
             } else {
                 console.log('❌ CARRINHO VAZIO');
