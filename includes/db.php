@@ -33,10 +33,14 @@ class Database {
                 );
                 
                 // Log da conexão bem-sucedida
-                logInfo("Conexão com banco de dados estabelecida com sucesso.");
+                if (function_exists('logInfo')) {
+                    logInfo("Conexão com banco de dados estabelecida com sucesso.");
+                }
                 
             } catch (PDOException $e) {
-                logError("Erro ao conectar com o banco de dados: " . $e->getMessage());
+                if (function_exists('logError')) {
+                    logError("Erro ao conectar com o banco de dados: " . $e->getMessage());
+                }
                 
                 if (DEBUG_MODE) {
                     die("❌ Erro de Banco de Dados: " . $e->getMessage());
