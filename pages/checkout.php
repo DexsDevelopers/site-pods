@@ -359,6 +359,10 @@ $total = $subtotal + $taxa;
                     <?php if (!empty($publicKey) && !empty($accessToken)): ?>
                     <div id="mercadopago-button"></div>
                     <div id="payment-status" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 8px; text-align: center;"></div>
+                    <button type="button" onclick="initializePayment()" id="init-payment-btn" style="display: none; width: 100%; padding: 1rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; margin-top: 1rem;">
+                        <i class="fas fa-credit-card" style="margin-right: 0.5rem;"></i>
+                        Configurar Pagamento
+                    </button>
                     <?php else: ?>
                     <p style="color: #ef4444; text-align: center; padding: 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3);">
                         <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
@@ -564,11 +568,70 @@ $total = $subtotal + $taxa;
             e.target.value = value;
         });
 
-        // Inicializar pagamento quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
+        // Função para inicializar o botão de pagamento quando o formulário for preenchido
+        function initializePayment() {
+            console.log('🔧 Inicializando pagamento...');
+            
+            // Verificar se o formulário está preenchido
+            const form = document.getElementById('checkoutForm');
+            const requiredFields = form.querySelectorAll('input[required], select[required]');
+            let allFieldsFilled = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    allFieldsFilled = false;
+                }
+            });
+            
+            if (!allFieldsFilled) {
+                console.log('⚠️ Formulário não preenchido completamente');
+                showPaymentStatus('Por favor, preencha todos os campos obrigatórios primeiro.', 'error');
+                
+                // Mostrar botão manual
+                const manualBtn = document.getElementById('init-payment-btn');
+                if (manualBtn) {
+                    manualBtn.style.display = 'block';
+                }
+                return;
+            }
+            
+            console.log('✅ Formulário preenchido, processando pagamento...');
+            
             if (document.getElementById('mercadopago-button')) {
                 processPayment();
             }
+        }
+        
+        // Adicionar listener para quando o usuário clicar em um campo
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('checkoutForm');
+            const inputs = form.querySelectorAll('input, select');
+            
+            // Adicionar listener para quando o usuário começar a preencher
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Verificar se pelo menos um campo foi preenchido
+                    let hasContent = false;
+                    inputs.forEach(inp => {
+                        if (inp.value.trim() !== '') {
+                            hasContent = true;
+                        }
+                    });
+                    
+                    if (hasContent && !document.getElementById('payment-initialized')) {
+                        // Criar marcador para evitar múltiplas inicializações
+                        const marker = document.createElement('div');
+                        marker.id = 'payment-initialized';
+                        marker.style.display = 'none';
+                        document.body.appendChild(marker);
+                        
+                        // Inicializar pagamento
+                        setTimeout(() => {
+                            initializePayment();
+                        }, 1000); // Aguardar 1 segundo para o usuário preencher mais campos
+                    }
+                });
+            });
         });
     </script>
 </body>
