@@ -739,26 +739,104 @@ $reviews = [
 
         function addToCart() {
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const item = {
-                id: 1,
-                nome: '<?php echo $product["nome"]; ?>',
-                preco: <?php echo $product['preco']; ?>,
-                qty: 1,
-                imagem: '<?php echo $product["imagem"]; ?>'
-            };
-            cart.push(item);
+            const productId = <?php echo $product['id']; ?>;
+            
+            // Verificar se o produto já está no carrinho
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                // Se já existe, aumentar a quantidade
+                existingItem.qty += 1;
+            } else {
+                // Se não existe, adicionar novo item
+                const item = {
+                    id: productId,
+                    nome: '<?php echo addslashes($product["nome"]); ?>',
+                    preco: <?php echo $product['preco']; ?>,
+                    qty: 1,
+                    imagem: '<?php echo addslashes($product["imagem"]); ?>'
+                };
+                cart.push(item);
+            }
+            
             localStorage.setItem('cart', JSON.stringify(cart));
-            alert('✅ Produto adicionado ao carrinho!');
+            
+            // Mostrar notificação moderna
+            showNotification('✅ Produto adicionado ao carrinho!', 'success');
+            
+            // Atualizar contador do carrinho se existir
+            updateCartBadge();
+        }
+        
+        function showNotification(message, type = 'success') {
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            // Adicionar CSS da animação
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            
+            // Atualizar badge se existir
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = totalItems;
+                badge.style.display = totalItems > 0 ? 'block' : 'none';
+            }
         }
 
         function toggleWishlist() {
             let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-            if (wishlist.includes(1)) {
-                wishlist = wishlist.filter(id => id !== 1);
-                document.getElementById('wishlistBtn').innerHTML = '<i class="far fa-heart mr-2"></i>Favoritar';
+            const productId = <?php echo $product['id']; ?>;
+            
+            if (wishlist.includes(productId)) {
+                wishlist = wishlist.filter(id => id !== productId);
+                document.getElementById('wishlistBtn').innerHTML = '<i class="far fa-heart" style="margin-right: 0.5rem;"></i><span>Favoritar</span>';
+                if (document.getElementById('wishlistBtnMobile')) {
+                    document.getElementById('wishlistBtnMobile').innerHTML = '<i class="far fa-heart" style="margin-right: 0.75rem; width: 20px;"></i><span>Favoritar</span>';
+                }
+                showNotification('💔 Produto removido dos favoritos!', 'info');
             } else {
-                wishlist.push(1);
-                document.getElementById('wishlistBtn').innerHTML = '<i class="fas fa-heart mr-2"></i>Favoritado';
+                wishlist.push(productId);
+                document.getElementById('wishlistBtn').innerHTML = '<i class="fas fa-heart" style="margin-right: 0.5rem;"></i><span>Favoritado</span>';
+                if (document.getElementById('wishlistBtnMobile')) {
+                    document.getElementById('wishlistBtnMobile').innerHTML = '<i class="fas fa-heart" style="margin-right: 0.75rem; width: 20px;"></i><span>Favoritado</span>';
+                }
+                showNotification('❤️ Produto adicionado aos favoritos!', 'success');
             }
             localStorage.setItem('wishlist', JSON.stringify(wishlist));
         }
@@ -780,6 +858,9 @@ $reviews = [
                 });
             }
             
+            // Verificar estado inicial dos favoritos
+            checkWishlistStatus();
+            
             // Forçar exibição da imagem
             const mainImage = document.getElementById('mainImage');
             if (mainImage) {
@@ -799,6 +880,18 @@ $reviews = [
                     setTimeout(() => {
                         mainImage.src = newSrc;
                     }, 100);
+                }
+            }
+        }
+        
+        function checkWishlistStatus() {
+            const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+            const productId = <?php echo $product['id']; ?>;
+            
+            if (wishlist.includes(productId)) {
+                document.getElementById('wishlistBtn').innerHTML = '<i class="fas fa-heart" style="margin-right: 0.5rem;"></i><span>Favoritado</span>';
+                if (document.getElementById('wishlistBtnMobile')) {
+                    document.getElementById('wishlistBtnMobile').innerHTML = '<i class="fas fa-heart" style="margin-right: 0.75rem; width: 20px;"></i><span>Favoritado</span>';
                 }
             }
         });
