@@ -91,11 +91,12 @@ try {
     error_log("Mercado Pago HTTP Code: $httpCode");
     error_log("Mercado Pago Response: $response");
     
-    // Verificar se a resposta contém erro
+    // Decodificar resposta
     $preference = json_decode($response, true);
     
+    // Verificar se houve erro HTTP
     if ($httpCode !== 200) {
-        throw new Exception('Erro na API do Mercado Pago: ' . $response);
+        throw new Exception('Erro HTTP na API do Mercado Pago: ' . $response);
     }
     
     // Verificar se a resposta contém erro do Mercado Pago
@@ -103,9 +104,12 @@ try {
         throw new Exception('Erro na API do Mercado Pago: ' . $response);
     }
     
+    // Verificar se tem ID (sucesso)
     if (!$preference || !isset($preference['id'])) {
-        throw new Exception('Resposta inválida do Mercado Pago');
+        throw new Exception('Resposta inválida do Mercado Pago - sem ID');
     }
+    
+    // Se chegou até aqui, é sucesso!
     
     // Log da resposta para debug
     error_log('Mercado Pago Response: ' . $response);
