@@ -756,73 +756,6 @@ $reviews = [
             }
         }
 
-        function addToCart(event) {
-            console.log('🚀 FUNÇÃO addToCart CHAMADA!');
-            console.log('📧 Evento recebido:', event);
-            
-            // Prevenir qualquer comportamento padrão
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                console.log('🛑 Evento prevenido');
-            }
-            
-            console.log('🛒 Iniciando addToCart...');
-            
-            try {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                const productId = <?php echo json_encode($product['id']); ?>;
-                
-                console.log('📦 ID do produto:', productId);
-                console.log('🛒 Carrinho atual:', cart);
-                
-                // Verificar se o produto já está no carrinho
-                const existingItem = cart.find(item => item.id === productId);
-                
-                if (existingItem) {
-                    // Se já existe, aumentar a quantidade
-                    existingItem.qty = (existingItem.qty || 0) + 1;
-                    console.log('➕ Quantidade aumentada para:', existingItem.qty);
-                } else {
-                    // Se não existe, adicionar novo item
-            const item = {
-                        id: productId,
-                        nome: <?php echo json_encode($product['nome']); ?>,
-                        preco: <?php echo json_encode($product['preco']); ?>,
-                qty: 1,
-                        imagem: <?php echo json_encode($product['imagem']); ?>
-            };
-            cart.push(item);
-                    console.log('🆕 Novo item adicionado:', item);
-                }
-                
-                console.log('💾 Salvando carrinho:', cart);
-            localStorage.setItem('cart', JSON.stringify(cart));
-                
-                // Verificar se foi salvo
-                const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
-                console.log('✅ Carrinho salvo:', savedCart);
-                
-                // Mostrar notificação moderna
-                showNotification('✅ Produto adicionado ao carrinho!', 'success');
-                
-                // Atualizar contador do carrinho se existir
-                updateCartBadge();
-                
-                // Debug: Mostrar carrinho no console
-                console.log('🔍 Carrinho final no localStorage:', localStorage.getItem('cart'));
-                
-                // Testar imediatamente
-                testCart();
-                
-            } catch (error) {
-                console.error('❌ ERRO no addToCart:', error);
-                showNotification('❌ Erro ao adicionar ao carrinho!', 'error');
-            }
-            
-            // Retornar false para prevenir qualquer redirecionamento
-            return false;
-        }
         
         function showNotification(message, type = 'success') {
             // Criar elemento de notificação
@@ -959,6 +892,75 @@ $reviews = [
 
     <!-- Funções de Debug - Escopo Global -->
     <script>
+        // Função addToCart no escopo global
+        function addToCart(event) {
+            console.log('🚀 FUNÇÃO addToCart CHAMADA!');
+            console.log('📧 Evento recebido:', event);
+            
+            // Prevenir qualquer comportamento padrão
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                console.log('🛑 Evento prevenido');
+            }
+            
+            console.log('🛒 Iniciando addToCart...');
+            
+            try {
+                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const productId = <?php echo json_encode($product['id']); ?>;
+                
+                console.log('📦 ID do produto:', productId);
+                console.log('🛒 Carrinho atual:', cart);
+                
+                // Verificar se o produto já está no carrinho
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    // Se já existe, aumentar a quantidade
+                    existingItem.qty = (existingItem.qty || 0) + 1;
+                    console.log('➕ Quantidade aumentada para:', existingItem.qty);
+                } else {
+                    // Se não existe, adicionar novo item
+                    const item = {
+                        id: productId,
+                        nome: <?php echo json_encode($product['nome']); ?>,
+                        preco: <?php echo json_encode($product['preco']); ?>,
+                        qty: 1,
+                        imagem: <?php echo json_encode($product['imagem']); ?>
+                    };
+                    cart.push(item);
+                    console.log('🆕 Novo item adicionado:', item);
+                }
+                
+                console.log('💾 Salvando carrinho:', cart);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Verificar se foi salvo
+                const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+                console.log('✅ Carrinho salvo:', savedCart);
+                
+                // Mostrar notificação moderna
+                showNotification('✅ Produto adicionado ao carrinho!', 'success');
+                
+                // Atualizar contador do carrinho se existir
+                updateCartBadge();
+                
+                // Debug: Mostrar carrinho no console
+                console.log('🔍 Carrinho final no localStorage:', localStorage.getItem('cart'));
+                
+                // Testar imediatamente
+                testCart();
+                
+            } catch (error) {
+                console.error('❌ ERRO no addToCart:', error);
+                showNotification('❌ Erro ao adicionar ao carrinho!', 'error');
+            }
+            
+            // Retornar false para prevenir qualquer redirecionamento
+            return false;
+        }
+        
         function testCart() {
             console.log('🧪 TESTANDO CARRINHO:');
             console.log('📦 localStorage.getItem("cart"):', localStorage.getItem('cart'));
@@ -995,6 +997,62 @@ $reviews = [
             if (badge) {
                 badge.textContent = '0';
                 badge.style.display = 'none';
+            }
+        }
+        
+        // Função showNotification no escopo global
+        function showNotification(message, type = 'success') {
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            // Adicionar CSS da animação
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Função updateCartBadge no escopo global
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => {
+                const qty = item.qty || item.quantity || 0;
+                return sum + (isNaN(qty) ? 0 : qty);
+            }, 0);
+            
+            // Atualizar badge se existir
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = totalItems;
+                badge.style.display = totalItems > 0 ? 'block' : 'none';
             }
         }
     </script>
