@@ -443,7 +443,7 @@ $reviews = [
                     <i class="far fa-heart" style="margin-right: 0.5rem;"></i>
                     <span>Favoritar</span>
                 </button>
-                <button onclick="addToCart()" style="display: flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+                <button type="button" onclick="addToCart(event); return false;" style="display: flex; align-items: center; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
                     <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>
                     <span>Comprar</span>
                 </button>
@@ -468,7 +468,7 @@ $reviews = [
                     <i class="far fa-heart" style="margin-right: 0.75rem; width: 20px;"></i>
                     <span>Favoritar</span>
                 </button>
-                <button onclick="addToCart()" style="display: flex; align-items: center; padding: 1rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: 700; text-align: left; width: 100%;">
+                <button type="button" onclick="addToCart(event); return false;" style="display: flex; align-items: center; padding: 1rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: 700; text-align: left; width: 100%;">
                     <i class="fas fa-shopping-cart" style="margin-right: 0.75rem; width: 20px;"></i>
                     <span>Comprar</span>
                 </button>
@@ -587,11 +587,24 @@ $reviews = [
 
                     <!-- Botões -->
                     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button onclick="addToCart()" class="btn" style="flex: 1;">
+                        <button type="button" onclick="addToCart(event); return false;" class="btn" style="flex: 1;">
                             <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>Adicionar ao Carrinho
                         </button>
                         <button onclick="toggleWishlist()" class="btn btn-secondary" style="flex: 1;" id="wishlistBtn2">
                             <i class="far fa-heart" style="margin-right: 0.5rem;"></i>Favoritar
+                        </button>
+                    </div>
+                    
+                    <!-- Botões de Debug (temporários) -->
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                        <button onclick="testCart()" style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                            🧪 Testar Carrinho
+                        </button>
+                        <button onclick="clearCart()" style="padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                            🗑️ Limpar Carrinho
+                        </button>
+                        <button onclick="window.location.href='cart.php'" style="padding: 0.5rem 1rem; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                            🛒 Ver Carrinho
                         </button>
                     </div>
                 </div>
@@ -737,9 +750,20 @@ $reviews = [
             }
         }
 
-        function addToCart() {
+        function addToCart(event) {
+            // Prevenir qualquer comportamento padrão
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            console.log('🛒 Iniciando addToCart...');
+            
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
             const productId = <?php echo $product['id']; ?>;
+            
+            console.log('📦 ID do produto:', productId);
+            console.log('🛒 Carrinho atual:', cart);
             
             // Verificar se o produto já está no carrinho
             const existingItem = cart.find(item => item.id === productId);
@@ -747,6 +771,7 @@ $reviews = [
             if (existingItem) {
                 // Se já existe, aumentar a quantidade
                 existingItem.qty += 1;
+                console.log('➕ Quantidade aumentada para:', existingItem.qty);
             } else {
                 // Se não existe, adicionar novo item
                 const item = {
@@ -757,15 +782,27 @@ $reviews = [
                     imagem: '<?php echo addslashes($product["imagem"]); ?>'
                 };
                 cart.push(item);
+                console.log('🆕 Novo item adicionado:', item);
             }
             
+            console.log('💾 Salvando carrinho:', cart);
             localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Verificar se foi salvo
+            const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+            console.log('✅ Carrinho salvo:', savedCart);
             
             // Mostrar notificação moderna
             showNotification('✅ Produto adicionado ao carrinho!', 'success');
             
             // Atualizar contador do carrinho se existir
             updateCartBadge();
+            
+            // Debug: Mostrar carrinho no console
+            console.log('🔍 Carrinho final no localStorage:', localStorage.getItem('cart'));
+            
+            // Retornar false para prevenir qualquer redirecionamento
+            return false;
         }
         
         function showNotification(message, type = 'success') {
@@ -817,6 +854,33 @@ $reviews = [
                 badge.textContent = totalItems;
                 badge.style.display = totalItems > 0 ? 'block' : 'none';
             }
+        }
+        
+        // Função para testar o carrinho
+        function testCart() {
+            console.log('🧪 TESTANDO CARRINHO:');
+            console.log('📦 localStorage.getItem("cart"):', localStorage.getItem('cart'));
+            
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            console.log('🛒 Carrinho parseado:', cart);
+            console.log('📊 Total de itens:', cart.length);
+            console.log('🔢 Total de quantidades:', cart.reduce((sum, item) => sum + item.qty, 0));
+            
+            if (cart.length > 0) {
+                console.log('✅ CARRINHO TEM ITENS:');
+                cart.forEach((item, index) => {
+                    console.log(`  ${index + 1}. ${item.nome} - R$ ${item.preco} - Qty: ${item.qty}`);
+                });
+            } else {
+                console.log('❌ CARRINHO VAZIO');
+            }
+        }
+        
+        // Função para limpar o carrinho (debug)
+        function clearCart() {
+            localStorage.removeItem('cart');
+            console.log('🗑️ Carrinho limpo!');
+            updateCartBadge();
         }
 
         function toggleWishlist() {
