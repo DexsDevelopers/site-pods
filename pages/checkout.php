@@ -30,8 +30,8 @@ foreach ($cartItems as $item) {
     $qty = $item['qty'] ?? $item['quantity'] ?? 0;
     $subtotal += $preco * $qty;
 }
-$taxa = $subtotal * 0.08; // 8% de taxa
-$total = $subtotal + $taxa;
+// Remover taxa automática - usar apenas o subtotal
+$total = $subtotal;
 ?>
 
 <!DOCTYPE html>
@@ -337,16 +337,6 @@ $total = $subtotal + $taxa;
                     <p style="font-weight: 600;">R$ <?php echo number_format(($item['preco'] ?? $item['preco_final'] ?? 0) * ($item['qty'] ?? $item['quantity'] ?? 0), 2, ',', '.'); ?></p>
                 </div>
                 <?php endforeach; ?>
-                
-                <div class="summary-item">
-                    <span>Subtotal:</span>
-                    <span>R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></span>
-                </div>
-                
-                <div class="summary-item">
-                    <span>Taxa (8%):</span>
-                    <span>R$ <?php echo number_format($taxa, 2, ',', '.'); ?></span>
-                </div>
                 
                 <div class="summary-item summary-total">
                     <span>Total:</span>
