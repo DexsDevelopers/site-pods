@@ -61,7 +61,7 @@ $stmt->execute($params);
 $pedidos = $stmt->fetchAll();
 
 // Status disponíveis
-$statuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'];
+$statuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded', 'unpaid'];
 ?>
 
 <!DOCTYPE html>
@@ -186,29 +186,36 @@ $statuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'canc
                                         <td class="px-3 md:px-6 py-2 md:py-4 font-medium"><?php echo htmlspecialchars($pedido['order_number']); ?></td>
                                         <td class="px-3 md:px-6 py-2 md:py-4 hidden sm:table-cell">
                                             <div>
-                                                <p class="font-medium truncate"><?php echo htmlspecialchars($pedido['name'] ?? 'Anônimo'); ?></p>
+                                                <p class="font-medium truncate"><?php echo htmlspecialchars($pedido['nome'] ?? 'Anônimo'); ?></p>
                                                 <p class="text-xs text-slate-500 truncate"><?php echo htmlspecialchars($pedido['email'] ?? 'N/A'); ?></p>
                                             </div>
                                         </td>
-                                        <td class="px-3 md:px-6 py-2 md:py-4 font-medium">R$ <?php echo number_format($pedido['total_amount'], 2, ',', '.'); ?></td>
+                                        <td class="px-3 md:px-6 py-2 md:py-4 font-medium">R$ <?php echo number_format($pedido['total'], 2, ',', '.'); ?></td>
                                         <td class="px-3 md:px-6 py-2 md:py-4 hidden md:table-cell text-slate-400"><?php echo $pedido['total_items']; ?></td>
-                                        <td class="px-3 md:px-6 py-2 md:py-4 hidden lg:table-cell text-slate-400"><?php echo date('d/m/Y H:i', strtotime($pedido['created_at'])); ?></td>
+                                        <td class="px-3 md:px-6 py-2 md:py-4 hidden lg:table-cell text-slate-400">
+                                            <?php 
+                                            $createdAt = $pedido['created_at'] ?? date('Y-m-d H:i:s');
+                                            echo date('d/m/Y H:i', strtotime($createdAt)); 
+                                            ?>
+                                        </td>
                                         <td class="px-3 md:px-6 py-2 md:py-4">
                                             <select onchange="updateOrderStatus(<?php echo $pedido['id']; ?>, this.value)" 
                                                     class="px-2 py-1 text-xs rounded cursor-pointer border-0 <?php 
-                                                        $statusClass = match($pedido['status']) {
+                                                        $currentStatus = $pedido['status'] ?? 'pending';
+                                                        $statusClass = match($currentStatus) {
                                                             'pending' => 'bg-yellow-900/30 text-yellow-400',
-                                                            'confirmed' => 'bg-blue-900/30 text-blue-400',
-                                                            'processing' => 'bg-purple-900/30 text-purple-400',
+                                                            'paid' => 'bg-green-900/30 text-green-400',
                                                             'shipped' => 'bg-cyan-900/30 text-cyan-400',
                                                             'delivered' => 'bg-green-900/30 text-green-400',
                                                             'cancelled' => 'bg-red-900/30 text-red-400',
+                                                            'refunded' => 'bg-orange-900/30 text-orange-400',
+                                                            'unpaid' => 'bg-slate-700/30 text-slate-400',
                                                             default => 'bg-slate-700/30 text-slate-400'
                                                         };
                                                         echo $statusClass;
                                                     ?>">
                                                 <?php foreach ($statuses as $s): ?>
-                                                    <option value="<?php echo $s; ?>" <?php echo $pedido['status'] === $s ? 'selected' : ''; ?>>
+                                                    <option value="<?php echo $s; ?>" <?php echo $currentStatus === $s ? 'selected' : ''; ?>>
                                                         <?php echo ucfirst($s); ?>
                                                     </option>
                                                 <?php endforeach; ?>
