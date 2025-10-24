@@ -1,3 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Tabelas de Pedidos - Wazzy Pods</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1e293b; color: #e2e8f0; }
+        h2, h3 { color: #8b5cf6; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+        th, td { border: 1px solid #475569; padding: 8px; text-align: left; }
+        th { background: #334155; color: #8b5cf6; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+    </style>
+</head>
+<body>
 <?php
 require_once 'includes/config_hostinger.php';
 require_once 'includes/db.php';
@@ -10,7 +28,7 @@ try {
     // Verificar se a tabela orders existe
     $stmt = $pdo->query("SHOW TABLES LIKE 'orders'");
     if ($stmt->rowCount() == 0) {
-        echo "<p style='color: red;'>❌ Tabela 'orders' não existe!</p>";
+        echo "<p class='error'>❌ Tabela 'orders' não existe!</p>";
         
         // Criar tabela orders
         $pdo->exec("
@@ -35,15 +53,15 @@ try {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
-        echo "<p style='color: green;'>✅ Tabela 'orders' criada com sucesso!</p>";
+        echo "<p class='success'>✅ Tabela 'orders' criada com sucesso!</p>";
     } else {
-        echo "<p style='color: green;'>✅ Tabela 'orders' já existe.</p>";
+        echo "<p class='success'>✅ Tabela 'orders' já existe.</p>";
     }
     
     // Verificar se a tabela order_items existe
     $stmt = $pdo->query("SHOW TABLES LIKE 'order_items'");
     if ($stmt->rowCount() == 0) {
-        echo "<p style='color: red;'>❌ Tabela 'order_items' não existe!</p>";
+        echo "<p class='error'>❌ Tabela 'order_items' não existe!</p>";
         
         // Criar tabela order_items
         $pdo->exec("
@@ -58,9 +76,9 @@ try {
                 FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
-        echo "<p style='color: green;'>✅ Tabela 'order_items' criada com sucesso!</p>";
+        echo "<p class='success'>✅ Tabela 'order_items' criada com sucesso!</p>";
     } else {
-        echo "<p style='color: green;'>✅ Tabela 'order_items' já existe.</p>";
+        echo "<p class='success'>✅ Tabela 'order_items' já existe.</p>";
     }
     
     // Verificar estrutura da tabela orders
@@ -90,9 +108,11 @@ try {
     $totalItems = $stmt->fetch()['total'];
     echo "<p><strong>Total de itens:</strong> {$totalItems}</p>";
     
-    echo "<p style='color: green;'>🎉 Verificação concluída com sucesso!</p>";
+    echo "<p class='success'>🎉 Verificação concluída com sucesso!</p>";
     
 } catch (Exception $e) {
-    echo "<p style='color: red;'>❌ Erro: " . $e->getMessage() . "</p>";
+    echo "<p class='error'>❌ Erro: " . $e->getMessage() . "</p>";
 }
 ?>
+</body>
+</html>
