@@ -358,6 +358,7 @@ $total = $subtotal + $taxa;
                     
                     <?php if (!empty($publicKey) && !empty($accessToken)): ?>
                     <div id="mercadopago-button"></div>
+                    <div id="payment-status" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 8px; text-align: center;"></div>
                     <?php else: ?>
                     <p style="color: #ef4444; text-align: center; padding: 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3);">
                         <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
@@ -375,15 +376,17 @@ $total = $subtotal + $taxa;
             locale: 'pt-BR'
         });
 
-        // Função para processar o pagamento
-        function processPayment() {
+        let orderId = null;
+
+        // Função para criar pedido no banco
+        async function createOrder() {
             const form = document.getElementById('checkoutForm');
             const formData = new FormData(form);
             
             // Validar formulário
             if (!form.checkValidity()) {
                 alert('Por favor, preencha todos os campos obrigatórios.');
-                return;
+                return null;
             }
             
             // Coletar dados do formulário
@@ -402,12 +405,114 @@ $total = $subtotal + $taxa;
                 total: <?php echo $total; ?>
             };
             
-            console.log('Dados do pedido:', orderData);
+            try {
+                const response = await fetch('../api/pedidos.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    return result.order_id;
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao criar pedido:', error);
+                alert('Erro ao criar pedido: ' + error.message);
+                return null;
+            }
+        }
+
+        // Função para criar preferência do Mercado Pago
+        async function createPreference(orderId) {
+            try {
+                const response = await fetch('../api/mercadopago.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        items: <?php echo json_encode($cartItems); ?>,
+                        total: <?php echo $total; ?>
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    return result.preference_id;
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao criar preferência:', error);
+                alert('Erro ao configurar pagamento: ' + error.message);
+                return null;
+            }
+        }
+
+        // Função para processar o pagamento
+        async function processPayment() {
+            try {
+                // Mostrar loading
+                showPaymentStatus('Processando pedido...', 'loading');
+                
+                // Criar pedido no banco
+                orderId = await createOrder();
+                if (!orderId) return;
+                
+                // Criar preferência do Mercado Pago
+                const preferenceId = await createPreference(orderId);
+                if (!preferenceId) return;
+                
+                // Configurar botão do Mercado Pago
+                mp.bricks().create("wallet", "mercadopago-button", {
+                    initialization: {
+                        preferenceId: preferenceId
+                    },
+                    callbacks: {
+                        onReady: () => {
+                            showPaymentStatus('Pagamento configurado! Clique no botão para pagar.', 'success');
+                        },
+                        onError: (error) => {
+                            console.error('Erro no Mercado Pago:', error);
+                            showPaymentStatus('Erro ao configurar pagamento. Tente novamente.', 'error');
+                        }
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Erro no processamento:', error);
+                showPaymentStatus('Erro no processamento. Tente novamente.', 'error');
+            }
+        }
+
+        // Função para mostrar status do pagamento
+        function showPaymentStatus(message, type) {
+            const statusDiv = document.getElementById('payment-status');
+            statusDiv.style.display = 'block';
             
-            // Aqui você implementaria a criação do pedido no banco de dados
-            // e a integração com o Mercado Pago
+            const colors = {
+                loading: 'rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #3b82f6;',
+                success: 'rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981;',
+                error: 'rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444;'
+            };
             
-            alert('Pedido processado com sucesso! (Implementação em desenvolvimento)');
+            statusDiv.style.cssText = `
+                display: block;
+                margin-top: 1rem;
+                padding: 1rem;
+                border-radius: 8px;
+                text-align: center;
+                background: ${colors[type]};
+            `;
+            statusDiv.textContent = message;
         }
         
         // Máscara para CEP
@@ -422,6 +527,13 @@ $total = $subtotal + $taxa;
             let value = e.target.value.replace(/\D/g, '');
             value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
             e.target.value = value;
+        });
+
+        // Inicializar pagamento quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('mercadopago-button')) {
+                processPayment();
+            }
         });
     </script>
 </body>
