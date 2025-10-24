@@ -1,3 +1,7 @@
+<?php
+require_once 'includes/config_hostinger.php';
+require_once 'includes/db.php';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -16,12 +20,9 @@
     </style>
 </head>
 <body>
+<h2>🔍 Verificando Tabelas de Pedidos</h2>
+
 <?php
-require_once 'includes/config_hostinger.php';
-require_once 'includes/db.php';
-
-echo "<h2>🔍 Verificando Tabelas de Pedidos</h2>";
-
 try {
     $pdo = Database::getInstance()->getConnection();
     
