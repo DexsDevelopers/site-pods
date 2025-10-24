@@ -933,8 +933,10 @@ $reviews = [
                 }
             }
         });
-        
-        // Funções de debug (escopo global)
+    </script>
+
+    <!-- Funções de Debug - Escopo Global -->
+    <script>
         function testCart() {
             console.log('🧪 TESTANDO CARRINHO:');
             console.log('📦 localStorage.getItem("cart"):', localStorage.getItem('cart'));
@@ -957,7 +959,12 @@ $reviews = [
         function clearCart() {
             localStorage.removeItem('cart');
             console.log('🗑️ Carrinho limpo!');
-            updateCartBadge();
+            // Atualizar badge se existir
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.style.display = 'none';
+            }
         }
     </script>
 
