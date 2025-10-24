@@ -107,7 +107,8 @@ try {
     echo json_encode([
         'success' => true,
         'preference_id' => $preference['id'],
-        'init_point' => $preference['init_point']
+        'init_point' => $preference['init_point'],
+        'message' => 'Preferência criada com sucesso'
     ]);
     
 } catch (Exception $e) {

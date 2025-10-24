@@ -478,6 +478,13 @@ $total = $subtotal + $taxa;
                         console.log('✅ Preferência criada (ID encontrado):', result.preference_id);
                         return result.preference_id;
                     }
+                    
+                    // Se a resposta contém um 'id' (resposta direta do Mercado Pago), é sucesso
+                    if (result.id) {
+                        console.log('✅ Preferência criada (ID direto):', result.id);
+                        return result.id;
+                    }
+                    
                     throw new Error(result.message || 'Erro desconhecido na criação da preferência');
                 }
             } catch (error) {
