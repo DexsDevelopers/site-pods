@@ -6,9 +6,9 @@ ini_set('display_errors', 1);
 session_start();
 
 // Verificar se está logado
-if (!isset($_SESSION['admin_logged_in'])) {
-    $_SESSION['admin_logged_in'] = true;
-    $_SESSION['admin_nome'] = 'Admin';
+if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
+    header('Location: login.php');
+    exit;
 }
 
 // Conexão direta com banco
