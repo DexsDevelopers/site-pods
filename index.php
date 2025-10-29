@@ -558,59 +558,178 @@ $avaliacoes = [
         function toggleCart() {
             window.location.href = '/pages/cart.php';
         }
+
+        // Função para rolar até a seção de produtos
+        function scrollToProducts() {
+            const productsSection = document.getElementById('produtos');
+            if (productsSection) {
+                productsSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // Função para adicionar ao carrinho
+        function addToCart(id, nome, preco, imagem) {
+            try {
+                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const existingItem = cart.find(item => item.id === id);
+                
+                if (existingItem) {
+                    existingItem.quantity = (existingItem.quantity || 0) + 1;
+                } else {
+                    cart.push({
+                        id: id,
+                        nome: nome,
+                        preco: parseFloat(preco),
+                        imagem: imagem || 'https://via.placeholder.com/300',
+                        quantity: 1
+                    });
+                }
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Mostrar notificação
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Produto adicionado!',
+                    text: `${nome} foi adicionado ao carrinho`,
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+                
+                // Atualizar badge do carrinho
+                updateCartBadge();
+                
+            } catch (error) {
+                console.error('Erro ao adicionar ao carrinho:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: 'Não foi possível adicionar o produto ao carrinho'
+                });
+            }
+        }
+
+        // Função para atualizar badge do carrinho
+        function updateCartBadge() {
+            try {
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                const badges = document.querySelectorAll('#cart-count, #cart-count-mobile');
+                badges.forEach(badge => {
+                    if (badge) badge.textContent = count;
+                });
+            } catch (error) {
+                console.error('Erro ao atualizar badge:', error);
+            }
+        }
+
+        // Inicializar badge do carrinho ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartBadge();
+        });
     </script>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-gradient pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative">
+    <!-- Hero Section Moderna -->
+    <section id="home" class="hero-gradient pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <!-- Background Effects -->
+        <div class="absolute inset-0">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
+        </div>
+
         <div class="max-w-7xl mx-auto w-full relative z-10">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div data-aos="fade-right" data-aos-duration="1000">
-                    <div class="mb-8">
-                        <span class="badge badge-primary">
-                            <i class="fas fa-star mr-2"></i> Qualidade Premium
-                        </span>
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Conteúdo Principal -->
+                <div data-aos="fade-right" data-aos-duration="1000" class="space-y-8">
+                    <!-- Badge Premium -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-full backdrop-blur-sm">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm font-semibold text-purple-300">Qualidade Premium Garantida</span>
                     </div>
                     
-                    <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight text-slate-50">
-                        Wazzy <span class="gradient-text">Pods</span>
-                    </h1>
+                    <!-- Título Principal -->
+                    <div class="space-y-4">
+                        <h1 class="text-5xl md:text-7xl font-black leading-tight">
+                            <span class="text-white">Wazzy</span>
+                            <span class="gradient-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                                Pods
+                            </span>
+                        </h1>
+                        <div class="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                    </div>
                     
-                    <p class="text-xl text-slate-300 mb-12 leading-relaxed">
-                        Descubra a melhor seleção de pods premium com qualidade garantida, entrega rápida e atendimento excepcional.
+                    <!-- Descrição -->
+                    <p class="text-xl text-slate-300 leading-relaxed max-w-lg">
+                        Descubra a <span class="text-purple-400 font-semibold">melhor seleção</span> de pods premium com qualidade garantida, entrega rápida e atendimento excepcional.
                     </p>
 
-                    <div class="flex flex-col sm:flex-row gap-4 mb-12">
-                        <button class="px-8 py-4 btn-primary rounded-lg font-bold ripple relative z-10 text-lg">
-                            <i class="fas fa-shopping-bag mr-2"></i>
-                            Comprar Agora
+                    <!-- Botões de Ação -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="scrollToProducts()" 
+                                class="group px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-700 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="relative flex items-center justify-center gap-2">
+                                <i class="fas fa-shopping-bag text-lg"></i>
+                                <span>Comprar Agora</span>
+                                <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </div>
                         </button>
-                        <button class="px-8 py-4 glass text-purple-300 rounded-lg font-bold ripple relative z-10 text-lg hover:bg-slate-800 transition">
-                            <i class="fas fa-arrow-down mr-2"></i>
-                            Ver Produtos
+                        
+                        <button onclick="scrollToProducts()" 
+                                class="group px-8 py-4 bg-slate-800/50 border border-purple-500/30 text-purple-300 rounded-xl font-bold transition-all duration-300 hover:bg-slate-700/50 hover:border-purple-400/50 hover:text-purple-200 backdrop-blur-sm">
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="fas fa-eye text-lg"></i>
+                                <span>Ver Produtos</span>
+                                <i class="fas fa-arrow-down group-hover:translate-y-1 transition-transform duration-300"></i>
+                            </div>
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-6">
-                        <div class="glass p-4 rounded-lg text-center">
-                            <div class="text-2xl font-black gradient-text">500+</div>
-                            <div class="text-xs text-gray-500 mt-1">Produtos</div>
+                    <!-- Estatísticas -->
+                    <div class="grid grid-cols-3 gap-6 pt-8">
+                        <div class="group text-center p-4 bg-slate-800/30 rounded-xl border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
+                            <div class="text-3xl font-black gradient-text mb-1 group-hover:scale-110 transition-transform duration-300">500+</div>
+                            <div class="text-sm text-slate-400 font-medium">Produtos</div>
                         </div>
-                        <div class="glass p-4 rounded-lg text-center">
-                            <div class="text-2xl font-black gradient-text">10K+</div>
-                            <div class="text-xs text-gray-500 mt-1">Clientes</div>
+                        <div class="group text-center p-4 bg-slate-800/30 rounded-xl border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
+                            <div class="text-3xl font-black gradient-text mb-1 group-hover:scale-110 transition-transform duration-300">10K+</div>
+                            <div class="text-sm text-slate-400 font-medium">Clientes</div>
                         </div>
-                        <div class="glass p-4 rounded-lg text-center">
-                            <div class="text-2xl font-black gradient-text">5.0★</div>
-                            <div class="text-xs text-gray-500 mt-1">Rating</div>
+                        <div class="group text-center p-4 bg-slate-800/30 rounded-xl border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
+                            <div class="text-3xl font-black gradient-text mb-1 group-hover:scale-110 transition-transform duration-300">5.0★</div>
+                            <div class="text-sm text-slate-400 font-medium">Avaliação</div>
                         </div>
                     </div>
                 </div>
 
-                <div data-aos="fade-left" data-aos-duration="1000" class="relative h-96 md:h-full min-h-96">
-                    <div class="absolute inset-0 bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl blur-2xl opacity-40"></div>
-                    <div class="relative h-full glass rounded-3xl p-8 flex items-center justify-center text-center border-2 border-purple-800/50" style="background-image: url('WhatsApp Image 2025-10-17 at 16.17.27.jpeg'); background-size: cover; background-position: center;">
+                <!-- Imagem/Visual -->
+                <div data-aos="fade-left" data-aos-duration="1000" class="relative">
+                    <div class="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden">
+                        <!-- Background com gradiente animado -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-3xl"></div>
+                        
+                        <!-- Imagem principal -->
+                        <div class="relative h-full bg-cover bg-center rounded-3xl" 
+                             style="background-image: url('https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        </div>
+                        
+                        <!-- Elementos flutuantes -->
+                        <div class="absolute top-4 right-4 w-16 h-16 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
+                            <i class="fas fa-star text-yellow-400 text-xl"></i>
+                        </div>
+                        
+                        <div class="absolute bottom-4 left-4 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+                            <span class="text-white font-semibold text-sm">Premium Quality</span>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1033,4 +1152,5 @@ $avaliacoes = [
     </script>
 
 </body>
+</html>
 </html>
