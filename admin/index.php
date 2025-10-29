@@ -1,7 +1,9 @@
 <?php
+// Dashboard corrigido com conexão direta
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
-require_once '../includes/config_hostinger.php';
-require_once '../includes/db.php';
 
 // Verificar se está logado
 if (!isset($_SESSION['admin_logged_in'])) {
@@ -9,8 +11,15 @@ if (!isset($_SESSION['admin_logged_in'])) {
     $_SESSION['admin_nome'] = 'Admin';
 }
 
+// Conexão direta com banco
+$host = 'localhost';
+$db = 'u853242961_loja_pods';
+$user = 'u853242961_pods_saluc';
+$pass = 'Lucastav8012@';
+
 try {
-    $pdo = Database::getInstance()->getConnection();
+    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Estatísticas reais do banco de dados
     $stats = [];
@@ -28,21 +37,11 @@ try {
     $stats['pedidos'] = $stmt->fetch()['total'] ?? 0;
     
     // Vendas de hoje
-    $stmt = $pdo->query("
-        SELECT COALESCE(SUM(total), 0) as total 
-        FROM orders 
-        WHERE DATE(created_at) = CURDATE() AND status IN ('paid', 'delivered')
-    ");
+    $stmt = $pdo->query("SELECT COALESCE(SUM(total), 0) as total FROM orders WHERE DATE(created_at) = CURDATE()");
     $stats['vendas_hoje'] = $stmt->fetch()['total'] ?? 0;
     
     // Vendas do mês
-    $stmt = $pdo->query("
-        SELECT COALESCE(SUM(total), 0) as total 
-        FROM orders 
-        WHERE YEAR(created_at) = YEAR(CURDATE()) 
-        AND MONTH(created_at) = MONTH(CURDATE())
-        AND status IN ('paid', 'delivered')
-    ");
+    $stmt = $pdo->query("SELECT COALESCE(SUM(total), 0) as total FROM orders WHERE YEAR(created_at) = YEAR(CURDATE()) AND MONTH(created_at) = MONTH(CURDATE())");
     $stats['vendas_mes'] = $stmt->fetch()['total'] ?? 0;
     
     // Vendas por dia da semana (últimos 7 dias)
@@ -53,7 +52,6 @@ try {
             DAYNAME(created_at) as dia_semana
         FROM orders
         WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-        AND status IN ('paid', 'delivered')
         GROUP BY DATE(created_at)
         ORDER BY created_at ASC
     ");
@@ -118,6 +116,7 @@ try {
     $vendas_semana_completa = [];
     $produtos_populares = [];
     $pedidos_recentes = [];
+    $error = $e->getMessage();
 }
 ?>
 
@@ -515,6 +514,15 @@ try {
             display: block;
         }
         
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #fca5a5;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .menu-toggle {
@@ -631,6 +639,13 @@ try {
                     </a>
                 </div>
             </header>
+            
+            <?php if (isset($error)): ?>
+            <div class="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Erro de Conexão:</strong> <?php echo htmlspecialchars($error); ?>
+            </div>
+            <?php endif; ?>
             
             <!-- Stats Grid -->
             <div class="stats-grid">
