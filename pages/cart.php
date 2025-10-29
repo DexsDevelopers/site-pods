@@ -9,6 +9,20 @@ $total = 0;
 $subtotal = 0;
 $taxa = 0;
 
+// Buscar configurações de taxa e frete
+try {
+    $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'tax_rate'");
+    $stmt->execute();
+    $taxRate = floatval($stmt->fetchColumn() ?: 0);
+    
+    $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'shipping_fee'");
+    $stmt->execute();
+    $shippingFee = floatval($stmt->fetchColumn() ?: 0);
+} catch (Exception $e) {
+    $taxRate = 0;
+    $shippingFee = 0;
+}
+
 // Simular carrinho vazio para demonstração
 if (isset($_GET['action']) && $_GET['action'] === 'clear') {
     setcookie('carrinho', '', time() - 3600);
@@ -136,10 +150,18 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
     </style>
 
     <script>
+        // Configurações do servidor
+        const serverConfig = {
+            taxRate: <?php echo $taxRate; ?>,
+            shippingFee: <?php echo $shippingFee; ?>
+        };
+
         // ========== CLASSE CART COMPLETA ==========
         class Cart {
             constructor() {
                 this.items = this.loadFromStorage();
+                this.taxRate = serverConfig.taxRate;
+                this.shippingFee = serverConfig.shippingFee;
                 this.render();
             }
 
@@ -195,11 +217,20 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
             }
 
             getTax() {
-                return 0; // Remover taxa automática
+                // Buscar taxa do servidor
+                return this.taxRate || 0;
+            }
+
+            getShipping() {
+                // Buscar frete do servidor
+                return this.shippingFee || 0;
             }
 
             getTotal() {
-                return this.getSubtotal(); // Total = subtotal (sem taxa)
+                const subtotal = this.getSubtotal();
+                const tax = (subtotal * this.getTax()) / 100;
+                const shipping = this.getShipping();
+                return subtotal + tax + shipping;
             }
 
             clear() {
@@ -275,11 +306,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'clear') {
 
                     // Atualizar resumo
                     const subtotal = this.getSubtotal();
-                    const tax = this.getTax();
-                    const total = this.getTotal();
+                    const taxAmount = (subtotal * this.getTax()) / 100;
+                    const shipping = this.getShipping();
+                    const total = subtotal + taxAmount + shipping;
 
                     document.getElementById('subtotal-value').textContent = `R$ ${subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-                    document.getElementById('tax-value').textContent = `R$ ${tax.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                    document.getElementById('tax-value').textContent = `R$ ${taxAmount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                    document.getElementById('shipping-value').textContent = `R$ ${shipping.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                     document.getElementById('total-value').textContent = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                 }
 

@@ -9,7 +9,7 @@ if (empty($cartItems)) {
     exit;
 }
 
-// Buscar configurações do Mercado Pago
+// Buscar configurações do Mercado Pago e taxas
 try {
     $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'mercado_pago_public_key'");
     $stmt->execute();
@@ -18,9 +18,20 @@ try {
     $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'mercado_pago_access_token'");
     $stmt->execute();
     $accessToken = $stmt->fetchColumn();
+    
+    // Buscar configurações de taxa e frete
+    $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'tax_rate'");
+    $stmt->execute();
+    $taxRate = floatval($stmt->fetchColumn() ?: 0);
+    
+    $stmt = $pdo->prepare("SELECT valor FROM configuracoes WHERE chave = 'shipping_fee'");
+    $stmt->execute();
+    $shippingFee = floatval($stmt->fetchColumn() ?: 0);
 } catch (Exception $e) {
     $publicKey = '';
     $accessToken = '';
+    $taxRate = 0;
+    $shippingFee = 0;
 }
 
 // Calcular totais
@@ -30,8 +41,10 @@ foreach ($cartItems as $item) {
     $qty = $item['quantity'] ?? 1; // Priorizar quantity, fallback para 1
     $subtotal += $preco * $qty;
 }
-// Remover taxa automática - usar apenas o subtotal
-$total = $subtotal;
+
+// Calcular impostos e frete
+$taxAmount = ($subtotal * $taxRate) / 100;
+$total = $subtotal + $taxAmount + $shippingFee;
 ?>
 
 <!DOCTYPE html>
@@ -337,6 +350,25 @@ $total = $subtotal;
                     <p style="font-weight: 600;">R$ <?php echo number_format(($item['preco'] ?? $item['preco_final'] ?? 0) * ($item['quantity'] ?? 1), 2, ',', '.'); ?></p>
                 </div>
                 <?php endforeach; ?>
+                
+                <div class="summary-item">
+                    <span>Subtotal:</span>
+                    <span>R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></span>
+                </div>
+                
+                <?php if ($taxAmount > 0): ?>
+                <div class="summary-item">
+                    <span>Impostos (<?php echo $taxRate; ?>%):</span>
+                    <span>R$ <?php echo number_format($taxAmount, 2, ',', '.'); ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($shippingFee > 0): ?>
+                <div class="summary-item">
+                    <span>Frete:</span>
+                    <span>R$ <?php echo number_format($shippingFee, 2, ',', '.'); ?></span>
+                </div>
+                <?php endif; ?>
                 
                 <div class="summary-item summary-total">
                     <span>Total:</span>
