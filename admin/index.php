@@ -488,12 +488,27 @@ try {
             top: 0;
             left: 0;
             z-index: 40;
+            height: 100vh;
+            overflow-y: auto;
         }
         
         @media (min-width: 768px) {
             #sidebar {
                 position: relative;
                 transform: translateX(0) !important;
+                height: auto;
+                min-height: calc(100vh - 80px);
+            }
+        }
+        
+        /* Garantir que o conteúdo principal não seja sobreposto */
+        main {
+            margin-left: 0;
+        }
+        
+        @media (min-width: 768px) {
+            main {
+                margin-left: 0;
             }
         }
         
@@ -536,45 +551,70 @@ try {
 
     <script>
         // Menu mobile toggle
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-        function closeSidebar() {
-            sidebar.classList.add('-translate-x-full');
-            sidebarOverlay.classList.add('hidden');
-        }
-
-        function openSidebar() {
-            sidebar.classList.remove('-translate-x-full');
-            sidebarOverlay.classList.remove('hidden');
-        }
-
-        sidebarToggle.addEventListener('click', () => {
-            if (sidebar.classList.contains('-translate-x-full')) {
-                openSidebar();
-            } else {
-                closeSidebar();
+            if (!sidebar || !sidebarToggle || !sidebarOverlay) {
+                console.error('Elementos do menu não encontrados');
+                return;
             }
-        });
 
-        sidebarOverlay.addEventListener('click', closeSidebar);
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
 
-        // Fechar sidebar ao clicar em um link
-        document.querySelectorAll('.nav-item').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 768) {
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Toggle do menu
+            sidebarToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    openSidebar();
+                } else {
                     closeSidebar();
                 }
             });
-        });
 
-        // Fechar sidebar ao redimensionar para desktop
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) {
-                sidebar.classList.remove('-translate-x-full');
-                sidebarOverlay.classList.add('hidden');
-            }
+            // Fechar ao clicar no overlay
+            sidebarOverlay.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeSidebar();
+            });
+
+            // Fechar sidebar ao clicar em um link
+            document.querySelectorAll('.nav-item').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                        setTimeout(() => closeSidebar(), 100);
+                    }
+                });
+            });
+
+            // Fechar sidebar ao redimensionar para desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Fechar ao pressionar ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+                    closeSidebar();
+                }
+            });
         });
 
         // Versão do gráfico para invalidar cache
