@@ -716,7 +716,7 @@ $avaliacoes = [
                         
                         <!-- Imagem principal -->
                         <div class="relative h-full bg-cover bg-center rounded-3xl" 
-                             style="background-image: url('https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                             style="background-image: url('WhatsApp Image 2025-10-17 at 16.17.27.jpeg'); background-size: cover; background-position: center;">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                         </div>
                         
