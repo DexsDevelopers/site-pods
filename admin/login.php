@@ -186,27 +186,6 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             gap: 0.5rem;
         }
         
-        .demo-info {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 0.5rem;
-            text-align: center;
-        }
-        
-        .demo-info h3 {
-            color: #a78bfa;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .demo-info p {
-            color: #94a3b8;
-            font-size: 0.75rem;
-            margin: 0.25rem 0;
-        }
         
         .security-notice {
             margin-top: 1rem;
@@ -278,11 +257,6 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             </button>
         </form>
         
-        <div class="demo-info">
-            <h3>Credenciais de Acesso</h3>
-            <p><strong>Email:</strong> admin@wazzypods.com</p>
-            <p><strong>Senha:</strong> admin123</p>
-        </div>
         
         <div class="security-notice">
             <p>
