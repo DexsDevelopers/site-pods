@@ -182,7 +182,7 @@ try {
         <!-- Sidebar -->
         <aside id="sidebar" class="fixed md:relative w-64 h-screen md:h-auto min-h-screen bg-slate-950 border-r border-purple-800/30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40">
             <nav class="p-4 space-y-2">
-                <a href="/admin" class="nav-item active">
+                <a href="index.php" class="nav-item active">
                     <i class="fas fa-dashboard w-5"></i> <span>Dashboard</span>
                 </a>
                 <a href="produtos.php" class="nav-item">
@@ -480,6 +480,21 @@ try {
             background: rgba(139, 92, 246, 0.2);
             color: #a78bfa;
             border-left: 3px solid #a78bfa;
+        }
+        
+        /* Garantir que o menu funcione corretamente */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 40;
+        }
+        
+        @media (min-width: 768px) {
+            #sidebar {
+                position: relative;
+                transform: translateX(0) !important;
+            }
         }
         
         .btn-danger {
