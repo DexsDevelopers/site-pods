@@ -147,6 +147,20 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Wazzy Pods Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'purple-800': '#6b21a8',
+                        'purple-900': '#581c87',
+                        'slate-900': '#0f172a',
+                        'slate-950': '#020617',
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-900 text-slate-100">
@@ -452,6 +466,19 @@ try {
 </div>
 
     <style>
+        /* Reset e base para garantir funcionamento */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0f172a !important;
+            color: #f1f5f9 !important;
+        }
+        
         .gradient-text {
             background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
             -webkit-background-clip: text;
@@ -484,31 +511,73 @@ try {
         
         /* Garantir que o menu funcione corretamente */
         #sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 40;
-            height: 100vh;
-            overflow-y: auto;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 40 !important;
+            height: 100vh !important;
+            overflow-y: auto !important;
+            width: 16rem !important;
+            background-color: #020617 !important;
+            border-right: 1px solid rgba(139, 92, 246, 0.3) !important;
+            transform: translateX(-100%) !important;
+            transition: transform 0.3s ease !important;
+        }
+        
+        #sidebar.show {
+            transform: translateX(0) !important;
         }
         
         @media (min-width: 768px) {
             #sidebar {
-                position: relative;
+                position: relative !important;
                 transform: translateX(0) !important;
-                height: auto;
-                min-height: calc(100vh - 80px);
+                height: auto !important;
+                min-height: calc(100vh - 80px) !important;
+            }
+        }
+        
+        /* Header fixo */
+        header {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 50 !important;
+            background-color: #020617 !important;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3) !important;
+        }
+        
+        /* Overlay para mobile */
+        #sidebarOverlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            z-index: 30 !important;
+            display: none !important;
+        }
+        
+        #sidebarOverlay.show {
+            display: block !important;
+        }
+        
+        @media (min-width: 768px) {
+            #sidebarOverlay {
+                display: none !important;
             }
         }
         
         /* Garantir que o conteúdo principal não seja sobreposto */
         main {
-            margin-left: 0;
+            margin-left: 0 !important;
+            flex: 1 !important;
+            width: 100% !important;
         }
         
         @media (min-width: 768px) {
             main {
-                margin-left: 0;
+                margin-left: 0 !important;
             }
         }
         
@@ -562,14 +631,14 @@ try {
             }
 
             function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-                sidebarOverlay.classList.add('hidden');
+                sidebar.classList.remove('show');
+                sidebarOverlay.classList.remove('show');
                 document.body.style.overflow = '';
             }
 
             function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                sidebarOverlay.classList.remove('hidden');
+                sidebar.classList.add('show');
+                sidebarOverlay.classList.add('show');
                 document.body.style.overflow = 'hidden';
             }
 
@@ -578,10 +647,10 @@ try {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                if (sidebar.classList.contains('-translate-x-full')) {
-                    openSidebar();
-                } else {
+                if (sidebar.classList.contains('show')) {
                     closeSidebar();
+                } else {
+                    openSidebar();
                 }
             });
 
@@ -603,15 +672,15 @@ try {
             // Fechar sidebar ao redimensionar para desktop
             window.addEventListener('resize', () => {
                 if (window.innerWidth >= 768) {
-                    sidebar.classList.remove('-translate-x-full');
-                    sidebarOverlay.classList.add('hidden');
+                    sidebar.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
                     document.body.style.overflow = '';
                 }
             });
 
             // Fechar ao pressionar ESC
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+                if (e.key === 'Escape' && sidebar.classList.contains('show')) {
                     closeSidebar();
                 }
             });
