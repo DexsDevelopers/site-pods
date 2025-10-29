@@ -587,11 +587,14 @@ $reviews = [
 
                     <!-- Botões -->
                     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="button" onclick="addToCart(event); return false;" class="btn" style="flex: 1;">
-                            <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>Adicionar ao Carrinho
+                        <button type="button" onclick="addToCart(event); return false;" class="btn btn-secondary" style="flex: 1;">
+                            <i class="fas fa-cart-plus" style="margin-right: 0.5rem;"></i>Adicionar ao Carrinho
                         </button>
-                        <button onclick="toggleWishlist()" class="btn btn-secondary" style="flex: 1;" id="wishlistBtn2">
-                            <i class="far fa-heart" style="margin-right: 0.5rem;"></i>Favoritar
+                        <button type="button" onclick="comprarAgora(event); return false;" class="btn" style="flex: 1;">
+                            <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i>Comprar Agora
+                        </button>
+                        <button onclick="toggleWishlist()" class="btn btn-secondary" style="flex: 0 0 auto; padding: 0.75rem;" id="wishlistBtn2">
+                            <i class="far fa-heart"></i>
                         </button>
                     </div>
                     
@@ -940,6 +943,58 @@ $reviews = [
             }
             
             // Retornar false para prevenir qualquer redirecionamento
+            return false;
+        }
+        
+        // Função comprarAgora - adiciona ao carrinho e vai direto para checkout
+        function comprarAgora(event) {
+            console.log('🛍️ FUNÇÃO comprarAgora CHAMADA!');
+            
+            // Prevenir qualquer comportamento padrão
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            try {
+                // Primeiro adiciona ao carrinho
+                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const productId = <?php echo json_encode($product['id']); ?>;
+                
+                // Verificar se o produto já está no carrinho
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    // Se já existe, aumentar a quantidade
+                    existingItem.qty = (existingItem.qty || 0) + 1;
+                } else {
+                    // Se não existe, adicionar novo item
+                    const item = {
+                        id: productId,
+                        nome: <?php echo json_encode($product['nome']); ?>,
+                        preco: <?php echo json_encode($product['preco']); ?>,
+                        qty: 1,
+                        imagem: <?php echo json_encode($product['imagem']); ?>
+                    };
+                    cart.push(item);
+                }
+                
+                // Salvar carrinho
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Mostrar notificação
+                showNotification('✅ Produto adicionado! Redirecionando para checkout...', 'success');
+                
+                // Redirecionar para checkout após 1 segundo
+                setTimeout(() => {
+                    window.location.href = 'checkout.php';
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ ERRO no comprarAgora:', error);
+                showNotification('❌ Erro ao processar compra!', 'error');
+            }
+            
             return false;
         }
         
